@@ -12,4 +12,7 @@ def get_data_path():
     :return: The path to the data folder
     """
     project_folder = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    return os.path.join(project_folder, "data")
+    data_folder = os.path.join(project_folder, "data")
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+    return data_folder
