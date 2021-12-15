@@ -22,8 +22,8 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
             rating = SpeciesStatusRating(speciesId=species_id,
                                          statusRatingId=status_rating_id,
                                          region=region,
-                                         start=start,
-                                         end=end)
+                                         start_date=start,
+                                         end_date=end)
             session.add(rating)
     except IntegrityError as e:
         raise ValueError("Invalid species conservation status rating properties") from e

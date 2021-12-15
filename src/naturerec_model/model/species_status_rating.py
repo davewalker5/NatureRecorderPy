@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, CheckConstraint
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -7,6 +8,8 @@ class SpeciesStatusRating(Base):
     """
     Class representing the a conservation status scheme rating
     """
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
     __tablename__ = "SpeciesStatusRatings"
     __table_args__ = (CheckConstraint("LENGTH(TRIM(region)) > 0"),
                       CheckConstraint("(end IS NULL) or (end >= start)"))
@@ -19,10 +22,13 @@ class SpeciesStatusRating(Base):
     statusRatingId = Column(Integer, ForeignKey("StatusRatings.id"), nullable=False)
     #: Region where the rating applies
     region = Column(String, nullable=False)
-    #: Start date for the rating
-    start = Column(Date, nullable=False)
-    #: End date for the rating
-    end = Column(Date, nullable=True)
+    #: Start date for the rating. The database is shared between .NET and Python code and Entity Framework
+    #: creates a TEXT column in SQLite where data's written in the form YYYY-MM-DD HH:MM:SS. So, while
+    #: this field is the one that's persisted to the DB the intention is that it should be accessed via
+    #: the corresponding property
+    start = Column(String, nullable=False)
+    #: End date for the rating - see comments about the start date
+    end = Column(String, nullable=True)
 
     #: Related species
     species = relationship("Species", lazy="joined")
@@ -36,3 +42,19 @@ class SpeciesStatusRating(Base):
                f"region={self.region!r}, " \
                f"start={self.start!r}," \
                f"end={self.end!r})"
+
+    @property
+    def start_date(self):
+        return datetime.strptime(self.start, self.DATE_FORMAT).date()
+
+    @start_date.setter
+    def start_date(self, value):
+        self.start = value.strftime(self.DATE_FORMAT) if value else None
+
+    @property
+    def end_date(self):
+        return datetime.strptime(self.end, self.DATE_FORMAT).date() if self.end is not None else None
+
+    @end_date.setter
+    def end_date(self, value):
+        self.end = value.strftime(self.DATE_FORMAT) if value else None

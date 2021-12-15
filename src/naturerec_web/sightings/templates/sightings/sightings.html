@@ -1,0 +1,30 @@
+{% if sightings | length  %}
+    <table class="striped">
+        <thead>
+            <th>Location</th>
+            <th>Category</th>
+            <th>Species</th>
+            <th>Number</th>
+            <th>Gender</th>
+            <th>Young</th>
+            {% if edit_enabled %}
+                <th/>
+                <th/>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for sighting in sightings %}
+                <td>{{ sighting.location.name }}</td>
+                <td>{{ sighting.species.category.name }}</td>
+                <td>{{ sighting.species.name }}</td>
+                <td>{{ sighting.number }}</td>
+                <td>{{ sighting.gender }}</td>
+                <td>{{ sighting.withYoung }}</td>
+                {% if edit_enabled %}
+                    <td/>
+                    <td/>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

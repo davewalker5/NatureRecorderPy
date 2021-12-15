@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Today's Sightings{% endblock %}
+
+{% block content %}
+    <h1>Today's Sightings</h1>
+    {% if sightings | length > 0 %}
+        {% include "sightings/sightings.html" with context %}
+    {% else %}
+        <span>There are no sightings in the database for today</span>
+    {% endif %}
+    <div class="button-bar">
+        <button type="button" class="btn btn-primary">
+            <a href="#">Add Sighting</a>
+        </button>
+    </div>
+{% endblock %}

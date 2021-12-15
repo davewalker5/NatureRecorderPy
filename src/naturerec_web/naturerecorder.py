@@ -7,12 +7,16 @@ to provide button and form element styling.
 """
 
 import os
-from flask import Flask, render_template
+from flask import Flask, redirect
+from .sightings import sightings_bp
 
 
 app = Flask("Nature Recorder",
             static_folder=os.path.join(os.path.dirname(__file__), "static"),
             template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+
+app.secret_key = b'some secret key'
+app.register_blueprint(sightings_bp, url_prefix='/sightings')
 
 
 @app.route("/")
@@ -22,4 +26,4 @@ def home():
 
     :return: Rendered home page template
     """
-    return render_template("home.html")
+    return redirect("/sightings/list")

@@ -25,8 +25,8 @@ class TestSpeciesStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", rating.rating.scheme.name)
         self.assertEqual("Amber", rating.rating.name)
         self.assertEqual("United Kingdom", rating.region)
-        self.assertEqual(datetime.date(2015, 1, 1), rating.start)
-        self.assertIsNone(rating.end)
+        self.assertEqual(datetime.date(2015, 1, 1), rating.start_date)
+        self.assertIsNone(rating.end_date)
 
     def test_cannot_create_rating_for_missing_species(self):
         with self.assertRaises(ValueError):

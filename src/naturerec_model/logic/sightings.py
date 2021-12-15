@@ -23,7 +23,7 @@ def create_sighting(location_id, species_id, date, number, gender, with_young):
         with Session.begin() as session:
             sighting = Sighting(locationId=location_id,
                                 speciesId=species_id,
-                                date=date,
+                                sighting_date=date,
                                 number=number,
                                 gender=gender,
                                 withYoung=with_young)
@@ -64,10 +64,12 @@ def list_sightings(from_date=None, to_date=None, location_id=None, species_id=No
         query = session.query(Sighting)
 
         if from_date:
-            query = query.filter(Sighting.date >= from_date)
+            from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
+            query = query.filter(Sighting.date >= from_date_string)
 
         if to_date:
-            query = query.filter(Sighting.date <= to_date)
+            to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
+            query = query.filter(Sighting.date <= to_date_string)
 
         if location_id:
             query = query.filter(Sighting.locationId == location_id)

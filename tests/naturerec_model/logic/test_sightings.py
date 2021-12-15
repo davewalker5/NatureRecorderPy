@@ -28,7 +28,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Birds",  sighting.species.category.name)
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
-        self.assertEqual(datetime.date(2021, 12, 14), sighting.date)
+        self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
@@ -40,7 +40,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Birds",  sighting.species.category.name)
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
-        self.assertEqual(datetime.date(2021, 12, 14), sighting.date)
+        self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
@@ -67,6 +67,14 @@ class TestSightings(unittest.TestCase):
         self.assertEqual(1, len(sightings))
         self.assertEqual("Blackbird", sightings[0].species.name)
         self.assertEqual("Brock Hill", sightings[0].location.name)
+
+    def test_can_filter_sightings_by_date_range(self):
+        TestSightings.create_additional_sightings()
+        sightings = list_sightings(from_date=datetime.date(2021, 12, 14),
+                                   to_date=datetime.date(2021, 12, 15))
+        self.assertEqual(1, len(sightings))
+        self.assertEqual("Black-Headed Gull", sightings[0].species.name)
+        self.assertEqual("Radley Lakes", sightings[0].location.name)
 
     def test_can_filter_sightings_by_location(self):
         TestSightings.create_additional_sightings()

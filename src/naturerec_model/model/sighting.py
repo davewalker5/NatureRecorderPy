@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Date, UniqueConstraint, ForeignKey, CheckConstraint
+from datetime import datetime
+from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from .base import Base
 from .gender import Gender
@@ -8,6 +9,8 @@ class Sighting(Base):
     """
     Class representing a sighting of a species at a location
     """
+    DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
     __tablename__ = "Sightings"
 
     #: Primary key
@@ -16,8 +19,11 @@ class Sighting(Base):
     locationId = Column(Integer, ForeignKey("Locations.id"), nullable=False)
     #: Related species id
     speciesId = Column(Integer, ForeignKey("Species.id"), nullable=False)
-    #: Date of the sighting
-    date = Column(Date, nullable=False)
+    #: Date of the sighting. The database is shared between .NET and Python code and Entity Framework
+    #: creates a TEXT column in SQLite where data's written in the form YYYY-MM-DD HH:MM:SS. So, while
+    #: this field is the one that's persisted to the DB the intention is that it should be accessed via
+    #: the sighting_date property
+    date = Column(String, nullable=False)
     #: Number of individuals seen
     number = Column(Integer, default=0, nullable=False)
     #: Whether or not young were seen
@@ -41,3 +47,11 @@ class Sighting(Base):
                f"number={self.number!r}, " \
                f"withYoung={self.withYoung!r}, " \
                f"gender={self.gender!r})"
+
+    @property
+    def sighting_date(self):
+        return datetime.strptime(self.date, self.DATE_FORMAT).date()
+
+    @sighting_date.setter
+    def sighting_date(self, value):
+        self.date = value.strftime(self.DATE_FORMAT) if value else None

@@ -26,8 +26,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", rating.rating.scheme.name)
         self.assertEqual("Amber", rating.rating.name)
         self.assertEqual("United Kingdom", rating.region)
-        self.assertEqual(datetime.date(2015, 1, 1), rating.start)
-        self.assertEqual(datetime.date(2015, 12, 31), rating.end)
+        self.assertEqual(datetime.date(2015, 1, 1), rating.start_date)
+        self.assertEqual(datetime.date(2015, 12, 31), rating.end_date)
 
     def test_can_get_rating_by_id(self):
         with Session.begin() as session:
@@ -37,8 +37,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", rating.rating.scheme.name)
         self.assertEqual("Amber", rating.rating.name)
         self.assertEqual("United Kingdom", rating.region)
-        self.assertEqual(datetime.date(2015, 1, 1), rating.start)
-        self.assertEqual(datetime.date(2015, 12, 31), rating.end)
+        self.assertEqual(datetime.date(2015, 1, 1), rating.start_date)
+        self.assertEqual(datetime.date(2015, 12, 31), rating.end_date)
 
     def test_cannot_get_missing_rating_by_id(self):
         with self.assertRaises(ValueError):
@@ -51,8 +51,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", ratings[0].rating.scheme.name)
         self.assertEqual("Amber", ratings[0].rating.name)
         self.assertEqual("United Kingdom", ratings[0].region)
-        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start)
-        self.assertEqual(datetime.date(2015, 12, 31), ratings[0].end)
+        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start_date)
+        self.assertEqual(datetime.date(2015, 12, 31), ratings[0].end_date)
 
     def test_can_list_filter_ratings_by_scheme(self):
         scheme = create_status_scheme("A Scheme")
@@ -64,8 +64,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("A Scheme", ratings[0].rating.scheme.name)
         self.assertEqual("A Rating", ratings[0].rating.name)
         self.assertEqual("United Kingdom", ratings[0].region)
-        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start)
-        self.assertIsNone(ratings[0].end)
+        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start_date)
+        self.assertIsNone(ratings[0].end_date)
 
     def test_can_list_filter_ratings_by_species(self):
         species = create_species(self._category.id, "Bewick's Swan")
@@ -76,8 +76,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", ratings[0].rating.scheme.name)
         self.assertEqual("Amber", ratings[0].rating.name)
         self.assertEqual("United Kingdom", ratings[0].region)
-        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start)
-        self.assertIsNone(ratings[0].end)
+        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start_date)
+        self.assertIsNone(ratings[0].end_date)
 
     def test_can_list_filter_ratings_by_region(self):
         _ = create_species_status_rating(self._species.id, self._rating.id, "A Region", datetime.date(2015, 1, 1))
@@ -87,8 +87,8 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", ratings[0].rating.scheme.name)
         self.assertEqual("Amber", ratings[0].rating.name)
         self.assertEqual("A Region", ratings[0].region)
-        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start)
-        self.assertIsNone(ratings[0].end)
+        self.assertEqual(datetime.date(2015, 1, 1), ratings[0].start_date)
+        self.assertIsNone(ratings[0].end_date)
 
     def test_can_list_current_ratings_only(self):
         _ = create_species_status_rating(self._species.id, self._rating.id, "United Kingdom",
@@ -99,5 +99,5 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("BOCC4", ratings[0].rating.scheme.name)
         self.assertEqual("Amber", ratings[0].rating.name)
         self.assertEqual("United Kingdom", ratings[0].region)
-        self.assertEqual(datetime.date(2016, 1, 1), ratings[0].start)
-        self.assertIsNone(ratings[0].end)
+        self.assertEqual(datetime.date(2016, 1, 1), ratings[0].start_date)
+        self.assertIsNone(ratings[0].end_date)

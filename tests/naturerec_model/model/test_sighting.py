@@ -22,7 +22,7 @@ class TestSighting(unittest.TestCase):
         self.assertEqual("Birds",  sighting.species.category.name)
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
-        self.assertEqual(datetime.date(2021, 12, 14), sighting.date)
+        self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
