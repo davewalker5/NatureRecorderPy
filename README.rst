@@ -2,7 +2,7 @@
     :target: https://github.com/davewalker5/NatureRecorderPy/actions
     :alt: Build Status
 
-.. image:: https://codecov.io/gh/davewalker5/NatureRecorderPy/branch/main/graph/badge.svg?token=VMSQMP308C
+.. image:: https://codecov.io/gh/davewalker5/NatureRecorderPy/branch/main/graph/badge.svg?token=U86UFDVD5S
     :target: https://codecov.io/gh/davewalker5/NatureRecorderPy
     :alt: Coverage
 
