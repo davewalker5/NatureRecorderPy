@@ -1,0 +1,11 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+omit =
+    src/naturerec_model/__main__.py
+    src/naturerec_web/*
+
+[report]
+exclude_lines =
+    def __repr__
+    def _delete_db
