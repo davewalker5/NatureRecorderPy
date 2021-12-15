@@ -7,7 +7,8 @@ from src.naturerec_model.logic import create_status_scheme
 from src.naturerec_model.logic import create_status_rating
 from src.naturerec_model.logic import create_species_status_rating
 
-class TestStatusRating(unittest.TestCase):
+
+class TestSpeciesStatusRating(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._category = create_category("Birds")

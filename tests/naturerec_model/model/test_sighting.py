@@ -6,7 +6,8 @@ from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_location
 from src.naturerec_model.logic import create_sighting
 
-class TestCategory(unittest.TestCase):
+
+class TestSighting(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._category = create_category("Birds")

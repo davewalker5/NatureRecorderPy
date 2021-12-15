@@ -2,9 +2,8 @@
 Sightings business logic
 """
 
-from functools import singledispatch
 import sqlalchemy as db
-from sqlalchemy.exc import IntegrityError, NoResultFound
+from sqlalchemy.exc import IntegrityError
 from ..model import Session, Sighting
 
 

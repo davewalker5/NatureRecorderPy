@@ -3,6 +3,7 @@ from src.naturerec_model.model import create_database, Session, StatusScheme
 from src.naturerec_model.logic import create_status_scheme, get_status_scheme
 from src.naturerec_model.logic import create_status_rating
 
+
 class TestStatusRating(unittest.TestCase):
     def setUp(self) -> None:
         create_database()

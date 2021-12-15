@@ -3,6 +3,7 @@ from src.naturerec_model.model import create_database, Session, Species
 from src.naturerec_model.logic import create_category, get_category
 from src.naturerec_model.logic import create_species
 
+
 class TestSpecies(unittest.TestCase):
     def setUp(self) -> None:
         create_database()

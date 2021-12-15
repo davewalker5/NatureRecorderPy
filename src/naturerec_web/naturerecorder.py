@@ -9,9 +9,11 @@ to provide button and form element styling.
 import os
 from flask import Flask, render_template
 
+
 app = Flask("Nature Recorder",
             static_folder=os.path.join(os.path.dirname(__file__), "static"),
             template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+
 
 @app.route("/")
 def home():
