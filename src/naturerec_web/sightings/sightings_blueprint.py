@@ -2,6 +2,7 @@
 The sightings blueprint supplies view functions and templates for sighting management
 """
 
+import os
 import datetime
 from flask import Blueprint, render_template
 from naturerec_model.logic import list_sightings
@@ -17,11 +18,8 @@ def list_today():
 
     :return: The HTML for the sightings listing page
     """
-    today = datetime.datetime.today()
-    from_date = datetime.datetime(today.year, today.month, today.day, 0, 0, 0)
+    from_date = datetime.datetime.today().date()
     sightings = list_sightings(from_date=from_date)
-    print(f"Sightings from {from_date}")
-    print(sightings)
     return render_template("sightings/list.html",
                            sightings=sightings,
                            edit_enabled=True)

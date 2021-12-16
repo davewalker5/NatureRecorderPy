@@ -55,3 +55,12 @@ class Sighting(Base):
     @sighting_date.setter
     def sighting_date(self, value):
         self.date = value.strftime(self.DATE_FORMAT) if value else None
+
+    @property
+    def gender_name(self):
+        names = ["Unknown", "Male", "Female", "Both"]
+        return names[self.gender]
+
+    @property
+    def with_young_name(self):
+        return "Yes" if self.withYoung else "No"

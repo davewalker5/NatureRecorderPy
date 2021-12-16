@@ -25,7 +25,9 @@ class TestSighting(unittest.TestCase):
         self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
+        self.assertEqual("Unknown", sighting.gender_name)
         self.assertFalse(0, sighting.withYoung)
+        self.assertEqual("No", sighting.with_young_name)
 
     def test_can_create_sighting_for_males(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), 0,
@@ -33,6 +35,7 @@ class TestSighting(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.MALE, sighting.gender)
+            self.assertEqual("Male", sighting.gender_name)
 
     def test_can_create_sighting_for_females(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), 0,
@@ -40,6 +43,7 @@ class TestSighting(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.FEMALE, sighting.gender)
+            self.assertEqual("Female", sighting.gender_name)
 
     def test_can_create_sighting_for_both_genders(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), 0,
@@ -47,6 +51,15 @@ class TestSighting(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.BOTH, sighting.gender)
+            self.assertEqual("Both", sighting.gender_name)
+
+    def test_can_create_sighting_with_young(self):
+        sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), 0,
+                                      Gender.UNKNOWN, True).id
+        with Session.begin() as session:
+            sighting = session.query(Sighting).get(sighting_id)
+            self.assertTrue(sighting.withYoung)
+            self.assertEqual("Yes", sighting.with_young_name)
 
     def test_cannot_create_sighting_for_invalid_gender(self):
         with self.assertRaises(ValueError):
