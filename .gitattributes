@@ -1,2 +1,3 @@
 src/naturerec_web/static/* linguist-vendored
 src/naturerec_web/templates/* linguist-vendored
+src/naturerec_web/sightings/templates/sightings/* linguist-vendored
