@@ -1,0 +1,127 @@
+{% if sighting %}
+    {% set title = "Edit Sighting" %}
+    {% set submit_title = "Save Sighting" %}
+    {% set date = sighting.display_date %}
+    {% set location_id = sighting.locationId %}
+    {% set category_id = sighting.species.categoryId %}
+    {% set species_id = sighting.speciesId %}
+    {% set number = sighting.number %}
+    {% set current_gender = sighting.gender %}
+    {% set current_with_young = sighting.withYoung %}
+{% else %}
+    {% set title = "Add Sighting" %}
+    {% set submit_title = "Add Sighting" %}
+    {% set date = "" %}
+    {% set location_id = 0 %}
+    {% set category_id = 0 %}
+    {% set species_id = 0 %}
+    {% set number = "" %}
+    {% set current_gender = "" %}
+    {% set current_with_young = "" %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group">
+            <div class="form-group">
+                <label>Date</label>
+                <input class="form-control" name="date" pattern="[\d]{2}\/[\d]{2}\/[\d]{4}"
+                       placeholder="Sighting date DD/MM/YYYY" value="{{ date }}" required>
+            </div>
+            <label>Location</label>
+            <select class="form-control" name="location" required>
+                <option value="">Please select ...</option>
+                {% for location in locations %}
+                    <option value="{{ location.id }}" {% if location.id == location_id %}selected{% endif %}>
+                        {{ location.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <select class="form-control" name="category" id="category" required>
+                <option value="">Please select ...</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Species</label>
+            <div name="species_selector" id="species_selector">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Number</label>
+            <input class="form-control" name="number" placeholder="Number of individuals sighted"
+                   value="{{ number }}" required>
+        </div>
+        <div class="form-group">
+            <label>Gender</label>
+            <select class="form-control" name="gender" required>
+                <option value="">Please select ...</option>
+                {% for gender in genders %}
+                    <option value="{{ gender }}" {% if gender == current_gender %}selected{% endif %}>
+                        {{ genders[gender] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>With Young</label>
+            <select class="form-control" name="with_young" required>
+                <option value="">Please select ...</option>
+                {% for option in with_young %}
+                    <option value="{{ option }}" {% if option == current_with_young %}selected{% endif %}>
+                        {{ with_young[option] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="/sightings/list">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        function list_species(category_id, selected_species_id) {
+            $.ajax({
+                url: "/sightings/list_species/" + category_id + "/" + selected_species_id,
+                type: "GET",
+                cache: false,
+                dataType: "html",
+                success: function(data, textStatus, jqXHR)  {
+                    $("#species_selector").html(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $("#species_selector").html("Error getting species list: " + textStatus);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // When the page loads, update the species list for the selected category and
+            // select the current species
+            list_species({{ category_id }}, {{ species_id }});
+
+            // When the category selection changes, update the species list
+            $("#category").change(function () {
+                var category_id = $("#category").val();
+                list_species(category_id, 0);
+            });
+        })
+    </script>
+{% endblock %}

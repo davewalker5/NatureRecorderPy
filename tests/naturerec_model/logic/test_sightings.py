@@ -4,7 +4,7 @@ from src.naturerec_model.model import create_database, Session, Sighting, Gender
 from src.naturerec_model.logic import create_category, get_category
 from src.naturerec_model.logic import create_species, get_species
 from src.naturerec_model.logic import create_location, get_location
-from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings
+from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings, update_sighting
 
 
 class TestSightings(unittest.TestCase):
@@ -32,6 +32,164 @@ class TestSightings(unittest.TestCase):
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
+
+    def test_can_update_sighting_date(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), 0,
+                        Gender.UNKNOWN, False)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 15), updated.sighting_date)
+        self.assertEqual(0, updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertFalse(0, updated.withYoung)
+
+    def test_can_update_sighting_location(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
+        update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+                        False)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Brock Hill",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertEqual(0, updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertFalse(0, updated.withYoung)
+
+    def test_can_update_sighting_species(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        category_id = get_category("Birds").id
+        species = create_species(category_id, "Blackbird")
+        update_sighting(sighting.id, sighting.location.id, species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+                        False)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Blackbird",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertEqual(0, updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertFalse(0, updated.withYoung)
+
+    def test_can_update_sighting_number(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 10,
+                        Gender.UNKNOWN, False)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertEqual(10, updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertFalse(0, updated.withYoung)
+
+    def test_can_update_sighting_gender(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 0,
+                        Gender.MALE, False)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertEqual(0, updated.number)
+        self.assertEqual(Gender.MALE, updated.gender)
+        self.assertFalse(0, updated.withYoung)
+
+    def test_can_update_sighting_with_young(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 0,
+                        Gender.UNKNOWN, True)
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertEqual(0, updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertTrue(1, updated.withYoung)
+
+    def test_cannot_update_sighting_to_create_duplicate(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        new_sighting = create_sighting(sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), 0,
+                                       Gender.UNKNOWN, False)
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(new_sighting.id, new_sighting.locationId, new_sighting.speciesId,
+                                datetime.date(2021, 12, 14), 0, Gender.UNKNOWN, False)
+
+    def test_cannot_update_missing_sighting(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(-1, sighting.locationId, sighting.speciesId, datetime.date(2021, 12, 15), 0,
+                                Gender.UNKNOWN, False)
+
+    def test_cannot_update_sighting_for_missing_location(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(sighting.id, -1, sighting.species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+                                False)
+
+    def test_cannot_update_sighting_for_missing_species(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(sighting.id, sighting.location.id, -1, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+                                False)
+
+    def test_cannot_update_sighting_with_invalid_number(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
+                                -1, Gender.UNKNOWN, False)
+
+    def test_cannot_update_sighting_with_invalid_gender(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
+                                0, 10, False)
+
+    def test_cannot_update_sighting_with_invalid_with_young(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        with self.assertRaises(ValueError):
+            _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
+                                0, Gender.UNKNOWN, -1)
 
     def test_can_get_sighting_by_id(self):
         with Session.begin() as session:
