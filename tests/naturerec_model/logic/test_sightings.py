@@ -249,3 +249,12 @@ class TestSightings(unittest.TestCase):
         self.assertEqual(1, len(sightings))
         self.assertEqual("Black-Headed Gull", sightings[0].species.name)
         self.assertEqual("Radley Lakes", sightings[0].location.name)
+
+    def test_can_filter_sightings_by_multiple_criteria(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+        sightings = list_sightings(from_date=datetime.date(2021, 12, 14),
+                                   to_date=None,
+                                   location_id=sighting.locationId,
+                                   species_id=sighting.speciesId)
+        self.assertEqual(1, len(sightings))
