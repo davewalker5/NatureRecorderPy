@@ -23,6 +23,7 @@ class TestSighting(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
+        self.assertEqual("14/12/2021", sighting.display_date)
         self.assertEqual(0, sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertEqual("Unknown", sighting.gender_name)
@@ -77,3 +78,16 @@ class TestSighting(unittest.TestCase):
     def test_cannot_create_sighting_for_missing_species(self):
         with self.assertRaises(ValueError):
             _ = create_sighting(self._location.id, -1, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN, False)
+
+    def test_cannot_create_sighting_with_invalid_number(self):
+        with self.assertRaises(ValueError):
+            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), -1, Gender.UNKNOWN,
+                                False)
+
+    def test_cannot_create_sighting_with_invalid_gender(self):
+        with self.assertRaises(ValueError):
+            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), 0, 10, False)
+
+    def test_cannot_create_sighting_with_invalid_with_young(self):
+        with self.assertRaises(ValueError):
+            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), 0, 10, -1)
