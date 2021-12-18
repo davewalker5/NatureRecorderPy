@@ -7,6 +7,26 @@ from sqlalchemy.exc import IntegrityError
 from ..model import Session, Sighting
 
 
+def _check_for_existing_records(session, location_id, species_id, date):
+    """
+    Return the number of existing records with the specified location, species and date
+
+    :param session: SQLAlchemy session on which to perform the query
+    :param location_id: ID for the location to match
+    :param species_id: ID for the species to match
+    :param date: Sighting date to match
+    :returns: A collection of sighting IDs for the matching records
+    """
+    formatted_date_string = date.strftime(Sighting.DATE_FORMAT)
+    sightings = session.query(Sighting) \
+        .filter(Sighting.locationId == location_id,
+                Sighting.speciesId == species_id,
+                Sighting.date == formatted_date_string) \
+        .all()
+
+    return [sighting.id for sighting in sightings]
+
+
 def create_sighting(location_id, species_id, date, number, gender, with_young):
     """
     Create a new sighting
@@ -23,13 +43,7 @@ def create_sighting(location_id, species_id, date, number, gender, with_young):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            formatted_date_string = date.strftime(Sighting.DATE_FORMAT)
-            existing = session.query(Sighting)\
-                .filter(Sighting.locationId == location_id,
-                        Sighting.speciesId == species_id,
-                        Sighting.date == formatted_date_string)\
-                .all()
-            if len(existing):
+            if len(_check_for_existing_records(session, location_id, species_id, date)):
                 raise ValueError("Duplicate sighting found")
 
             sighting = Sighting(locationId=location_id,
@@ -38,6 +52,51 @@ def create_sighting(location_id, species_id, date, number, gender, with_young):
                                 number=number,
                                 gender=gender,
                                 withYoung=with_young)
+            session.add(sighting)
+    except IntegrityError as e:
+        raise ValueError("Invalid sighting properties") from e
+
+    return sighting
+
+
+def update_sighting(sighting_id, location_id, species_id, date, number, gender, with_young):
+    """
+    Update an existing sighting
+
+    :param sighting_id: ID for the sighting to update
+    :param location_id: ID for the location where the sighting was made
+    :param species_id: ID for the species sighted
+    :param date: Date of the sighting
+    :param number: Number of individuals seen
+    :param gender: Gender of the individuals seen
+    :param with_young: Whether or not young were seen
+    :return: An instance of the Sighting class for the updated record
+    """
+    try:
+        with Session.begin() as session:
+            # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
+            # does not have that constraint so explicitly check for duplicates before updating a record. First, get
+            # all records matching the essential criteria
+            sighting_ids = _check_for_existing_records(session, location_id, species_id, date)
+
+            # Remove the current sighting from the list, if it's there
+            if sighting_id in sighting_ids:
+                sighting_ids.remove(sighting_id)
+
+            # If there's anything left, this is going to be a duplicate
+            if len(sighting_ids):
+                raise ValueError("Duplicate sighting found")
+
+            sighting = session.query(Sighting).get(sighting_id)
+            if sighting is None:
+                raise ValueError("Sighting not found")
+
+            sighting.sighting_date = date
+            sighting.locationId = location_id
+            sighting.speciesId = species_id
+            sighting.number = number
+            sighting.gender = gender
+            sighting.withYoung = with_young
             session.add(sighting)
     except IntegrityError as e:
         raise ValueError("Invalid sighting properties") from e

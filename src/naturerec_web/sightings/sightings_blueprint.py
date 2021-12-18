@@ -4,7 +4,7 @@ The sightings blueprint supplies view functions and templates for sighting manag
 
 import datetime
 from flask import Blueprint, render_template, request, redirect
-from naturerec_model.logic import list_sightings, get_sighting, create_sighting
+from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
@@ -69,14 +69,20 @@ def edit(sighting_id):
     Serve the page to add new sighting or edit an existing one and handle the appropriate action
     when the form is submitted
 
-    :param sighting_id: ID for an sighting to edit or None to create a new sighting
+    :param sighting_id: ID for a sighting to edit or None to create a new sighting
     :return: The HTML for the sighting entry page or a response object redirecting to the sighting list page
     """
     if request.method == "POST":
         try:
             sighting_date = datetime.datetime.strptime(request.form["date"], "%d/%m/%Y").date()
             if sighting_id:
-                pass
+                _ = update_sighting(sighting_id,
+                                    request.form["location"],
+                                    request.form["species"],
+                                    sighting_date,
+                                    request.form["number"],
+                                    request.form["gender"],
+                                    request.form["with_young"])
             else:
                 _ = create_sighting(request.form["location"],
                                     request.form["species"],
