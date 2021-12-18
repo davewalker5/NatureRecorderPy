@@ -21,6 +21,17 @@ def create_sighting(location_id, species_id, date, number, gender, with_young):
     """
     try:
         with Session.begin() as session:
+            # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
+            # does not have that constraint so explicitly check for duplicates before adding a new record
+            formatted_date_string = date.strftime(Sighting.DATE_FORMAT)
+            existing = session.query(Sighting)\
+                .filter(Sighting.locationId == location_id,
+                        Sighting.speciesId == species_id,
+                        Sighting.date == formatted_date_string)\
+                .all()
+            if len(existing):
+                raise ValueError("Duplicate sighting found")
+
             sighting = Sighting(locationId=location_id,
                                 speciesId=species_id,
                                 sighting_date=date,
