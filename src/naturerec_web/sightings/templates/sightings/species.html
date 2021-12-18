@@ -1,0 +1,8 @@
+<select class="form-control" name="species" required {% if species | length == 0 %}readonly{% endif %}>
+    <option value="">Please select ...</option>
+    {% for value in species %}
+        <option value="{{ value.id }}" {% if value.id == species_id %}selected{% endif %}>
+            {{ value.name }}
+        </option>
+    {% endfor %}
+</select>

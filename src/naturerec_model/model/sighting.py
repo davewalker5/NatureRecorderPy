@@ -36,8 +36,10 @@ class Sighting(Base):
     #: Related species instance
     species = relationship("Species", lazy="joined")
 
-    __table_args__ = (UniqueConstraint('locationId', 'speciesId', 'date', name='SIGHTING_LOCATION_SPECIES_UX'),
-                      CheckConstraint(gender.in_([Gender.UNKNOWN, Gender.MALE, Gender.FEMALE, Gender.BOTH])))
+    __table_args__ = (UniqueConstraint('locationId', 'speciesId', 'date', name='SIGHTING_LOCATION_SPECIES_DATE_UX'),
+                      CheckConstraint(gender.in_([Gender.UNKNOWN, Gender.MALE, Gender.FEMALE, Gender.BOTH])),
+                      CheckConstraint(withYoung.in_([0, 1])),
+                      CheckConstraint("number >= 0"))
 
     def __repr__(self):
         return f"{type(self).__name__}(Id={self.id!r}, " \
@@ -57,9 +59,12 @@ class Sighting(Base):
         self.date = value.strftime(self.DATE_FORMAT) if value else None
 
     @property
+    def display_date(self):
+        return self.sighting_date.strftime("%d/%m/%Y")
+
+    @property
     def gender_name(self):
-        names = ["Unknown", "Male", "Female", "Both"]
-        return names[self.gender]
+        return Gender.gender_name(self.gender)
 
     @property
     def with_young_name(self):
