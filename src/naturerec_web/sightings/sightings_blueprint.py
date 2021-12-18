@@ -33,18 +33,89 @@ def _render_sighting_editing_page(sighting_id, error):
                            error=error)
 
 
-@sightings_bp.route("/list")
-def list_today():
+def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, category_id=None, species_id=None):
+    """
+    Helper to render the sightings list page
+
+    :param from_date: Include sightings on or after this date
+    :param to_date: Include sightings up to this date
+    :param location_id: Include sightings at this location
+    :param category_id: Species category for the selected species
+    :param species_id: Include sightings for this species
+    :return: The HTML for the rendered sightings list page
+    """
+    # If there aren't any filtering criteria, set the from date to today to prevent the whole database being
+    # returned. Note that category isn't a direct filtering criteria - it's used in selection of the species
+    if from_date is None and to_date is None and location_id is None and species_id is None:
+        from_date = datetime.datetime.today().date()
+
+    # Find matching sightings
+    sightings = list_sightings(from_date=from_date,
+                               to_date=to_date,
+                               location_id=location_id,
+                               species_id=species_id)
+
+    # Serve the page
+    return render_template("sightings/list.html",
+                           from_date=from_date.strftime("%d/%m/%Y") if from_date else "",
+                           to_date=to_date.strftime("%d/%m/%Y") if to_date else "",
+                           location_id=location_id,
+                           category_id=category_id,
+                           species_id=species_id,
+                           locations=list_locations(),
+                           categories=list_categories(),
+                           sightings=sightings,
+                           edit_enabled=True)
+
+
+def _get_filter_value(key):
+    """
+    Retrieve a named value from the POSTed filtering form
+
+    :param key: Value key
+    :return: Value or None if not specified
+    """
+    value = request.form[key]
+    return value if value else None
+
+
+def _get_filter_int(key):
+    """
+    Retrieve a named integer value from the POSTed filtering form
+
+    :param key: Value key
+    :return: Value or None if not specified
+    """
+    value = _get_filter_value(key)
+    return int(value) if value else None
+
+
+def _get_filter_date(key):
+    """
+    Retrieve a named date value from the POSTed filtering form
+
+    :param key: Value key
+    :return: Value or None if not specified
+    """
+    date_string = _get_filter_value(key)
+    return datetime.datetime.strptime(date_string, "%d/%m/%Y").date() if date_string else None
+
+
+@sightings_bp.route("/list", methods=["GET", "POST"])
+def list_filtered_sightings():
     """
     Show the page that lists today's sightings and is the entry point for adding new ones
 
     :return: The HTML for the sightings listing page
     """
-    from_date = datetime.datetime.today().date()
-    sightings = list_sightings(from_date=from_date)
-    return render_template("sightings/list.html",
-                           sightings=sightings,
-                           edit_enabled=True)
+    if request.method == "POST":
+        return _render_sightings_list_page(_get_filter_date("from_date"),
+                                           _get_filter_date("to_date"),
+                                           _get_filter_int("location"),
+                                           _get_filter_int("category"),
+                                           _get_filter_int("species"))
+    else:
+        return _render_sightings_list_page()
 
 
 @sightings_bp.route("/list_species/<int:category_id>/<int:selected_species_id>")

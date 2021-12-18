@@ -1,16 +1,33 @@
 {% extends "layout.html" %}
-{% block title %}Today's Sightings{% endblock %}
+{% block title %}Sightings{% endblock %}
 
 {% block content %}
-    <h1>Today's Sightings</h1>
-    {% if sightings | length > 0 %}
-        {% include "sightings/sightings.html" with context %}
-    {% else %}
-        <span>There are no sightings in the database for today</span>
-    {% endif %}
-    <div class="button-bar">
-        <button type="button" class="btn btn-primary">
-            <a href="{{ url_for('sightings.edit') }}">Add Sighting</a>
-        </button>
-    </div>
+    <form method="post">
+        {% include "sightings/filter_selector.html" with context %}
+        {% if sightings | length > 0 %}
+            {% include "sightings/sightings.html" with context %}
+        {% else %}
+            <span>There are no sightings in the database matching the specified criteria</span>
+        {% endif %}
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/category-selection.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialise the category/species linked select lists
+            initialise_species_selection("{{ category_id }}", "{{ species_id }}");
+
+            // Wire up the reset filters button
+            $("#reset").click(function() {
+                $("#from_date").val("");
+                $("#to_date").val("");
+                $("#location").val("");
+                $("#species").val("");
+                $("#category").val("");
+                document.forms[0].submit();
+            });
+        })
+    </script>
 {% endblock %}
