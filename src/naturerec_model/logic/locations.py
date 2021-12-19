@@ -8,6 +8,18 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Location
 
 
+def _check_for_existing_records(session, name):
+    """
+    Return the IDs for existing records with the specified name
+
+    :param session: SQLAlchemy session on which to perform the query
+    :param name: Name for the location to match
+    :returns: A collection of location IDs for the matching records
+    """
+    locations = session.query(Location).filter(Location.name == name).all()
+    return [location.id for location in locations]
+
+
 def create_location(name, county, country, address=None, city=None, postcode=None, latitude=None, longitude=None):
     """
     Create a new location
@@ -24,6 +36,11 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
     """
     try:
         with Session.begin() as session:
+            # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
+            # does not have that constraint so explicitly check for duplicates before adding a new record
+            if len(_check_for_existing_records(session, name.strip())):
+                raise ValueError("Duplicate location found")
+
             location = Location(name=name.strip() if name else None,
                                 address=address.strip() if address else None,
                                 city=city.strip() if city else None,

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Locations{% endblock %}
+
+{% block content %}
+    <h1>Locations</h1>
+    {% if locations | length > 0 %}
+        {% include "locations/locations.html" with context %}
+    {% else %}
+        <span>There are no locations in the database</span>
+    {% endif %}
+    <div class="button-bar">
+        <button type="button" class="btn btn-primary">
+            <a href="{{ url_for('locations.edit') }}">Add Location</a>
+        </button>
+    </div>
+{% endblock %}

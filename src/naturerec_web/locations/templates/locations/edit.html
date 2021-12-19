@@ -1,0 +1,79 @@
+{% if location %}
+    {% set title = "Edit Location" %}
+    {% set submit_title = "Save Location" %}
+    {% set name = location.name %}
+    {% set address = location.address %}
+    {% set city = location.city %}
+    {% set county = location.county %}
+    {% set postcode = location.postcode %}
+    {% set country = location.country %}
+    {% set latitude = location.latitude %}
+    {% set longitude = location.longitude %}
+{% else %}
+    {% set title = "Add Location" %}
+    {% set submit_title = "Add Location" %}
+    {% set name = "" %}
+    {% set address = "" %}
+    {% set city = "" %}
+    {% set county = "" %}
+    {% set postcode = "" %}
+    {% set country = "" %}
+    {% set latitude = "" %}
+    {% set longitude = "" %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group required">
+            <label class="control-label">Name</label>
+            <input class="form-control" name="name" placeholder="Location name e.g. University Parks"
+                   value="{{ name }}" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Address</label>
+            <input class="form-control" name="address" placeholder="Street address e.g. South Parks Road"
+                   value="{{ address }}">
+        </div>
+        <div class="form-group">
+            <label class="control-label">City</label>
+            <input class="form-control" name="city" placeholder="City e.g. Oxford"
+                   value="{{ city }}">
+        </div>
+        <div class="form-group required">
+            <label class="control-label">County</label>
+            <input class="form-control" name="county" placeholder="County e.g. Oxfordshire"
+                   value="{{ county }}" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label">City</label>
+            <input class="form-control" name="postcode" placeholder="Postcode e.g. OX1 3RF"
+                   value="{{ postcode }}">
+        </div>
+        <div class="form-group required">
+            <label class="control-label">Country</label>
+            <input class="form-control" name="country" placeholder="Country e.g. United Kingdom"
+                   value="{{ country }}" required>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Latitude</label>
+            <input class="form-control" name="latitude" placeholder="Latitude e.g. 51.75948"
+                   value="{{ latitude }}">
+        </div>
+        <div class="form-group">
+            <label class="control-label">Longitude</label>
+            <input class="form-control" name="longitude" placeholder="Longitude e.g. -1.25053"
+                   value="{{ longitude }}">
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('locations.list_all') }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
