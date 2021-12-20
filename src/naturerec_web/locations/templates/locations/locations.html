@@ -2,6 +2,13 @@
     <table class="striped">
         <thead>
             <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>County</th>
+            <th>Postcode</th>
+            <th>Country</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
             {% if edit_enabled %}
                 <th></th>
                 <th></th>
@@ -11,6 +18,13 @@
             {% for location in locations %}
                 <tr>
                     <td>{{ location.name }}</td>
+                    <td>{{ location.address }}</td>
+                    <td>{{ location.city }}</td>
+                    <td>{{ location.county }}</td>
+                    <td>{{ location.postcode }}</td>
+                    <td>{{ location.country }}</td>
+                    <td>{{ location.latitude }}</td>
+                    <td>{{ location.longitude }}</td>
                     {% if edit_enabled %}
                         <td>
                             <a href="{{ url_for('locations.edit', location_id=location.id) }}">

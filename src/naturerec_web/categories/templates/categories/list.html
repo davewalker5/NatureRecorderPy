@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+    <h1>Categories</h1>
+    {% if categories | length > 0 %}
+        {% include "categories/categories.html" with context %}
+    {% else %}
+        <span>There are no categories in the database</span>
+    {% endif %}
+    <div class="button-bar">
+        <button type="button" class="btn btn-primary">
+            <a href="#">Add Category</a>
+        </button>
+    </div>
+{% endblock %}
