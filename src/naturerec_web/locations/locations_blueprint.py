@@ -3,7 +3,7 @@ The locations blueprint supplies view functions and templates for location manag
 """
 
 from flask import Blueprint, render_template, request, redirect
-from naturerec_model.logic import list_locations, get_location, create_location
+from naturerec_model.logic import list_locations, get_location, create_location, update_location
 
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
@@ -59,7 +59,15 @@ def edit(location_id):
     if request.method == "POST":
         try:
             if location_id:
-                pass
+                _ = update_location(location_id,
+                                    request.form["name"],
+                                    request.form["county"],
+                                    request.form["country"],
+                                    request.form["address"],
+                                    request.form["city"],
+                                    request.form["postcode"],
+                                    _get_posted_float("latitude"),
+                                    _get_posted_float("longitude"))
             else:
                 _ = create_location(request.form["name"],
                                     request.form["county"],

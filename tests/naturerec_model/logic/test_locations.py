@@ -1,6 +1,6 @@
 import unittest
 from src.naturerec_model.model import create_database, Session, Location
-from src.naturerec_model.logic import create_location, get_location, list_locations
+from src.naturerec_model.logic import create_location, get_location, list_locations, update_location
 
 
 class TestLocations(unittest.TestCase):
@@ -32,6 +32,89 @@ class TestLocations(unittest.TestCase):
         self.assertEqual("United Kingdom", location.country)
         self.assertEqual(51.706694, location.latitude)
         self.assertEqual(-1.324120, location.longitude)
+
+    def test_can_update_location(self):
+        with Session.begin() as session:
+            location_id = session.query(Location).one().id
+
+        update_location(location_id, "Lashford Lane Fen", "A County", "UK", "An Address", "A City", "AB1 1AB", 51.123,
+                        -1.123)
+        updated = get_location(location_id)
+
+        self.assertEqual("Lashford Lane Fen", updated.name)
+        self.assertEqual("An Address", updated.address)
+        self.assertEqual("A City", updated.city)
+        self.assertEqual("A County", updated.county)
+        self.assertEqual("AB1 1AB", updated.postcode)
+        self.assertEqual("UK", updated.country)
+        self.assertEqual(51.123, updated.latitude)
+        self.assertEqual(-1.123, updated.longitude)
+
+    def test_can_update_location_name(self):
+        with Session.begin() as session:
+            location_id = session.query(Location).one().id
+
+        update_location(location_id, "Some Location", "Oxfordshire", "United Kingdom")
+        updated = get_location(location_id)
+
+        self.assertEqual("Some Location", updated.name)
+        self.assertEqual("Oxfordshire", updated.county)
+        self.assertEqual("United Kingdom", updated.country)
+
+    def test_cannot_update_location_to_create_duplicate(self):
+        TestLocations.create_additional_locations()
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).filter(Location.name == "Lashford Lane Fen").one().id
+            _ = update_location(location_id, "Brock Hill", "A County", "UK")
+
+    def test_cannot_update_missing_location(self):
+        with self.assertRaises(ValueError):
+            _ = update_location(-1, "Some Location", "A County", "UK")
+
+    def test_cannot_update_location_with_none_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, None, "A County", "UK")
+
+    def test_cannot_update_location_with_blank_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "", "A County", "UK")
+
+    def test_cannot_update_location_with_whitespace_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "    ", "A County", "UK")
+
+    def test_cannot_update_location_with_none_county(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", None, "UK")
+
+    def test_cannot_update_location_with_blank_county(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", "", "UK")
+
+    def test_cannot_update_location_with_whitespace_county(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", "      ", "UK")
+
+    def test_cannot_update_location_with_none_country(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", "A County", None)
+
+    def test_cannot_update_location_with_blank_country(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", "A County", "")
+
+    def test_cannot_update_location_with_whitespace_country(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            location_id = session.query(Location).one().id
+            _ = update_location(location_id, "Some Location", "A County", "        ")
 
     def test_can_get_location_by_name(self):
         location = get_location("Lashford Lane Fen")

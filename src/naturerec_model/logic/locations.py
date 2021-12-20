@@ -38,7 +38,7 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, name.strip())):
+            if len(_check_for_existing_records(session, name.strip() if name else None)):
                 raise ValueError("Duplicate location found")
 
             location = Location(name=name.strip() if name else None,
@@ -50,6 +50,54 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
                                 latitude=latitude,
                                 longitude=longitude)
             session.add(location)
+    except IntegrityError as e:
+        raise ValueError("Invalid location properties or duplicate name") from e
+
+    return location
+
+
+def update_location(location_id, name, county, country, address=None, city=None, postcode=None, latitude=None,
+                    longitude=None):
+    """
+    Update an existing new location
+
+    :param location_id: ID for the location  to update
+    :param name: Location name
+    :param county: County
+    :param country: Country
+    :param address: Address or None
+    :param city: City or None
+    :param postcode: Postcode or None
+    :param latitude: Latitude or None
+    :param longitude: Longitude or None
+    :return: An instance of the Location class for the created record
+    """
+    try:
+        with Session.begin() as session:
+            # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
+            # does not have that constraint so explicitly check for duplicates before adding a new record
+            location_ids = _check_for_existing_records(session, name)
+
+            # Remove the current location from the list, if it's there
+            if location_id in location_ids:
+                location_ids.remove(location_id)
+
+            # If there's anything left, this is going to be a duplicate
+            if len(location_ids):
+                raise ValueError("Duplicate location found")
+
+            location = session.query(Location).get(location_id)
+            if location is None:
+                raise ValueError("Location not found")
+
+            location.name=name.strip() if name else None
+            location.address=address.strip() if address else None
+            location.city=city.strip() if city else None
+            location.county=county.strip() if county else None
+            location.postcode=postcode.strip() if postcode else None
+            location.country=country.strip() if country else None
+            location.latitude=latitude
+            location.longitude=longitude
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
 
