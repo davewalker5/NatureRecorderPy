@@ -9,7 +9,7 @@ from ..model import Session, Sighting
 
 def _check_for_existing_records(session, location_id, species_id, date):
     """
-    Return the number of existing records with the specified location, species and date
+    Return the IDs of existing records with the specified location, species and date
 
     :param session: SQLAlchemy session on which to perform the query
     :param location_id: ID for the location to match

@@ -1,0 +1,30 @@
+{% if locations | length > 0 %}
+    <table class="striped">
+        <thead>
+            <th>Name</th>
+            {% if edit_enabled %}
+                <th></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.name }}</td>
+                    {% if edit_enabled %}
+                        <td>
+                            <a href="{{ url_for('locations.edit', location_id=location.id) }}">
+                                <i class="fa fa-edit" title="Edit Location"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-trash" title="Delete Location"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
