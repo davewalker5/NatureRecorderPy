@@ -1,0 +1,32 @@
+{% if species | length > 0 %}
+    <table class="striped">
+        <thead>
+            <th>Category</th>
+            <th>Name</th>
+            {% if edit_enabled %}
+                <th></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for value in species %}
+                <tr>
+                    <td>{{ value.category.name }}</td>
+                    <td>{{ value.name }}</td>
+                    {% if edit_enabled %}
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-edit" title="Edit Species"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-trash" title="Delete Species"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

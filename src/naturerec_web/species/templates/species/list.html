@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Species{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% include "species/category_selector.html" with context %}
+        {% if species | length > 0 %}
+            {% include "species/species.html" with context %}
+        {% else %}
+            <span>There are no species in the database for the specified category</span>
+        {% endif %}
+    </form>
+{% endblock %}

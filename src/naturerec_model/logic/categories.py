@@ -91,7 +91,7 @@ def get_category(_):
     :return: Instance of the category
     :raises ValueError: If the category doesn't exist
     """
-    raise TypeError("Invalid parameter type for get_airline")
+    raise TypeError("Invalid parameter type")
 
 
 @get_category.register(str)

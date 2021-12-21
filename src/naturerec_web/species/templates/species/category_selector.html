@@ -1,0 +1,19 @@
+<div class="filter-criteria">
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="category" id="category">
+            <option value="">Please select ...</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="button-bar">
+        <button type="submit" value="filter" class="btn btn-light">List Species</button>
+        <button type="button" class="btn btn-primary">
+            <a href="#">Add Species</a>
+        </button>
+    </div>
+</div>
