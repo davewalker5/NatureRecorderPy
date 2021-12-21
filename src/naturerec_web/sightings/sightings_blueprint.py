@@ -5,20 +5,21 @@ The sightings blueprint supplies view functions and templates for sighting manag
 import datetime
 from flask import Blueprint, render_template, request, redirect, session
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
-from naturerec_model.logic import list_locations
+from naturerec_model.logic import list_locations, get_location
 from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species
+from naturerec_model.logic import list_species, get_species
 from naturerec_model.model import Gender
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
 
 
-def _render_sighting_editing_page(sighting_id, error):
+def _render_sighting_editing_page(sighting_id, message, error):
     """
     Helper to render the sighting editing page
 
     :param sighting_id: ID for the sighting to edit
-    :param error: Error message to display on the page or None
+    :param message: Message to display on the page or None
+    :param error: Error to display on the page or None
     :return: The rendered sighting editing template
     """
     locations = list_locations()
@@ -29,20 +30,23 @@ def _render_sighting_editing_page(sighting_id, error):
     # properties in session
     if sighting:
         location_id = sighting.locationId
+        category_id = sighting.species.categoryId
         sighting_date = sighting.sighting_date.strftime("%d/%m/%Y")
     else:
         location_id = int(session["location_id"]) if "location_id" in session else 0
+        category_id = int(session["category_id"]) if "category_id" in session else 0
         sighting_date = session["sighting_date"] if "sighting_date" in session else ""
 
-    print(f"LOCATION ID = {location_id}")
     return render_template("sightings/edit.html",
                            locations=locations,
                            categories=categories,
                            sighting=sighting,
                            location_id=location_id,
+                           category_id=category_id,
                            sighting_date=sighting_date,
                            genders=Gender.gender_map(),
                            with_young={1: "Yes", 0: "No"},
+                           message=message,
                            error=error)
 
 
@@ -167,6 +171,10 @@ def edit(sighting_id):
             location_id = request.form["location"]
             session["location_id"] = location_id
 
+            # Get the selected category and put it into session
+            category_id = request.form["category"]
+            session["category_id"] = category_id
+
             if sighting_id:
                 _ = update_sighting(sighting_id,
                                     location_id,
@@ -175,15 +183,24 @@ def edit(sighting_id):
                                     request.form["number"],
                                     request.form["gender"],
                                     request.form["with_young"])
+                sighting = get_sighting(sighting_id)
             else:
-                _ = create_sighting(location_id,
-                                    request.form["species"],
-                                    sighting_date,
-                                    request.form["number"],
-                                    request.form["gender"],
-                                    request.form["with_young"])
-            return redirect("/sightings/list")
+                created_id = create_sighting(location_id,
+                                              request.form["species"],
+                                              sighting_date,
+                                              request.form["number"],
+                                              request.form["gender"],
+                                              request.form["with_young"]).id
+                sighting = get_sighting(created_id)
+
+            # Construct the confirmation message
+            action = "Updated" if sighting_id else "Added"
+            message = f"{action} sighting of {sighting.species.name} " \
+                      f"at {sighting.location.name} " \
+                      f"on {sighting.display_date}"
+
+            return _render_sighting_editing_page(sighting_id, message, None)
         except ValueError as e:
-            return _render_sighting_editing_page(sighting_id, e)
+            return _render_sighting_editing_page(sighting_id, None, e)
     else:
-        return _render_sighting_editing_page(sighting_id, None)
+        return _render_sighting_editing_page(sighting_id, None, None)

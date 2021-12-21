@@ -1,7 +1,6 @@
 {% if sighting %}
     {% set title = "Edit Sighting" %}
     {% set submit_title = "Save Sighting" %}
-    {% set category_id = sighting.species.categoryId %}
     {% set species_id = sighting.speciesId %}
     {% set number = sighting.number %}
     {% set current_gender = sighting.gender %}
@@ -9,7 +8,6 @@
 {% else %}
     {% set title = "Add Sighting" %}
     {% set submit_title = "Add Sighting" %}
-    {% set category_id = 0 %}
     {% set species_id = 0 %}
     {% set number = "" %}
     {% set current_gender = "" %}
@@ -23,6 +21,7 @@
 
 {% block content %}
     <h1>{{ title }}</h1>
+    {% include "message.html" with context %}
     {% include "error.html" with context %}
     <form method="post">
         <div class="form-group">

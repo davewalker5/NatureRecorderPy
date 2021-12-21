@@ -152,9 +152,17 @@ table.instructions td {
 div.error {
     margin-bottom: 10px;
     padding: 5px;
-    border: 1px solid red;
+    border: 2px solid red;
     background: pink;
     color: red;
+}
+
+div.message {
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 2px solid #007316;
+    background: #6bdb81;
+    color: #007316;
 }
 
 /* --- Reporting and filtering sightings ----------------------------------- */
