@@ -4,7 +4,7 @@ The species blueprint supplies view functions and templates for species manageme
 
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species, get_species, create_species
+from naturerec_model.logic import list_species, get_species, create_species, update_species
 
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -21,6 +21,7 @@ def _render_species_editing_page(species_id, error):
     species = get_species(species_id) if species_id else None
     return render_template("species/edit.html",
                            categories=list_categories(),
+                           category_id=species.categoryId if species else None,
                            species=species,
                            error=error)
 
@@ -35,6 +36,7 @@ def _render_species_list_page(category_id=None):
     species = list_species(category_id) if category_id else []
     return render_template("species/list.html",
                            categories=list_categories(),
+                           category_id=category_id,
                            species=species,
                            edit_enabled=True)
 
@@ -76,7 +78,7 @@ def edit(species_id):
     if request.method == "POST":
         try:
             if species_id:
-                pass
+                _ = update_species(species_id, _get_posted_int("category"), request.form["name"])
             else:
                 _ = create_species(_get_posted_int("category"), request.form["name"])
             return redirect("/species/list")

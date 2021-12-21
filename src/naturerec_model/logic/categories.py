@@ -47,7 +47,7 @@ def create_category(name):
 
 def update_category(category_id, name):
     """
-    Update a new species category
+    Update an existing species category
 
     :param category_id: ID for the category record to update
     :param name: Category name

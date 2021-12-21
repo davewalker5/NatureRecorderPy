@@ -15,7 +15,7 @@
                     <td>{{ value.name }}</td>
                     {% if edit_enabled %}
                         <td>
-                            <a href="#">
+                            <a href="{{ url_for( 'species.edit', species_id = value.id ) }}">
                                 <i class="fa fa-edit" title="Edit Species"></i>
                             </a>
                         </td>

@@ -6,7 +6,7 @@
         {% include "species/category_selector.html" with context %}
         {% if species | length > 0 %}
             {% include "species/species.html" with context %}
-        {% else %}
+        {% elif category_id %}
             <span>There are no species in the database for the specified category</span>
         {% endif %}
     </form>
