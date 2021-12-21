@@ -2,12 +2,27 @@
 The species blueprint supplies view functions and templates for species management
 """
 
-from flask import Blueprint, render_template, request
-from naturerec_model.logic import list_categories, get_category
-from naturerec_model.logic import list_species
+from flask import Blueprint, render_template, request, redirect
+from naturerec_model.logic import list_categories
+from naturerec_model.logic import list_species, get_species, create_species
 
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
+
+
+def _render_species_editing_page(species_id, error):
+    """
+    Helper to render the species editing page
+
+    :param species_id: ID for the species to edit or None for addition
+    :param error: Error message to display on the page or None
+    :return: The rendered species editing template
+    """
+    species = get_species(species_id) if species_id else None
+    return render_template("species/edit.html",
+                           categories=list_categories(),
+                           species=species,
+                           error=error)
 
 
 def _render_species_list_page(category_id=None):
@@ -19,12 +34,12 @@ def _render_species_list_page(category_id=None):
     """
     species = list_species(category_id) if category_id else []
     return render_template("species/list.html",
-                           category_id=category_id,
                            categories=list_categories(),
                            species=species,
                            edit_enabled=True)
 
-def _get_filter_int(key):
+
+def _get_posted_int(key):
     """
     Retrieve a named integer value from the POSTed filtering form
 
@@ -43,6 +58,29 @@ def list_filtered_species():
     :return: The HTML for the sightings listing page
     """
     if request.method == "POST":
-        return _render_species_list_page(_get_filter_int("category"))
+        return _render_species_list_page(_get_posted_int("category"))
     else:
         return _render_species_list_page()
+
+
+@species_bp.route("/edit", defaults={"species_id": None}, methods=["GET", "POST"])
+@species_bp.route("/add/<int:species_id>", methods=["GET", "POST"])
+def edit(species_id):
+    """
+    Serve the page to add new species or edit an existing one and handle the appropriate action
+    when the form is submitted
+
+    :param species_id: ID for a species to edit or None to create a new species
+    :return: The HTML for the species entry page or a response object redirecting to the category list page
+    """
+    if request.method == "POST":
+        try:
+            if species_id:
+                pass
+            else:
+                _ = create_species(_get_posted_int("category"), request.form["name"])
+            return redirect("/species/list")
+        except ValueError as e:
+            return _render_species_editing_page(species_id, e)
+    else:
+        return _render_species_editing_page(species_id, None)
