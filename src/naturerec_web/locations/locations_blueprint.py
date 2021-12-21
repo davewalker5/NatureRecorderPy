@@ -9,7 +9,7 @@ from naturerec_model.logic import list_locations, get_location, create_location,
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
 
 
-def _render_airport_editing_page(location_id, error):
+def _render_location_editing_page(location_id, error):
     """
     Helper to render the location editing page
 
@@ -53,7 +53,7 @@ def edit(location_id):
     Serve the page to add  new location or edit an existing one and handle the appropriate action
     when the form is submitted
 
-    :param location_id: ID for a location to edit or None to create a new airport
+    :param location_id: ID for a location to edit or None to create a new location
     :return: The HTML for the location entry page or a response object redirecting to the location list page
     """
     if request.method == "POST":
@@ -79,6 +79,6 @@ def edit(location_id):
                                     _get_posted_float("longitude"))
             return redirect("/locations/list")
         except ValueError as e:
-            return _render_airport_editing_page(location_id, e)
+            return _render_location_editing_page(location_id, e)
     else:
-        return _render_airport_editing_page(location_id, None)
+        return _render_location_editing_page(location_id, None)

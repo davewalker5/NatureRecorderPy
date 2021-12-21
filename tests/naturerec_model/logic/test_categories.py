@@ -1,6 +1,6 @@
 import unittest
 from src.naturerec_model.model import create_database, Session, Category
-from src.naturerec_model.logic import create_category, get_category, list_categories
+from src.naturerec_model.logic import create_category, get_category, list_categories, update_category
 
 
 class TestCategories(unittest.TestCase):
@@ -12,6 +12,45 @@ class TestCategories(unittest.TestCase):
         with Session.begin() as session:
             category = session.query(Category).one()
         self.assertEqual("Birds", category.name)
+
+    def test_cannot_create_duplicate_category(self):
+        with self.assertRaises(ValueError):
+            _ = create_category("Birds")
+
+    def test_can_update_category(self):
+        with Session.begin() as session:
+            category_id = session.query(Category).one().id
+            _ = update_category(category_id, "Insects")
+            updated = session.query(Category).get(category_id)
+            self.assertEqual("Insects", updated.name)
+
+    def test_cannot_update_category_to_create_duplicate(self):
+        with Session.begin() as session:
+            category_id = session.query(Category).one().id
+
+        _ = create_category("Insects")
+
+        with self.assertRaises(ValueError):
+            _ = update_category(category_id, "Insects")
+
+    def test_cannot_update_missing_category(self):
+        with self.assertRaises(ValueError):
+            _ = update_category(-1, "Insects")
+
+    def test_cannot_update_category_with_none_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            category_id = session.query(Category).one().id
+            _ = update_category(category_id, None)
+
+    def test_cannot_update_category_with_blank_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            category_id = session.query(Category).one().id
+            _ = update_category(category_id, "")
+
+    def test_cannot_update_category_with_whitespace_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            category_id = session.query(Category).one().id
+            _ = update_category(category_id, "      ")
 
     def test_can_get_category_by_name(self):
         category = get_category("Birds")
