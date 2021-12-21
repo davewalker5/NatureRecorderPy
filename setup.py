@@ -25,7 +25,7 @@ def find_package_files(directory, remove_root):
 
 # The package data for the web package includes the whole directory tree for the static files plus
 # the Flask view templates
-naturerec_web_package_data = find_package_files("src/booking_web/static", "src/booking_web/")
+naturerec_web_package_data = find_package_files("src/naturerec_web/static", "src/naturerec_web/")
 naturerec_web_package_data.append("templates/*.html")
 
 
@@ -37,12 +37,10 @@ setuptools.setup(
     include_package_data=True,
     package_dir={"": "src"},
     package_data={
-        "booking_web": naturerec_web_package_data,
-        # "booking_web.airlines": ["templates/airlines/*.html"],
-        # "booking_web.airports": ["templates/airports/*.html"],
-        # "booking_web.boarding_cards": ["templates/boarding_cards/*.html"],
-        # "booking_web.flights": ["templates/flights/*.html"],
-        # "booking_web.layouts": ["templates/layouts/*.html"],
-        # "booking_web.passengers": ["templates/passengers/*.html"]
+        "naturerec_web": naturerec_web_package_data,
+        "naturerec_web.categories": ["templates/categories/*.html"],
+        "naturerec_web.locations": ["templates/locations/*.html"],
+        "naturerec_web.sightings": ["templates/sightings/*.html"],
+        "naturerec_web.species": ["templates/species/*.html"],
     }
 )
