@@ -47,7 +47,7 @@ def create_category(name):
 
 def update_category(category_id, name):
     """
-    Update a new species category
+    Update an existing species category
 
     :param category_id: ID for the category record to update
     :param name: Category name
@@ -91,7 +91,7 @@ def get_category(_):
     :return: Instance of the category
     :raises ValueError: If the category doesn't exist
     """
-    raise TypeError("Invalid parameter type for get_airline")
+    raise TypeError("Invalid parameter type")
 
 
 @get_category.register(str)

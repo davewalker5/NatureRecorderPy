@@ -1,0 +1,43 @@
+{% if species %}
+    {% set title = "Edit Species" %}
+    {% set submit_title = "Save Species" %}
+    {% set category_id = species.categoryId %}
+    {% set name = species.name %}
+{% else %}
+    {% set title = "Add Species" %}
+    {% set submit_title = "Add Species" %}
+    {% set category_id = "" %}
+    {% set name = "" %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" name="name" placeholder="Species name e.g. Red Kite" value="{{ name }}"
+                   required>
+        </div>
+        <div class="form-group">
+            <label>Category</label>
+            <select class="form-control" name="category" id="category">
+                <option value="">Please select ...</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %} required>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('species.list_filtered_species') }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
