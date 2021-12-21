@@ -3,7 +3,7 @@ The sightings blueprint supplies view functions and templates for sighting manag
 """
 
 import datetime
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
@@ -24,10 +24,23 @@ def _render_sighting_editing_page(sighting_id, error):
     locations = list_locations()
     categories = list_categories()
     sighting = get_sighting(sighting_id) if sighting_id else None
+
+    # If we have a sighting, it's used to set the default date and location. Otherwise, we look for those
+    # properties in session
+    if sighting:
+        location_id = sighting.locationId
+        sighting_date = sighting.sighting_date.strftime("%d/%m/%Y")
+    else:
+        location_id = int(session["location_id"]) if "location_id" in session else 0
+        sighting_date = session["sighting_date"] if "sighting_date" in session else ""
+
+    print(f"LOCATION ID = {location_id}")
     return render_template("sightings/edit.html",
                            locations=locations,
                            categories=categories,
                            sighting=sighting,
+                           location_id=location_id,
+                           sighting_date=sighting_date,
                            genders=Gender.gender_map(),
                            with_young={1: "Yes", 0: "No"},
                            error=error)
@@ -145,17 +158,25 @@ def edit(sighting_id):
     """
     if request.method == "POST":
         try:
-            sighting_date = datetime.datetime.strptime(request.form["date"], "%d/%m/%Y").date()
+            # Get the selected date and put it into session
+            date_string = request.form["date"]
+            session["sighting_date"] = date_string
+            sighting_date = datetime.datetime.strptime(date_string, "%d/%m/%Y").date()
+
+            # Get the selected location and put it into session
+            location_id = request.form["location"]
+            session["location_id"] = location_id
+
             if sighting_id:
                 _ = update_sighting(sighting_id,
-                                    request.form["location"],
+                                    location_id,
                                     request.form["species"],
                                     sighting_date,
                                     request.form["number"],
                                     request.form["gender"],
                                     request.form["with_young"])
             else:
-                _ = create_sighting(request.form["location"],
+                _ = create_sighting(location_id,
                                     request.form["species"],
                                     sighting_date,
                                     request.form["number"],

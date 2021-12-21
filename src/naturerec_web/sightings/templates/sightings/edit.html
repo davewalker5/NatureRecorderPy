@@ -1,8 +1,6 @@
 {% if sighting %}
     {% set title = "Edit Sighting" %}
     {% set submit_title = "Save Sighting" %}
-    {% set date = sighting.display_date %}
-    {% set location_id = sighting.locationId %}
     {% set category_id = sighting.species.categoryId %}
     {% set species_id = sighting.speciesId %}
     {% set number = sighting.number %}
@@ -11,8 +9,6 @@
 {% else %}
     {% set title = "Add Sighting" %}
     {% set submit_title = "Add Sighting" %}
-    {% set date = "" %}
-    {% set location_id = 0 %}
     {% set category_id = 0 %}
     {% set species_id = 0 %}
     {% set number = "" %}
@@ -32,7 +28,7 @@
         <div class="form-group">
             <label>Date</label>
             <input class="form-control" name="date" pattern="[\d]{2}\/[\d]{2}\/[\d]{4}"
-                   placeholder="Sighting date DD/MM/YYYY" value="{{ date }}" required>
+                   placeholder="Sighting date DD/MM/YYYY" value="{{ sighting_date }}" required>
         </div>
         {% include "sightings/location_selector.html" with context %}
         {% include "sightings/species_selector.html" with context %}
