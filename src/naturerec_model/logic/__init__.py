@@ -1,4 +1,4 @@
-from .categories import create_category, get_category, list_categories
+from .categories import create_category, get_category, list_categories, update_category
 from .species import create_species, get_species, list_species
 from .locations import create_location, get_location, list_locations, update_location
 from .sightings import create_sighting, get_sighting, list_sightings, update_sighting
@@ -10,6 +10,7 @@ from .species_status_ratings import create_species_status_rating, get_species_st
 
 __all__ = [
     "create_category",
+    "update_category",
     "get_category",
     "list_categories",
     "create_species",

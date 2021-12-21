@@ -1,0 +1,30 @@
+{% if category %}
+    {% set title = "Edit Category" %}
+    {% set submit_title = "Save Category" %}
+    {% set name = category.name %}
+{% else %}
+    {% set title = "Add Category" %}
+    {% set submit_title = "Add Category" %}
+    {% set name = "" %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" name="name" placeholder="Category name e.g. Insects" value="{{ name }}"
+                   required>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('categories.list_all') }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
