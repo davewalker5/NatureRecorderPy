@@ -178,11 +178,11 @@ def edit(sighting_id):
                 sighting = get_sighting(sighting_id)
             else:
                 created_id = create_sighting(location_id,
-                                              request.form["species"],
-                                              sighting_date,
-                                              request.form["number"],
-                                              request.form["gender"],
-                                              request.form["with_young"]).id
+                                             request.form["species"],
+                                             sighting_date,
+                                             request.form["number"],
+                                             request.form["gender"],
+                                             request.form["with_young"]).id
                 sighting = get_sighting(created_id)
 
             # Construct the confirmation message
