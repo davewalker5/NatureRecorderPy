@@ -7,6 +7,7 @@ from .sighting import Sighting
 from .status_scheme import StatusScheme
 from .status_rating import StatusRating
 from .species_status_rating import SpeciesStatusRating
+from .utils import get_data_path
 
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     "Sighting",
     "StatusScheme",
     "StatusRating",
-    "SpeciesStatusRating"
+    "SpeciesStatusRating",
+    "get_data_path"
 ]

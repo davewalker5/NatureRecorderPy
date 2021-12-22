@@ -91,3 +91,22 @@ class TestSighting(unittest.TestCase):
     def test_cannot_create_sighting_with_invalid_with_young(self):
         with self.assertRaises(ValueError):
             _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), 0, 10, -1)
+
+    def test_can_get_csv_columns(self):
+        with Session.begin() as session:
+            columns = session.query(Sighting).one().csv_columns
+        self.assertEqual(14, len(columns))
+        self.assertEqual("Black-Headed Gull", columns[0])
+        self.assertEqual("Birds", columns[1])
+        self.assertEqual(0, columns[2])
+        self.assertEqual("Unknown", columns[3])
+        self.assertEqual("No", columns[4])
+        self.assertEqual("14/12/2021", columns[5])
+        self.assertEqual("Radley Lakes",  columns[6])
+        self.assertIsNone(columns[7])
+        self.assertIsNone(columns[8])
+        self.assertEqual("Oxfordshire",  columns[9])
+        self.assertIsNone(columns[10])
+        self.assertEqual("United Kingdom",  columns[11])
+        self.assertIsNone(columns[12])
+        self.assertIsNone(columns[13])

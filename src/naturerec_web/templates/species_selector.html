@@ -1,0 +1,16 @@
+<div class="form-group">
+    <label>Category</label>
+    <select class="form-control" name="category" id="category" {{ species_required }}>
+        <option value="">Please select ...</option>
+        {% for category in categories %}
+            <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %}>
+                {{ category.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+<div class="form-group">
+    <label>Species</label>
+    <div name="species_selector" id="species_selector">
+    </div>
+</div>

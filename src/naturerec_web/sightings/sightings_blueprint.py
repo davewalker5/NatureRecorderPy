@@ -3,11 +3,11 @@ The sightings blueprint supplies view functions and templates for sighting manag
 """
 
 import datetime
-from flask import Blueprint, render_template, request, redirect, session
+from flask import Blueprint, render_template, request, session
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
-from naturerec_model.logic import list_locations, get_location
+from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species, get_species
+from naturerec_model.logic import list_species
 from naturerec_model.model import Gender
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
@@ -35,7 +35,9 @@ def _render_sighting_editing_page(sighting_id, message, error):
     else:
         location_id = int(session["location_id"]) if "location_id" in session else 0
         category_id = int(session["category_id"]) if "category_id" in session else 0
-        sighting_date = session["sighting_date"] if "sighting_date" in session else ""
+        sighting_date = session["sighting_date"] \
+            if "sighting_date" in session \
+            else datetime.datetime.now().strftime("%d/%m/%Y")
 
     return render_template("sightings/edit.html",
                            locations=locations,
@@ -81,19 +83,9 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
                            species_id=species_id,
                            locations=list_locations(),
                            categories=list_categories(),
+                           action_button_label="Filter Sightings",
                            sightings=sightings,
                            edit_enabled=True)
-
-
-def _get_filter_value(key):
-    """
-    Retrieve a named value from the POSTed filtering form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key]
-    return value if value else None
 
 
 def _get_filter_int(key):
@@ -103,7 +95,7 @@ def _get_filter_int(key):
     :param key: Value key
     :return: Value or None if not specified
     """
-    value = _get_filter_value(key)
+    value = request.form[key] if key in request.form else None
     return int(value) if value else None
 
 
@@ -114,7 +106,7 @@ def _get_filter_date(key):
     :param key: Value key
     :return: Value or None if not specified
     """
-    date_string = _get_filter_value(key)
+    date_string = request.form[key] if key in request.form else None
     return datetime.datetime.strptime(date_string, "%d/%m/%Y").date() if date_string else None
 
 
