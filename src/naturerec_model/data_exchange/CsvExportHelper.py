@@ -1,8 +1,8 @@
 import threading
 import csv
 import os
-from src.naturerec_model.model import get_data_path
-from naturerec_model.logic.sightings import list_sightings
+from ..model import get_data_path
+from ..logic.sightings import list_sightings
 
 
 class CsvExportHelper(threading.Thread):

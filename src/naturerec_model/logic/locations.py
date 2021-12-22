@@ -90,14 +90,14 @@ def update_location(location_id, name, county, country, address=None, city=None,
             if location is None:
                 raise ValueError("Location not found")
 
-            location.name=name.strip() if name else None
-            location.address=address.strip() if address else None
-            location.city=city.strip() if city else None
-            location.county=county.strip() if county else None
-            location.postcode=postcode.strip() if postcode else None
-            location.country=country.strip() if country else None
-            location.latitude=latitude
-            location.longitude=longitude
+            location.name = name.strip() if name else None
+            location.address = address.strip() if address else None
+            location.city = city.strip() if city else None
+            location.county = county.strip() if county else None
+            location.postcode = postcode.strip() if postcode else None
+            location.country = country.strip() if country else None
+            location.latitude = latitude
+            location.longitude = longitude
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
 
