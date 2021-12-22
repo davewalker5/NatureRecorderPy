@@ -69,3 +69,22 @@ class Sighting(Base):
     @property
     def with_young_name(self):
         return "Yes" if self.withYoung else "No"
+
+    @property
+    def csv_columns(self):
+        return [
+            self.species.name,
+            self.species.category.name,
+            self.number,
+            self.gender_name,
+            self.with_young_name,
+            self.display_date,
+            self.location.name,
+            self.location.address,
+            self.location.city,
+            self.location.county,
+            self.location.postcode,
+            self.location.country,
+            self.location.latitude,
+            self.location.longitude
+        ]

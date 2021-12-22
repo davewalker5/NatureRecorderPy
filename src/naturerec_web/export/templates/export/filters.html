@@ -1,16 +1,12 @@
 {% extends "layout.html" %}
-{% block title %}Sightings{% endblock %}
+{% block title %}Export Sightings{% endblock %}
 
 {% block content %}
+    <h1>Export Sightings</h1>
     <form method="post">
-        <h1>Sightings</h1>
         {% include "filter_selector.html" with context %}
-        {% if sightings | length > 0 %}
-            {% include "sightings/sightings.html" with context %}
-        {% else %}
-            <span>There are no sightings in the database matching the specified criteria</span>
-        {% endif %}
     </form>
+    {% include "message.html" with context %}
 {% endblock %}
 
 {% block scripts %}

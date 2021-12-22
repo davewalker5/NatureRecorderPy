@@ -29,8 +29,8 @@
             <input class="form-control" name="date" pattern="[\d]{2}\/[\d]{2}\/[\d]{4}"
                    placeholder="Sighting date DD/MM/YYYY" value="{{ sighting_date }}" required>
         </div>
-        {% include "sightings/location_selector.html" with context %}
-        {% include "sightings/species_selector.html" with context %}
+        {% include "location_selector.html" with context %}
+        {% include "species_selector.html" with context %}
         <div class="form-group">
             <label>Number</label>
             <input class="form-control" name="number" placeholder="Number of individuals sighted"
