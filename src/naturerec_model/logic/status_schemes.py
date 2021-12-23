@@ -51,7 +51,7 @@ def update_status_scheme(status_scheme_id, name):
 
     :param status_scheme_id: ID for the scheme to update
     :param name: Scheme name
-    :returns: An instance of the StatusScheme class for the created record
+    :returns: An instance of the StatusScheme class for the updated record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the status scheme is a duplicate
     """

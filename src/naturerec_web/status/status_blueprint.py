@@ -4,7 +4,7 @@ The status blueprint supplies view functions and templates for conservation stat
 
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme
-from naturerec_model.logic import create_status_rating
+from naturerec_model.logic import create_status_rating, update_status_rating
 
 
 status_bp = Blueprint("status", __name__, template_folder='templates')
@@ -93,7 +93,7 @@ def edit_rating(status_scheme_id, status_rating_id):
     if request.method == "POST":
         try:
             if status_rating_id:
-                pass
+                _ = update_status_rating(status_rating_id, request.form["name"])
             else:
                 _ = create_status_rating(status_scheme_id, request.form["name"])
             return redirect(f"/status/edit/{status_scheme_id}")
