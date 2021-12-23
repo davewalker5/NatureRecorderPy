@@ -8,12 +8,12 @@
             {% endif %}
         </thead>
         <tbody>
-            {% for status_rating in status_ratings %}
+            {% for rating in status_ratings %}
                 <tr>
-                    <td>{{ status_rating.name }}</td>
+                    <td>{{ rating.name }}</td>
                     {% if edit_enabled %}
                         <td>
-                            <a href="#">
+                            <a href="{{ url_for('status.edit_rating', status_scheme_id=rating.statusSchemeId, status_rating_id=rating.id) }}">
                                 <i class="fa fa-edit" title="Edit Conservation Status Rating"></i>
                             </a>
                         </td>

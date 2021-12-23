@@ -6,6 +6,7 @@
             {% if edit_enabled %}
                 <th></th>
                 <th></th>
+                <th></th>
             {% endif %}
         </thead>
         <tbody>
@@ -17,6 +18,11 @@
                         <td>
                             <a href="{{ url_for( 'species.edit', species_id = value.id ) }}">
                                 <i class="fa fa-edit" title="Edit Species"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-exclamation-triangle" title="Edit Conservation Status"></i>
                             </a>
                         </td>
                         <td>

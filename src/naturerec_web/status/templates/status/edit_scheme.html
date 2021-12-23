@@ -1,10 +1,12 @@
 {% if status_scheme %}
     {% set title = "Edit Conservation Status Scheme" %}
+    {% set status_scheme_id = status_scheme.id %}
     {% set status_scheme_name = status_scheme.name %}
     {% set action_button_label = "Save Conservation Status Scheme" %}
     {% set status_ratings = status_scheme.ratings %}
 {% else %}
     {% set title = "Add Conservation Status Scheme" %}
+    {% set status_scheme_id = 0 %}
     {% set status_scheme_name = "" %}
     {% set action_button_label = "Add Conservation Status Scheme" %}
     {% set status_ratings = None %}
@@ -15,6 +17,7 @@
 
 {% block content %}
     <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
     <form method="post">
         <div class="filter-criteria">
             <div class="form-group">
@@ -28,7 +31,7 @@
                     </button>
                 {% if status_scheme %}
                     <button type="button" class="btn btn-light">
-                        <a href="#">Add Status Rating</a>
+                        <a href="{{ url_for('status.edit_rating', status_scheme_id=status_scheme_id) }}">Add Status Rating</a>
                     </button>
                 {% endif %}
                 <button type="submit" value="filter" class="btn btn-primary">{{ action_button_label }}</button>
@@ -36,6 +39,7 @@
         </div>
     </form>
     {% if status_ratings %}
+        <h1>Status Ratings</h1>
         {% include "status/status_ratings.html" with context %}
     {% elif status_scheme %}
         <span>There are no ratings in the database for this conservation status scheme</span>
