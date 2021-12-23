@@ -44,5 +44,6 @@ setuptools.setup(
         "naturerec_web.sightings": ["templates/sightings/*.html"],
         "naturerec_web.species": ["templates/species/*.html"],
         "naturerec_web.status": ["templates/status/*.html"],
+        "naturerec_web.species_ratings": ["templates/species_ratings/*.html"],
     }
 )
