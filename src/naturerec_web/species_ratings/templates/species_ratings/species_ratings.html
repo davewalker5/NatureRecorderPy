@@ -1,0 +1,56 @@
+{% if species_status_ratings | length > 0 %}
+    <form method="post">
+        <input type="hidden" name="species_status_rating_id" id="species_status_rating_id"/>
+        <table class="striped">
+            <thead>
+                <th>Category</th>
+                <th>Species</th>
+                <th>Scheme</th>
+                <th>Rating</th>
+                <th>Region</th>
+                <th>From</th>
+                <th>To</th>
+                {% if edit_enabled %}
+                    <th></th>
+                    <th></th>
+                {% endif %}
+            </thead>
+            <tbody>
+                {% for rating in species_status_ratings %}
+                    <tr>
+                        <td>{{ rating.species.category.name }}</td>
+                        <td>{{ rating.species.name }}</td>
+                        <td>{{ rating.rating.scheme.name }}</td>
+                        <td>{{ rating.rating.name }}</td>
+                        <td>{{ rating.region }}</td>
+                        <td>{{ rating.display_start_date }}</td>
+                        <td>{{ rating.display_end_date }}</td>
+                        {% if edit_enabled %}
+                            <td>
+                                {% if not rating.display_end_date %}
+                                    <a href="javascript:close_rating( {{ rating.id }} )">
+                                        <i class="fa fa-calendar" title="Set End Date to Today"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="#">
+                                    <i class="fa fa-trash" title="Delete Conservation Status Rating"></i>
+                                </a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+{% endif %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        function close_rating(species_status_rating_id) {
+            $("#species_status_rating_id").val(species_status_rating_id);
+            document.forms[0].submit();
+        }
+    </script>
+{% endblock %}

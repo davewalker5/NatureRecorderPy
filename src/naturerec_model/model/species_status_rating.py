@@ -9,6 +9,7 @@ class SpeciesStatusRating(Base):
     Class representing the a conservation status scheme rating
     """
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+    DISPLAY_DATE_FORMAT = "%d/%m/%Y"
 
     __tablename__ = "SpeciesStatusRatings"
     __table_args__ = (CheckConstraint("LENGTH(TRIM(region)) > 0"),
@@ -58,3 +59,12 @@ class SpeciesStatusRating(Base):
     @end_date.setter
     def end_date(self, value):
         self.end = value.strftime(self.DATE_FORMAT) if value else None
+
+    @property
+    def display_start_date(self):
+        return self.start_date.strftime(self.DISPLAY_DATE_FORMAT)
+
+    @property
+    def display_end_date(self):
+        date = self.end_date
+        return date.strftime(self.DISPLAY_DATE_FORMAT) if date else None

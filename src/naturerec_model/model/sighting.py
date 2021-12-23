@@ -10,6 +10,7 @@ class Sighting(Base):
     Class representing a sighting of a species at a location
     """
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+    DATE_DISPLAY_FORMAT = "%d/%m/%Y"
 
     __tablename__ = "Sightings"
 
@@ -60,7 +61,7 @@ class Sighting(Base):
 
     @property
     def display_date(self):
-        return self.sighting_date.strftime("%d/%m/%Y")
+        return self.sighting_date.strftime(Sighting.DATE_DISPLAY_FORMAT)
 
     @property
     def gender_name(self):

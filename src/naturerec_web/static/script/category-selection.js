@@ -3,7 +3,6 @@ function convert_none_to_zero(value) {
 }
 
 function update_species_selector(category_id, selected_species_id) {
-    console.log("update_species_selector(" + category_id + ", " + selected_species_id + ")")
     $.ajax({
         url: "/sightings/list_species/" +
             convert_none_to_zero(category_id) + "/" +

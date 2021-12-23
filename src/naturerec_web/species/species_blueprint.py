@@ -31,7 +31,7 @@ def _render_species_list_page(category_id=None):
     Helper to render the species list page
 
     :param category_id: ID of the category for which to list species
-    :return: List of Species instances for matching species
+    :return: Rendered species list template
     """
     species = list_species(category_id) if category_id else []
     return render_template("species/list.html",
@@ -55,9 +55,9 @@ def _get_posted_int(key):
 @species_bp.route("/list", methods=["GET", "POST"])
 def list_filtered_species():
     """
-    Show the page that lists today's sightings and is the entry point for adding new ones
+    Show the page that lists species with category selection option
 
-    :return: The HTML for the sightings listing page
+    :return: The HTML for the species listing page
     """
     if request.method == "POST":
         return _render_species_list_page(_get_posted_int("category"))
@@ -65,8 +65,8 @@ def list_filtered_species():
         return _render_species_list_page()
 
 
-@species_bp.route("/edit", defaults={"species_id": None}, methods=["GET", "POST"])
-@species_bp.route("/add/<int:species_id>", methods=["GET", "POST"])
+@species_bp.route("/add", defaults={"species_id": None}, methods=["GET", "POST"])
+@species_bp.route("/edit/<int:species_id>", methods=["GET", "POST"])
 def edit(species_id):
     """
     Serve the page to add new species or edit an existing one and handle the appropriate action
