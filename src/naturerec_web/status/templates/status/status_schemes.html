@@ -1,0 +1,30 @@
+{% if status_schemes | length > 0 %}
+    <table class="striped">
+        <thead>
+            <th>Name</th>
+            {% if edit_enabled %}
+                <th></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for status_scheme in status_schemes %}
+                <tr>
+                    <td>{{ status_scheme.name }}</td>
+                    {% if edit_enabled %}
+                        <td>
+                            <a href="{{ url_for('status.edit_scheme', status_scheme_id=status_scheme.id ) }}">
+                                <i class="fa fa-edit" title="Edit Conservation Status Scheme"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-trash" title="Delete Conservation Status Scheme"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

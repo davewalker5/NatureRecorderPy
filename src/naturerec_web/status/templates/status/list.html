@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}Conservation Status Schemes{% endblock %}
+
+{% block content %}
+    <h1>Conservation Status Schemes</h1>
+    {% if status_schemes | length > 0 %}
+        {% include "status/status_schemes.html" with context %}
+    {% else %}
+        <span>There are no conservation status schemes in the database</span>
+    {% endif %}
+    <div class="button-bar">
+        <button type="button" class="btn btn-primary">
+            <a href="{{ url_for('status.edit_scheme') }}">Add Conservation Status Scheme</a>
+        </button>
+    </div>
+{% endblock %}

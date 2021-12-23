@@ -1,0 +1,30 @@
+{% if status_ratings | length > 0 %}
+    <table class="striped">
+        <thead>
+            <th>Name</th>
+            {% if edit_enabled %}
+                <th></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for rating in status_ratings %}
+                <tr>
+                    <td>{{ rating.name }}</td>
+                    {% if edit_enabled %}
+                        <td>
+                            <a href="{{ url_for('status.edit_rating', status_scheme_id=rating.statusSchemeId, status_rating_id=rating.id) }}">
+                                <i class="fa fa-edit" title="Edit Conservation Status Rating"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-trash" title="Delete Conservation Status Rating"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

@@ -31,7 +31,7 @@ naturerec_web_package_data.append("templates/*.html")
 
 setuptools.setup(
     name="nature_recorder",
-    version="1.0.4",
+    version="1.0.5",
     description="Wildlife sightings database",
     packages=setuptools.find_packages("src"),
     include_package_data=True,
@@ -43,5 +43,6 @@ setuptools.setup(
         "naturerec_web.locations": ["templates/locations/*.html"],
         "naturerec_web.sightings": ["templates/sightings/*.html"],
         "naturerec_web.species": ["templates/species/*.html"],
+        "naturerec_web.status": ["templates/status/*.html"],
     }
 )

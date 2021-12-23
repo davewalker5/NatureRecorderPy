@@ -1,0 +1,30 @@
+{% if status_rating %}
+    {% set title = "Edit Conservation Status Rating" %}
+    {% set submit_title = "Save Conservation Status Rating" %}
+    {% set name = status_rating.name %}
+{% else %}
+    {% set title = "Add Conservation Status Rating" %}
+    {% set submit_title = "Add Conservation Status Rating" %}
+    {% set name = "" %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group">
+            <label>Name</label>
+            <input class="form-control" name="name" placeholder="Conservation status rating name e.g. Amber"
+                   value="{{ name }}" required>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('status.edit_scheme', status_scheme_id=status_scheme_id) }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
