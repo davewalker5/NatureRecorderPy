@@ -1,6 +1,7 @@
 import unittest
 from src.naturerec_model.model import create_database, Session, StatusScheme
-from src.naturerec_model.logic import create_status_scheme, get_status_scheme, list_status_schemes
+from src.naturerec_model.logic import create_status_scheme, get_status_scheme, list_status_schemes, \
+    update_status_scheme
 
 
 class TestStatusSchemes(unittest.TestCase):
@@ -12,6 +13,37 @@ class TestStatusSchemes(unittest.TestCase):
         with Session.begin() as session:
             scheme = session.query(StatusScheme).one()
         self.assertEqual("BOCC4", scheme.name)
+
+    def test_can_update_scheme(self):
+        with Session.begin() as session:
+            scheme_id = session.query(StatusScheme).one().id
+        _ = update_status_scheme(scheme_id, "Some Scheme")
+        scheme = get_status_scheme(scheme_id)
+        self.assertEqual("Some Scheme", scheme.name)
+
+    def test_cannot_update_scheme_to_create_duplicate(self):
+        scheme = create_status_scheme("Some Scheme")
+        with self.assertRaises(ValueError):
+            _ = update_status_scheme(scheme.id, "BOCC4")
+
+    def test_cannot_update_missing_scheme(self):
+        with self.assertRaises(ValueError):
+            _ = update_status_scheme(-1, "Some Scheme")
+
+    def test_cannot_update_scheme_with_none_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            scheme_id = session.query(StatusScheme).one().id
+            _ = update_status_scheme(scheme_id, None)
+
+    def test_cannot_update_scheme_with_blank_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            scheme_id = session.query(StatusScheme).one().id
+            _ = update_status_scheme(scheme_id, "")
+
+    def test_cannot_update_scheme_with_whitespace_name(self):
+        with self.assertRaises(ValueError), Session.begin() as session:
+            scheme_id = session.query(StatusScheme).one().id
+            _ = update_status_scheme(scheme_id, "      ")
 
     def test_can_get_scheme_by_name(self):
         scheme = get_status_scheme("BOCC4")
