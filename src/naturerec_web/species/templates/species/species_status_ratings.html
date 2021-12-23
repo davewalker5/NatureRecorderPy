@@ -1,0 +1,38 @@
+{% if species_status_ratings | length > 0 %}
+    <table class="striped">
+        <thead>
+            <th>Scheme</th>
+            <th>Rating</th>
+            <th>Region</th>
+            <th>From</th>
+            <th>To</th>
+            {% if edit_enabled %}
+                <th></th>
+                <th></th>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for rating in species_status_ratings %}
+                <tr>
+                    <td>{{ rating.rating.scheme.name }}</td>
+                    <td>{{ rating.rating.name }}</td>
+                    <td>{{ rating.region }}</td>
+                    <td>{{ rating.display_start_date }}</td>
+                    <td>{{ rating.display_end_date }}</td>
+                    {% if edit_enabled %}
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-calendar" title="Set End Date to Today"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="#">
+                                <i class="fa fa-trash" title="Delete Conservation Status Rating"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

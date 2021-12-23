@@ -5,6 +5,7 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species
+from naturerec_model.logic import list_species_status_ratings
 
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -55,14 +56,27 @@ def _get_posted_int(key):
 @species_bp.route("/list", methods=["GET", "POST"])
 def list_filtered_species():
     """
-    Show the page that lists today's sightings and is the entry point for adding new ones
+    Show the page that lists species with category selection option
 
-    :return: The HTML for the sightings listing page
+    :return: The HTML for the species listing page
     """
     if request.method == "POST":
         return _render_species_list_page(_get_posted_int("category"))
     else:
         return _render_species_list_page()
+
+
+@species_bp.route("/list_status/<int:species_id>")
+def list_status_ratings(species_id):
+    """
+    Show the page that lists species status ratings and is the entry point for adding new ones
+
+    :param species_id: ID for the species for which to list ratings
+    :return: The HTML for the species conservation status rating listing page
+    """
+    return render_template("species/list_status_ratings.html",
+                           species_status_ratings=list_species_status_ratings(species_id=species_id),
+                           edit_enabled=True)
 
 
 @species_bp.route("/edit", defaults={"species_id": None}, methods=["GET", "POST"])

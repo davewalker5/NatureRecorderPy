@@ -8,7 +8,7 @@ from naturerec_model.logic import list_sightings, get_sighting, create_sighting,
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
-from naturerec_model.model import Gender
+from naturerec_model.model import Gender, Sighting
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
 
@@ -31,13 +31,13 @@ def _render_sighting_editing_page(sighting_id, message, error):
     if sighting:
         location_id = sighting.locationId
         category_id = sighting.species.categoryId
-        sighting_date = sighting.sighting_date.strftime("%d/%m/%Y")
+        sighting_date = sighting.sighting_date.strftime(Sighting.DATE_DISPLAY_FORMAT)
     else:
         location_id = int(session["location_id"]) if "location_id" in session else 0
         category_id = int(session["category_id"]) if "category_id" in session else 0
         sighting_date = session["sighting_date"] \
             if "sighting_date" in session \
-            else datetime.datetime.now().strftime("%d/%m/%Y")
+            else datetime.datetime.now().strftime(Sighting.DATE_DISPLAY_FORMAT)
 
     return render_template("sightings/edit.html",
                            locations=locations,
@@ -76,8 +76,8 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
 
     # Serve the page
     return render_template("sightings/list.html",
-                           from_date=from_date.strftime("%d/%m/%Y") if from_date else "",
-                           to_date=to_date.strftime("%d/%m/%Y") if to_date else "",
+                           from_date=from_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if from_date else "",
+                           to_date=to_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if to_date else "",
                            location_id=location_id,
                            category_id=category_id,
                            species_id=species_id,
@@ -107,7 +107,7 @@ def _get_filter_date(key):
     :return: Value or None if not specified
     """
     date_string = request.form[key] if key in request.form else None
-    return datetime.datetime.strptime(date_string, "%d/%m/%Y").date() if date_string else None
+    return datetime.datetime.strptime(date_string, Sighting.DATE_DISPLAY_FORMAT).date() if date_string else None
 
 
 @sightings_bp.route("/list", methods=["GET", "POST"])
@@ -157,7 +157,7 @@ def edit(sighting_id):
             # Get the selected date and put it into session
             date_string = request.form["date"]
             session["sighting_date"] = date_string
-            sighting_date = datetime.datetime.strptime(date_string, "%d/%m/%Y").date()
+            sighting_date = datetime.datetime.strptime(date_string, Sighting.DATE_DISPLAY_FORMAT).date()
 
             # Get the selected location and put it into session
             location_id = request.form["location"]

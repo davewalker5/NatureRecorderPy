@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block title %}Conservation Status Ratings{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% if species_status_ratings | length > 0 %}
+            {% include "species/species_status_ratings.html" with context %}
+        {% else %}
+            <span>There are no conservation status ratings in the database for the specified species</span>
+        {% endif %}
+    </form>
+    <div class="button-bar">
+        <button type="button" class="btn btn-primary">
+            <a href="#">Add Conservation Status Rating</a>
+        </button>
+    </div>
+{% endblock %}

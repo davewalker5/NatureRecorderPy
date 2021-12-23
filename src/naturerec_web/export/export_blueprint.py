@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, request
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.data_exchange import CsvExportHelper
+from naturerec_model.model import Sighting
 
 
 export_bp = Blueprint("export", __name__, template_folder='templates')
@@ -31,7 +32,7 @@ def _get_filter_date(key):
     :return: Value or None if not specified
     """
     date_string = request.form[key] if key in request.form else None
-    return datetime.datetime.strptime(date_string, "%d/%m/%Y").date() if date_string else None
+    return datetime.datetime.strptime(date_string, Sighting.DATE_DISPLAY_FORMAT).date() if date_string else None
 
 
 def _render_export_filters_page(from_date=None,
@@ -53,8 +54,8 @@ def _render_export_filters_page(from_date=None,
     return render_template("export/filters.html",
                            message=message,
                            filename_required=True,
-                           from_date=from_date.strftime("%d/%m/%Y") if from_date else "",
-                           to_date=to_date.strftime("%d/%m/%Y") if to_date else "",
+                           from_date=from_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if from_date else "",
+                           to_date=to_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if to_date else "",
                            location_id=location_id,
                            category_id=category_id,
                            species_id=species_id,
