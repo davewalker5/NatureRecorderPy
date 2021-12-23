@@ -1,0 +1,43 @@
+{% if status_scheme %}
+    {% set title = "Edit Conservation Status Scheme" %}
+    {% set status_scheme_name = status_scheme.name %}
+    {% set action_button_label = "Save Conservation Status Scheme" %}
+    {% set status_ratings = status_scheme.ratings %}
+{% else %}
+    {% set title = "Add Conservation Status Scheme" %}
+    {% set status_scheme_name = "" %}
+    {% set action_button_label = "Add Conservation Status Scheme" %}
+    {% set status_ratings = None %}
+{% endif %}
+
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <form method="post">
+        <div class="filter-criteria">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="name" id="name" placeholder="Conservation scheme name e.g. BOCC4"
+                       value="{{ status_scheme_name }}" required>
+            </div>
+            <div class="button-bar">
+                    <button type="button" class="btn btn-light">
+                        <a href="{{ url_for('status.list_all') }}">Cancel</a>
+                    </button>
+                {% if status_scheme %}
+                    <button type="button" class="btn btn-light">
+                        <a href="#">Add Status Rating</a>
+                    </button>
+                {% endif %}
+                <button type="submit" value="filter" class="btn btn-primary">{{ action_button_label }}</button>
+            </div>
+        </div>
+    </form>
+    {% if status_ratings %}
+        {% include "status/status_ratings.html" with context %}
+    {% elif status_scheme %}
+        <span>There are no ratings in the database for this conservation status scheme</span>
+    {% endif %}
+{% endblock %}

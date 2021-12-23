@@ -8,6 +8,18 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, StatusScheme
 
 
+def _check_for_existing_records(session, name):
+    """
+    Return the IDs for existing records with the specified name
+
+    :param session: SQLAlchemy session on which to perform the query
+    :param name: Name for the conservation status scheme to match
+    :returns: A collection of conservation status scheme IDs for the matching records
+    """
+    schemes = session.query(StatusScheme).filter(StatusScheme.name == name).all()
+    return [scheme.id for scheme in schemes]
+
+
 def create_status_scheme(name):
     """
     Create a new species conservation status scheme
@@ -20,6 +32,11 @@ def create_status_scheme(name):
 
     try:
         with Session.begin() as session:
+            # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
+            # does not have that constraint so explicitly check for duplicates before adding a new record
+            if len(_check_for_existing_records(session, name.strip() if name else None)):
+                raise ValueError("Duplicate conservation status scheme found")
+
             scheme = StatusScheme(name=name.strip() if name else None)
             session.add(scheme)
     except IntegrityError as e:

@@ -1,4 +1,4 @@
-{% if status_schemes | length > 0 %}
+{% if status_ratings | length > 0 %}
     <table class="striped">
         <thead>
             <th>Name</th>
@@ -8,18 +8,18 @@
             {% endif %}
         </thead>
         <tbody>
-            {% for status_scheme in status_schemes %}
+            {% for status_rating in status_ratings %}
                 <tr>
-                    <td>{{ status_scheme.name }}</td>
+                    <td>{{ status_rating.name }}</td>
                     {% if edit_enabled %}
                         <td>
-                            <a href="{{ url_for('status.edit_scheme', status_scheme_id=status_scheme.id ) }}">
-                                <i class="fa fa-edit" title="Edit Conservation Status Scheme"></i>
+                            <a href="#">
+                                <i class="fa fa-edit" title="Edit Conservation Status Rating"></i>
                             </a>
                         </td>
                         <td>
                             <a href="#">
-                                <i class="fa fa-trash" title="Delete Conservation Status Scheme"></i>
+                                <i class="fa fa-trash" title="Delete Conservation Status Rating"></i>
                             </a>
                         </td>
                     {% endif %}
