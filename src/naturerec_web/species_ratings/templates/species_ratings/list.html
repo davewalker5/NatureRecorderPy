@@ -6,7 +6,7 @@
     {% include "error.html" with context %}
     <form method="post">
         {% if species_status_ratings | length > 0 %}
-            {% include "species/species_status_ratings.html" with context %}
+            {% include "species_ratings/ratings.html" with context %}
         {% else %}
             <span>There are no conservation status ratings in the database for the specified species</span>
         {% endif %}

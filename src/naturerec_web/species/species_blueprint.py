@@ -5,7 +5,6 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species
-from naturerec_model.logic import list_species_status_ratings, close_species_status_rating
 
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -87,27 +86,3 @@ def edit(species_id):
             return _render_species_editing_page(species_id, e)
     else:
         return _render_species_editing_page(species_id, None)
-
-
-@species_bp.route("/list_status/<int:species_id>", methods=["GET", "POST"])
-def list_status_ratings(species_id):
-    """
-    Show the page that lists species status ratings and handles "closing" of a rating by setting its end date to
-    today
-
-    :param species_id: ID for the species for which to list ratings
-    :param species_status_rating_id: ID for the rating to close on POST events
-    :return: The HTML for the species conservation status rating listing page
-    """
-    error = None
-    if request.method == "POST":
-        try:
-            close_species_status_rating(_get_posted_int("species_status_rating_id"))
-        except ValueError as e:
-            error = e
-
-    ratings = list_species_status_ratings(species_id=species_id)
-    return render_template("species/list_status_ratings.html",
-                           species_status_ratings=ratings,
-                           error=error,
-                           edit_enabled=True)

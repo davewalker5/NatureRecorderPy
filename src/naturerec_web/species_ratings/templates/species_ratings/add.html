@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block title %}Add Conservation Status Rating{% endblock %}
+
+{% block content %}
+    <h1>Add Conservation Status Rating</h1>
+    {% include "error.html" with context %}
+    <form method="post">
+        <div class="form-group">
+            <label>Scheme</label>
+            <select class="form-control" name="scheme" id="scheme">
+                <option value="">Please select ...</option>
+                {% for scheme in schemes %}
+                    <option value="{{ category.id }}" {% if scheme.id == scheme_id %}selected{% endif %} required>
+                        {{ scheme.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('species.list_filtered_species') }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
+        </div>
+    </form>
+{% endblock %}
