@@ -5,7 +5,7 @@ from .sightings import create_sighting, get_sighting, list_sightings, update_sig
 from .status_schemes import create_status_scheme, get_status_scheme, list_status_schemes, update_status_scheme
 from .status_ratings import create_status_rating, update_status_rating
 from .species_status_ratings import create_species_status_rating, get_species_status_rating, \
-    list_species_status_ratings
+    list_species_status_ratings, close_species_status_rating
 
 
 __all__ = [
@@ -32,6 +32,7 @@ __all__ = [
     "create_status_rating",
     "update_status_rating",
     "create_species_status_rating",
+    "close_species_status_rating",
     "get_species_status_rating",
     "list_species_status_ratings"
 ]

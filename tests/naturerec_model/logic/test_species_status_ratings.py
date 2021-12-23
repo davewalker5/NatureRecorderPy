@@ -6,7 +6,7 @@ from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_status_scheme
 from src.naturerec_model.logic import create_status_rating
 from src.naturerec_model.logic import create_species_status_rating, get_species_status_rating, \
-    list_species_status_ratings
+    list_species_status_ratings, close_species_status_rating
 
 
 class TestStatusRating(unittest.TestCase):
@@ -53,6 +53,15 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual(datetime.datetime.now().date(), ratings[0].end_date)
         self.assertEqual(datetime.date(2017, 1, 1), ratings[1].start_date)
         self.assertIsNone(ratings[1].end_date)
+
+    def test_can_close_rating(self):
+        with Session.begin() as session:
+            rating_id = session.query(SpeciesStatusRating).one().id
+        close_species_status_rating(rating_id)
+
+    def test_cannot_close_missing_rating(self):
+        with self.assertRaises(ValueError):
+            close_species_status_rating(-1)
 
     def test_can_get_rating_by_id(self):
         with Session.begin() as session:

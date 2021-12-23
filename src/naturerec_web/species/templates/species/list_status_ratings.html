@@ -2,6 +2,8 @@
 {% block title %}Conservation Status Ratings{% endblock %}
 
 {% block content %}
+    <h1>Conservation Status Ratings</h1>
+    {% include "error.html" with context %}
     <form method="post">
         {% if species_status_ratings | length > 0 %}
             {% include "species/species_status_ratings.html" with context %}

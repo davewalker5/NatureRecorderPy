@@ -58,6 +58,20 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
     return species_rating
 
 
+def close_species_status_rating(species_status_rating_id):
+    """
+    Set the end date for a species conservation rating to today
+
+    :param species_status_rating_id: ID for the rating to close
+    """
+    with Session.begin() as session:
+        rating = session.query(SpeciesStatusRating).get(species_status_rating_id)
+        if rating is None:
+            raise ValueError("Species conservation status rating not found")
+
+        rating.end_date = datetime.datetime.today().date()
+
+
 def get_species_status_rating(species_status_rating_id):
     """
     Return a species conservation status rating given its ID

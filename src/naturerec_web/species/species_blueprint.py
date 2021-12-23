@@ -5,7 +5,7 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species
-from naturerec_model.logic import list_species_status_ratings
+from naturerec_model.logic import list_species_status_ratings, close_species_status_rating
 
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -32,7 +32,7 @@ def _render_species_list_page(category_id=None):
     Helper to render the species list page
 
     :param category_id: ID of the category for which to list species
-    :return: List of Species instances for matching species
+    :return: Rendered species list template
     """
     species = list_species(category_id) if category_id else []
     return render_template("species/list.html",
@@ -66,21 +66,8 @@ def list_filtered_species():
         return _render_species_list_page()
 
 
-@species_bp.route("/list_status/<int:species_id>")
-def list_status_ratings(species_id):
-    """
-    Show the page that lists species status ratings and is the entry point for adding new ones
-
-    :param species_id: ID for the species for which to list ratings
-    :return: The HTML for the species conservation status rating listing page
-    """
-    return render_template("species/list_status_ratings.html",
-                           species_status_ratings=list_species_status_ratings(species_id=species_id),
-                           edit_enabled=True)
-
-
-@species_bp.route("/edit", defaults={"species_id": None}, methods=["GET", "POST"])
-@species_bp.route("/add/<int:species_id>", methods=["GET", "POST"])
+@species_bp.route("/add", defaults={"species_id": None}, methods=["GET", "POST"])
+@species_bp.route("/edit/<int:species_id>", methods=["GET", "POST"])
 def edit(species_id):
     """
     Serve the page to add new species or edit an existing one and handle the appropriate action
@@ -100,3 +87,27 @@ def edit(species_id):
             return _render_species_editing_page(species_id, e)
     else:
         return _render_species_editing_page(species_id, None)
+
+
+@species_bp.route("/list_status/<int:species_id>", methods=["GET", "POST"])
+def list_status_ratings(species_id):
+    """
+    Show the page that lists species status ratings and handles "closing" of a rating by setting its end date to
+    today
+
+    :param species_id: ID for the species for which to list ratings
+    :param species_status_rating_id: ID for the rating to close on POST events
+    :return: The HTML for the species conservation status rating listing page
+    """
+    error = None
+    if request.method == "POST":
+        try:
+            close_species_status_rating(_get_posted_int("species_status_rating_id"))
+        except ValueError as e:
+            error = e
+
+    ratings = list_species_status_ratings(species_id=species_id)
+    return render_template("species/list_status_ratings.html",
+                           species_status_ratings=ratings,
+                           error=error,
+                           edit_enabled=True)
