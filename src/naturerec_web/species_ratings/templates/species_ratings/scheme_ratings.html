@@ -1,0 +1,10 @@
+<select class="form-control" name="rating" id="rating" required>
+    <option value="">Please select ...</option>
+    {% if ratings %}
+        {% for rating in ratings %}
+            <option value="{{ rating.id }}">
+                {{ rating.name }}
+            </option>
+        {% endfor %}
+    {% endif %}
+</select>

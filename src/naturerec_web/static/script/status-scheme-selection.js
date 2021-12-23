@@ -4,7 +4,7 @@ function convert_none_to_zero(value) {
 
 function update_rating_selector(scheme_id) {
     $.ajax({
-        url: "/species/list_scheme_ratings/" + convert_none_to_zero(scheme_id),
+        url: "/species_ratings/list_scheme_ratings/" + convert_none_to_zero(scheme_id),
         type: "GET",
         cache: false,
         dataType: "html",
@@ -17,8 +17,11 @@ function update_rating_selector(scheme_id) {
     });
 }
 
-function initialise_scheme_selection() {
-    // When the category selection changes, update the species list
+function initialise_rating_selection() {
+    // Set up the initial rating list
+    update_rating_selector(0);
+
+    // When the scheme selection changes, update the rating list
     $("#scheme").change(function () {
         var scheme_id = $("#scheme").val();
         update_rating_selector(scheme_id);

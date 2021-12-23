@@ -35,6 +35,7 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
             overlapping = session.query(SpeciesStatusRating)\
                 .filter(SpeciesStatusRating.speciesId == species_id,
                         SpeciesStatusRating.rating.has(StatusRating.statusSchemeId == status_rating.statusSchemeId),
+                        SpeciesStatusRating.region == region,
                         db.or_(
                             SpeciesStatusRating.end == None,
                             SpeciesStatusRating.end >= today_string
