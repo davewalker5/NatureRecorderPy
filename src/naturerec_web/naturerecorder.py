@@ -13,6 +13,7 @@ from .export import export_bp
 from .locations import locations_bp
 from .categories import categories_bp
 from .species import species_bp
+from .status import status_bp
 
 
 app = Flask("Nature Recorder",
@@ -25,6 +26,7 @@ app.register_blueprint(export_bp, url_prefix='/export')
 app.register_blueprint(locations_bp, url_prefix='/locations')
 app.register_blueprint(categories_bp, url_prefix='/categories')
 app.register_blueprint(species_bp, url_prefix='/species')
+app.register_blueprint(status_bp, url_prefix='/status')
 
 
 @app.route("/")
