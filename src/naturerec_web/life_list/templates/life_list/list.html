@@ -1,10 +1,12 @@
 {% extends "layout.html" %}
-{% block title %}Species{% endblock %}
+{% block title %}Life List{% endblock %}
 
 {% block content %}
     <form method="post">
+        <h1>Life List</h1>
         {% include "category_selector.html" with context %}
         {% if species | length > 0 %}
+            <p>There are {{ species | length }} species in the life list for "{{ category.name }}"</p>
             {% include "species.html" with context %}
         {% elif category_id %}
             <span>There are no species in the database for the specified category</span>

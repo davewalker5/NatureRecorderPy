@@ -4,7 +4,7 @@ from src.naturerec_model.model import create_database, Session, Sighting, Gender
 from src.naturerec_model.logic import create_category, get_category
 from src.naturerec_model.logic import create_species, get_species
 from src.naturerec_model.logic import create_location, get_location
-from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings, update_sighting
+from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings, update_sighting, life_list
 
 
 class TestSightings(unittest.TestCase):
@@ -258,3 +258,9 @@ class TestSightings(unittest.TestCase):
                                    location_id=sighting.locationId,
                                    species_id=sighting.speciesId)
         self.assertEqual(1, len(sightings))
+
+    def test_can_get_life_list(self):
+        category_id = get_category("Birds").id
+        species = life_list(category_id)
+        self.assertEqual(1, len(species))
+        self.assertEqual("Black-Headed Gull", species[0].name)
