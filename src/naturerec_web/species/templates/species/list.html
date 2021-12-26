@@ -3,6 +3,7 @@
 
 {% block content %}
     <form method="post">
+        <h1>Species</h1>
         {% include "category_selector.html" with context %}
         {% if species | length > 0 %}
             {% include "species.html" with context %}
