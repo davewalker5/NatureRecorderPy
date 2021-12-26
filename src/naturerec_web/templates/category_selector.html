@@ -1,7 +1,7 @@
 <div class="filter-criteria">
     <div class="form-group">
         <label>Category</label>
-        <select class="form-control" name="category" id="category">
+        <select class="form-control" name="category" id="category" required>
             <option value="">Please select ...</option>
             {% for category in categories %}
                 <option value="{{ category.id }}" {% if category.id == category_id %}selected{% endif %}>
