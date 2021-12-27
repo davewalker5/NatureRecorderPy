@@ -23,11 +23,10 @@ background thread. The source for the import is a CSV file with the following co
 The header row must be present but is ignored. Categories, species, schemes and ratings are created as required.
 """
 
-import threading
 import csv
 import datetime
 from io import StringIO
-from typing import Optional
+from .data_exchange_helper_base import DataExchangeHelperBase
 from ..model import SpeciesStatusRating
 from ..logic import create_category, get_category
 from ..logic import create_species
@@ -35,17 +34,16 @@ from ..logic import get_status_scheme, create_status_scheme, create_status_ratin
 from ..logic import create_species_status_rating
 
 
-class StatusImportHelper(threading.Thread):
+class StatusImportHelper(DataExchangeHelperBase):
     def __init__(self, f):
         """
         Initialiser
 
         :param f: IO stream (result of open() or a FileStorage object)
         """
-        threading.Thread.__init__(self)
+        super().__init__(self.import_ratings)
         self._file = f
         self._rows = []
-        self._exception = None
 
     def import_ratings(self):
         """
@@ -59,28 +57,6 @@ class StatusImportHelper(threading.Thread):
             end = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date() \
                 if row[6].strip() else None
             _ = create_species_status_rating(species_id, rating_id, row[4].strip(), start, end)
-
-    def run(self, *args, **kwargs):
-        """
-        Import conservation status schemes and ratings from a CSV file on a background thread
-
-        :param args: Variable positional arguments
-        :param kwargs: Variable keyword arguments
-        """
-        try:
-            self.import_ratings()
-        except BaseException as e:
-            # If we get an error during import, capture it. join(), below, then raises it in the calling
-            # thread
-            self._exception = e
-
-    def join(self, timeout: Optional[float] = ...) -> None:
-        """
-        If we have an exception, raise it in the calling thread when joined
-        """
-        threading.Thread.join(self)
-        if self._exception:
-            raise self._exception
 
     def _read_csv_rows(self):
         """

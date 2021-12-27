@@ -6,6 +6,7 @@
         <h1>Sightings</h1>
         {% include "filter_selector.html" with context %}
         {% if sightings | length > 0 %}
+            <p>{{ sightings | length }} matching sighting{% if sightings | length > 1 %}s{% endif %} found</p>
             {% include "sightings/sightings.html" with context %}
         {% else %}
             <span>There are no sightings in the database matching the specified criteria</span>

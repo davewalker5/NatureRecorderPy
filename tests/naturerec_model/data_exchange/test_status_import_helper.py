@@ -13,7 +13,7 @@ class TestStatusImportHelper(unittest.TestCase):
         create_database()
 
     @staticmethod
-    def create_test_file(filename, rows):
+    def _create_test_file(filename, rows):
         """
         Helper to create a CSV file with test data
 
@@ -30,7 +30,7 @@ class TestStatusImportHelper(unittest.TestCase):
 
         # Create the test file
         filename = os.path.join(get_data_path(), "valid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        TestStatusImportHelper._create_test_file(filename, [
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
@@ -70,7 +70,7 @@ class TestStatusImportHelper(unittest.TestCase):
         :param rows: List of rows of data to write to the file
         """
         filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, rows)
+        TestStatusImportHelper._create_test_file(filename, rows)
 
         with open(filename, mode="rt", encoding="UTF-8") as f:
             exporter = StatusImportHelper(f)
