@@ -3,6 +3,7 @@
 
 {% block content %}
     <h1>Conservation Status Schemes</h1>
+    {% include "message.html" with context %}
     {% if status_schemes | length > 0 %}
         {% include "status/status_schemes.html" with context %}
     {% else %}
@@ -10,7 +11,7 @@
     {% endif %}
     <div class="button-bar">
         <button type="button" class="btn btn-light">
-            <a href="#">Import Schemes and Ratings</a>
+            <a href="{{ url_for('status.import_ratings') }}">Import Schemes and Ratings</a>
         </button>
         <button type="button" class="btn btn-primary">
             <a href="{{ url_for('status.edit_scheme') }}">Add Conservation Status Scheme</a>

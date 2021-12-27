@@ -34,10 +34,11 @@ def create_status_scheme(name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, name.strip() if name else None)):
+            tidied = " ".join(name.split()) if name else None
+            if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate conservation status scheme found")
 
-            scheme = StatusScheme(name=name.strip() if name else None)
+            scheme = StatusScheme(name=tidied)
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
@@ -60,7 +61,8 @@ def update_status_scheme(status_scheme_id, name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            scheme_ids = _check_for_existing_records(session, name)
+            tidied = " ".join(name.split()) if name else None
+            scheme_ids = _check_for_existing_records(session, tidied)
 
             # Remove the current scheme from the list, if it's there
             if status_scheme_id in scheme_ids:
@@ -74,7 +76,7 @@ def update_status_scheme(status_scheme_id, name):
             if scheme is None:
                 raise ValueError("Conservation status scheme not found")
 
-            scheme.name = name.strip() if name else None
+            scheme.name = tidied
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
 

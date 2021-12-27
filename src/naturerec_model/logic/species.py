@@ -38,10 +38,11 @@ def create_species(category_id, name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, category_id, name.strip() if name else None)):
+            tidied = " ".join(name.split()).title() if name else None
+            if len(_check_for_existing_records(session, category_id, tidied)):
                 raise ValueError("Duplicate category found")
 
-            species = Species(categoryId=category_id, name=name.strip() if name else None)
+            species = Species(categoryId=category_id, name=tidied)
             session.add(species)
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
@@ -64,7 +65,8 @@ def update_species(species_id, category_id, name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            species_ids = _check_for_existing_records(session, category_id, name)
+            tidied = " ".join(name.split()).title() if name else None
+            species_ids = _check_for_existing_records(session, category_id, tidied)
 
             # Remove the current category from the list, if it's there
             if species_id in species_ids:
@@ -79,7 +81,7 @@ def update_species(species_id, category_id, name):
                 raise ValueError("Species not found")
 
             species.categoryId = category_id
-            species.name = name.strip() if name else None
+            species.name = tidied
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
             from e

@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}Import Conservation Status Ratings{% endblock %}
+
+{% block content %}
+    <h1>Import Conservation Status Ratings</h1>
+    {% include "error.html" with context %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Ratings File</label>
+            <input class="form-control" type="file" name="csv_file_name" required>
+        </div>
+        <div class="button-bar">
+            <button type="button" class="btn btn-light">
+                <a href="{{ url_for('status.list_all') }}">Cancel</a>
+            </button>
+            <button type="submit" value="create" class="btn btn-primary">Import Ratings</button>
+        </div>
+    </form>
+{% endblock %}

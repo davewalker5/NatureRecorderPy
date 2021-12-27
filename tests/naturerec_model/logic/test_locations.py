@@ -37,8 +37,8 @@ class TestLocations(unittest.TestCase):
         with Session.begin() as session:
             location_id = session.query(Location).one().id
 
-        update_location(location_id, "Lashford Lane Fen", "A County", "UK", "An Address", "A City", "AB1 1AB", 51.123,
-                        -1.123)
+        update_location(location_id, "Lashford Lane Fen", "A County", "United Kingdom", "An Address", "A City",
+                        "AB1 1AB", 51.123, -1.123)
         updated = get_location(location_id)
 
         self.assertEqual("Lashford Lane Fen", updated.name)
@@ -46,7 +46,7 @@ class TestLocations(unittest.TestCase):
         self.assertEqual("A City", updated.city)
         self.assertEqual("A County", updated.county)
         self.assertEqual("AB1 1AB", updated.postcode)
-        self.assertEqual("UK", updated.country)
+        self.assertEqual("United Kingdom", updated.country)
         self.assertEqual(51.123, updated.latitude)
         self.assertEqual(-1.123, updated.longitude)
 

@@ -26,17 +26,24 @@ The header row must be present but is ignored. Categories, species, schemes and 
 import threading
 import csv
 import datetime
-from naturerec_model.model import SpeciesStatusRating
-from naturerec_model.logic import create_category, get_category
-from naturerec_model.logic import create_species
-from naturerec_model.logic import get_status_scheme, create_status_scheme, create_status_rating
-from naturerec_model.logic import create_species_status_rating
+from io import StringIO
+from typing import Optional
+from ..model import SpeciesStatusRating
+from ..logic import create_category, get_category
+from ..logic import create_species
+from ..logic import get_status_scheme, create_status_scheme, create_status_rating
+from ..logic import create_species_status_rating
 
 
 class StatusImportHelper(threading.Thread):
-    def __init__(self, filename):
+    def __init__(self, f):
+        """
+        Initialiser
+
+        :param f: IO stream (result of open() or a FileStorage object)
+        """
         threading.Thread.__init__(self)
-        self._filename = filename
+        self._file = f
         self._rows = []
         self._exception = None
 
@@ -67,7 +74,7 @@ class StatusImportHelper(threading.Thread):
             # thread
             self._exception = e
 
-    def join(self):
+    def join(self, timeout: Optional[float] = ...) -> None:
         """
         If we have an exception, raise it in the calling thread when joined
         """
@@ -83,37 +90,43 @@ class StatusImportHelper(threading.Thread):
         :raises ValueError: If there are unexpected blanks or a malformed row
         """
         self._rows = []
-        with open(self._filename, mode="rt", encoding="UTF-8") as f:
-            # Skip the headers
-            reader = csv.reader(f)
-            next(reader)
 
-            # Build an in-memory collection of  CSV rows. As the conservation status files are small, this won't
-            # be too much of an overhead and saves reading the file twice
-            for row in reader:
-                # Must have the right number of columns
-                if len(row) != 7:
-                    raise ValueError(f"Malformed data at row {len(self._rows) + 1}")
+        # The data source could've been opened in binary or text mode, so read it all then decode it if necessary.
+        # Layout files are small so reading all their content into memory shouldn't be problematic
+        data = self._file.read()
+        csv_text = data if isinstance(data, str) else data.decode("UTF-8")
 
-                # All bar the final column in the row (the end date) must have a value
-                for i in range(0, 6):
-                    if not row[i].strip():
-                        raise ValueError(f"Missing data at row {len(self._rows) + 1}")
+        # Initialise a CSV reader over the string memory buffer and read and discard the header row
+        csv_io = StringIO(csv_text)
+        reader = csv.reader(csv_io)
+        _ = next(reader, None)
 
-                # Start date must be in the right format
+        # Build an in-memory collection of  CSV rows. As the conservation status files are small, this won't
+        # be too much of an overhead and saves reading the file twice
+        for row in reader:
+            # Must have the right number of columns
+            if len(row) != 7:
+                raise ValueError(f"Malformed data at row {len(self._rows) + 1}")
+
+            # All bar the final column in the row (the end date) must have a value
+            for i in range(0, 6):
+                if not row[i].strip():
+                    raise ValueError(f"Missing data at row {len(self._rows) + 1}")
+
+            # Start date must be in the right format
+            try:
+                _ = datetime.datetime.strptime(row[5], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
+            except ValueError as e:
+                raise ValueError(f"Invalid start date format at row {len(self._rows) + 1}") from e
+
+            # Ditto the end date, if specified
+            if row[6].strip():
                 try:
-                    _ = datetime.datetime.strptime(row[5], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
+                    _ = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
                 except ValueError as e:
-                    raise ValueError(f"Invalid start date format at row {len(self._rows) + 1}") from e
+                    raise ValueError(f"Invalid end date format at row {len(self._rows) + 1}") from e
 
-                # Ditto the end date, if specified
-                if row[6].strip():
-                    try:
-                        _ = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
-                    except ValueError as e:
-                        raise ValueError(f"Invalid end date format at row {len(self._rows) + 1}") from e
-
-                self._rows.append(row)
+            self._rows.append(row)
 
     @staticmethod
     def _create_species(category_name, species_name):
@@ -123,8 +136,8 @@ class StatusImportHelper(threading.Thread):
         :param category_name: Name of the category to which the species belongs
         :param species_name: Name of the species
         """
-        tidied_category_name = category_name.strip()
-        tidied_species_name = species_name.strip()
+        tidied_category_name = " ".join(category_name.split()).title()
+        tidied_species_name = " ".join(species_name.split()).title()
 
         # See if the category exists and, if not, create it and the species
         try:
@@ -149,8 +162,8 @@ class StatusImportHelper(threading.Thread):
         :param scheme_name: Name of the conservation status scheme to which the rating belongs
         :param rating_name: Name of the rating
         """
-        tidied_scheme_name = scheme_name.strip()
-        tidied_rating_name = rating_name.strip()
+        tidied_scheme_name = " ".join(scheme_name.split())
+        tidied_rating_name = " ".join(rating_name.split()).title()
 
         # See if the category exists and, if not, create it and the species
         try:

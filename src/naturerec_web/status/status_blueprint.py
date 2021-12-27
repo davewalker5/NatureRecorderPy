@@ -2,9 +2,10 @@
 The status blueprint supplies view functions and templates for conservation status scheme management
 """
 
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, session
 from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme
 from naturerec_model.logic import create_status_rating, update_status_rating
+from naturerec_model.data_exchange import StatusImportHelper
 
 
 status_bp = Blueprint("status", __name__, template_folder='templates')
@@ -44,6 +45,17 @@ def _render_status_rating_editing_page(status_scheme_id, status_rating_id, error
                            error=error)
 
 
+def _render_ratings_import_page(error):
+    """
+    Helper to render the conservation status ratings import page
+
+    :param error: Error message to display on the page or None
+    :return: The rendered import template
+    """
+    return render_template("status/import.html",
+                           error=error)
+
+
 @status_bp.route("/list")
 def list_all():
     """
@@ -51,8 +63,10 @@ def list_all():
 
     :return: The HTML for the listing page
     """
+    message = session.pop("message") if "message" in session else None
     return render_template("status/list.html",
                            status_schemes=list_status_schemes(),
+                           message=message,
                            edit_enabled=True)
 
 
@@ -101,3 +115,22 @@ def edit_rating(status_scheme_id, status_rating_id):
             return _render_status_rating_editing_page(status_scheme_id, status_rating_id, e)
     else:
         return _render_status_rating_editing_page(status_scheme_id, status_rating_id, None)
+
+
+@status_bp.route("/import", methods=["GET", "POST"])
+def import_ratings():
+    """
+    Serve the page to import status ratings and handle the import when the form is submitted
+
+    :return: The HTML for the import page or a response object redirecting to the scheme list page
+    """
+    if request.method == "POST":
+        try:
+            importer = StatusImportHelper(request.files["csv_file_name"])
+            importer.start()
+            session["message"] = "Conservation status schemes and ratings are being imported in the background"
+            return redirect("/status/list")
+        except ValueError as e:
+            return _render_ratings_import_page(e)
+    else:
+        return _render_ratings_import_page(None)

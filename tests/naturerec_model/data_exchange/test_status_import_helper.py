@@ -36,9 +36,10 @@ class TestStatusImportHelper(unittest.TestCase):
         ])
 
         # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        exporter.join()
+        with open(filename, mode="rt", encoding="UTF-8") as f:
+            exporter = StatusImportHelper(f)
+            exporter.start()
+            exporter.join()
         os.unlink(filename)
 
         # Check the scheme was imported correctly
@@ -51,7 +52,7 @@ class TestStatusImportHelper(unittest.TestCase):
         category = get_category("Birds")
         self.assertIsNotNone(category)
         self.assertEqual(1, len(category.species))
-        self.assertEqual("Arctic skua", category.species[0].name)
+        self.assertEqual("Arctic Skua", category.species[0].name)
 
         # Check the rating was imported correctly
         ratings = list_species_status_ratings(species_id=category.species[0].id)
@@ -62,6 +63,23 @@ class TestStatusImportHelper(unittest.TestCase):
         self.assertEqual("2021-12-01 00:00:00", ratings[0].start)
         self.assertIsNone(ratings[0].end)
 
+    def _perform_invalid_import(self, rows):
+        """
+        Helper to perform an import on an invalid file and confirm the expected error is raised
+
+        :param rows: List of rows of data to write to the file
+        """
+        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
+        TestStatusImportHelper.create_test_file(filename, rows)
+
+        with open(filename, mode="rt", encoding="UTF-8") as f:
+            exporter = StatusImportHelper(f)
+            exporter.start()
+            with self.assertRaises(ValueError):
+                exporter.join()
+
+        os.unlink(filename)
+
     def test_can_import_status(self):
         self._perform_valid_import()
 
@@ -71,7 +89,7 @@ class TestStatusImportHelper(unittest.TestCase):
 
     def test_can_import_status_for_existing_species(self):
         category = create_category("Birds")
-        _ = create_species(category.id, "Arctic skua")
+        _ = create_species(category.id, "Arctic Skua")
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_scheme(self):
@@ -84,136 +102,55 @@ class TestStatusImportHelper(unittest.TestCase):
         self._perform_valid_import()
 
     def test_cannot_import_file_with_blank_species(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             ",Birds,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_blank_category(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_blank_scheme(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,,Red,United Kingdom,01/12/2021,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_blank_rating(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,,United Kingdom,01/12/2021,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_blank_region(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,Red,,01/12/2021,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_blank_start(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_invalid_start(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,Not A Date,\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_invalid_end(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,01/12/2021,Not A Date\n"
         ])
 
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)
-
     def test_cannot_import_file_with_malformed_row(self):
-        # Create the test file
-        filename = os.path.join(get_data_path(), "invalid_status_import.csv")
-        TestStatusImportHelper.create_test_file(filename, [
+        self._perform_invalid_import([
             "Species,Category,Scheme,Rating,Region,Start,End\n",
             "Arctic skua,Birds,BOCC5,\n"
         ])
-
-        # Import the statuses
-        exporter = StatusImportHelper(filename=filename)
-        exporter.start()
-        with self.assertRaises(ValueError):
-            exporter.join()
-        os.unlink(filename)

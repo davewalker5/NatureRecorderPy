@@ -34,10 +34,11 @@ def create_category(name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, name.strip() if name else None)):
+            tidied = " ".join(name.split()).title() if name else None
+            if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate category found")
 
-            category = Category(name=name.strip() if name else None)
+            category = Category(name=tidied)
             session.add(category)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
@@ -60,7 +61,8 @@ def update_category(category_id, name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            category_ids = _check_for_existing_records(session, name)
+            tidied = " ".join(name.split()).title() if name else None
+            category_ids = _check_for_existing_records(session, tidied)
 
             # Remove the current category from the list, if it's there
             if category_id in category_ids:
@@ -75,7 +77,7 @@ def update_category(category_id, name):
             if category is None:
                 raise ValueError("Category not found")
 
-            category.name = name.strip() if name else None
+            category.name = tidied
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
 

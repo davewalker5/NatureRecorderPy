@@ -37,10 +37,11 @@ def create_status_rating(status_scheme_id, name):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, status_scheme_id, name.strip() if name else None)):
+            tidied = " ".join(name.split()).title() if name else None
+            if len(_check_for_existing_records(session, status_scheme_id, tidied)):
                 raise ValueError("Duplicate conservation status rating found")
 
-            scheme = StatusRating(statusSchemeId=status_scheme_id, name=name.strip() if name else None)
+            scheme = StatusRating(statusSchemeId=status_scheme_id, name=tidied)
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
@@ -67,7 +68,8 @@ def update_status_rating(status_rating_id, name):
 
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            rating_ids = _check_for_existing_records(session, rating.statusSchemeId, name)
+            tidied = " ".join(name.split()).title() if name else None
+            rating_ids = _check_for_existing_records(session, rating.statusSchemeId, tidied)
 
             # Remove the current scheme from the list, if it's there
             if status_rating_id in rating_ids:
@@ -77,7 +79,7 @@ def update_status_rating(status_rating_id, name):
             if len(rating_ids):
                 raise ValueError("Duplicate conservation status scheme found")
 
-            rating.name = name.strip() if name else None
+            rating.name = tidied
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
 
