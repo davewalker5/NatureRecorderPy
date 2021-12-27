@@ -10,6 +10,7 @@ class SpeciesStatusRating(Base):
     """
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
     DISPLAY_DATE_FORMAT = "%d/%m/%Y"
+    IMPORT_DATE_FORMAT = "%d/%m/%Y"
 
     __tablename__ = "SpeciesStatusRatings"
     __table_args__ = (CheckConstraint("LENGTH(TRIM(region)) > 0"),
