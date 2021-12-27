@@ -38,15 +38,16 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            if len(_check_for_existing_records(session, name.strip() if name else None)):
+            tidied = " ".join(name.split()).title() if name else None
+            if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate location found")
 
-            location = Location(name=name.strip() if name else None,
-                                address=address.strip() if address else None,
-                                city=city.strip() if city else None,
-                                county=county.strip() if county else None,
-                                postcode=postcode.strip() if postcode else None,
-                                country=country.strip() if country else None,
+            location = Location(name=tidied,
+                                address=" ".join(address.split()) if address else None,
+                                city=" ".join(city.split()) if city else None,
+                                county=" ".join(county.split()) if county else None,
+                                postcode=" ".join(postcode.split()).upper() if postcode else None,
+                                country=" ".join(country.split()) if country else None,
                                 latitude=latitude,
                                 longitude=longitude)
             session.add(location)
@@ -76,7 +77,8 @@ def update_location(location_id, name, county, country, address=None, city=None,
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            location_ids = _check_for_existing_records(session, name)
+            tidied = " ".join(name.split()).title() if name else None
+            location_ids = _check_for_existing_records(session, tidied)
 
             # Remove the current location from the list, if it's there
             if location_id in location_ids:
@@ -90,12 +92,12 @@ def update_location(location_id, name, county, country, address=None, city=None,
             if location is None:
                 raise ValueError("Location not found")
 
-            location.name = name.strip() if name else None
-            location.address = address.strip() if address else None
-            location.city = city.strip() if city else None
-            location.county = county.strip() if county else None
-            location.postcode = postcode.strip() if postcode else None
-            location.country = country.strip() if country else None
+            location.name = tidied
+            location.address = " ".join(address.split()) if address else None
+            location.city = " ".join(city.split()) if city else None
+            location.county = " ".join(county.split()) if county else None
+            location.postcode = " ".join(postcode.split()).upper() if postcode else None
+            location.country = " ".join(country.split()) if country else None
             location.latitude = latitude
             location.longitude = longitude
     except IntegrityError as e:

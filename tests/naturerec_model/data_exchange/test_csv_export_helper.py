@@ -9,7 +9,7 @@ from src.naturerec_model.logic import create_sighting
 from src.naturerec_model.data_exchange import CsvExportHelper
 
 
-class TestSighting(unittest.TestCase):
+class TestCsvExportHelper(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._category = create_category("Birds")
