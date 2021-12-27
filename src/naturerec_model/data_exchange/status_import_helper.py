@@ -1,3 +1,28 @@
+"""
+This module implements a helper that will import conservation status schemes, ratings and species ratings on a
+background thread. The source for the import is a CSV file with the following columns:
+
++----------+-----------------------------------------------------------------------------+
+| Column   | Contents                                                                    |
++----------+-----------------------------------------------------------------------------+
+| Species  | Name of the species                                                         |
++----------+-----------------------------------------------------------------------------+
+| Category | Category to which the species belongs                                       |
++----------+-----------------------------------------------------------------------------+
+| Scheme   | Name of the conservation status scheme                                      |
++----------+-----------------------------------------------------------------------------+
+| Rating   | Name of the rating on that scheme e.g. Red, Amber, Green                    |
++----------+-----------------------------------------------------------------------------+
+| Region   | Region of the world to which the rating applies e.g. United Kingdom         |
++----------+-----------------------------------------------------------------------------+
+| Start    | The start date for the rating in DD/MM/YYYY format                          |
++----------+-----------------------------------------------------------------------------+
+| End      | The end date for the rating in DD/MM/YYYY format or a blank for no end date |
++----------+-----------------------------------------------------------------------------+
+
+The header row must be present but is ignored. Categories, species, schemes and ratings are created as required.
+"""
+
 import threading
 import csv
 import datetime

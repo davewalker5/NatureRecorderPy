@@ -8,3 +8,4 @@ The naturerec_model Package
    schema
    model/index
    logic/index
+   data_exchange/index
