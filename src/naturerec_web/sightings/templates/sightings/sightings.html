@@ -12,6 +12,7 @@
                 {% if edit_enabled %}
                     <th/>
                     <th/>
+                    <th/>
                 {% endif %}
             </tr>
         </thead>
@@ -26,6 +27,11 @@
                     <td>{{ sighting.gender_name }}</td>
                     <td>{{ sighting.with_young_name }}</td>
                     {% if edit_enabled %}
+                        <td>
+                            <a href="{{ url_for( 'species_ratings.list_status_ratings', species_id = sighting.speciesId ) }}">
+                                <i class="fa fa-exclamation-triangle" title="Edit Conservation Status"></i>
+                            </a>
+                        </td>
                         <td>
                             <a href="{{ url_for('sightings.edit', sighting_id=sighting.id) }}">
                                 <i class="fa fa-edit" title="Edit Sighting"></i>

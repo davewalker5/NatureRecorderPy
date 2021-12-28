@@ -6,7 +6,7 @@ import datetime
 from flask import Blueprint, render_template, request
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
-from naturerec_model.data_exchange import CsvExportHelper
+from naturerec_model.data_exchange import SightingsExportHelper
 from naturerec_model.model import Sighting
 
 
@@ -82,7 +82,7 @@ def export():
         species_id = _get_filter_int("species")
 
         # Kick off the export
-        exporter = CsvExportHelper(filename, from_date, to_date, location_id, species_id)
+        exporter = SightingsExportHelper(filename, from_date, to_date, location_id, species_id)
         exporter.start()
 
         # Go to the export filter page

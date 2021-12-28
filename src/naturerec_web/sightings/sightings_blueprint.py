@@ -3,12 +3,13 @@ The sightings blueprint supplies view functions and templates for sighting manag
 """
 
 import datetime
-from flask import Blueprint, render_template, request, session
+from flask import Blueprint, render_template, request, session, redirect
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
 from naturerec_model.model import Gender, Sighting
+from naturerec_model.data_exchange import SightingsImportHelper
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
 
@@ -75,6 +76,7 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
                                species_id=species_id)
 
     # Serve the page
+    message = session.pop("message") if "message" in session else None
     return render_template("sightings/list.html",
                            from_date=from_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if from_date else "",
                            to_date=to_date.strftime(Sighting.DATE_DISPLAY_FORMAT) if to_date else "",
@@ -85,7 +87,19 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
                            categories=list_categories(),
                            action_button_label="Filter Sightings",
                            sightings=sightings,
+                           message=message,
                            edit_enabled=True)
+
+
+def _render_sightings_import_page(error):
+    """
+    Helper to render the sightings import page
+
+    :param error: Error message to display on the page or None
+    :return: The rendered import template
+    """
+    return render_template("sightings/import.html",
+                           error=error)
 
 
 def _get_filter_int(key):
@@ -196,3 +210,22 @@ def edit(sighting_id):
             return _render_sighting_editing_page(sighting_id, None, e)
     else:
         return _render_sighting_editing_page(sighting_id, None, None)
+
+
+@sightings_bp.route("/import", methods=["GET", "POST"])
+def import_sightings():
+    """
+    Serve the page to import sightings and handle the import when the form is submitted
+
+    :return: The HTML for the import page or a response object redirecting to the scheme list page
+    """
+    if request.method == "POST":
+        try:
+            importer = SightingsImportHelper(request.files["csv_file_name"])
+            importer.start()
+            session["message"] = "Sightings are being imported in the background"
+            return redirect("/sightings/list")
+        except ValueError as e:
+            return _render_sightings_import_page(e)
+    else:
+        return _render_sightings_import_page(None)

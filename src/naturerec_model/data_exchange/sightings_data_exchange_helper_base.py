@@ -1,6 +1,6 @@
 """
-This module implements a helper that will export sightings to  a CSV format file on a background thread. The
-resulting file has the following columns:
+This module defines a base class for CSV data exchange helpers that complete on a background thread. The
+CSV files have the following columns:
 
 +-----------+-----------------------------------------------------------------------------+
 | Column    | Contents                                                                    |
@@ -33,14 +33,10 @@ resulting file has the following columns:
 +-----------+-----------------------------------------------------------------------------+
 """
 
-import threading
-import csv
-import os
-from ..model import get_data_path
-from ..logic.sightings import list_sightings
+from .data_exchange_helper_base import DataExchangeHelperBase
 
 
-class CsvExportHelper(threading.Thread):
+class SightingsDataExchangeHelperBase(DataExchangeHelperBase):
     COLUMN_NAMES = [
         'Species',
         'Category',
@@ -58,44 +54,20 @@ class CsvExportHelper(threading.Thread):
         'Longitude'
     ]
 
-    def __init__(self, filename, from_date=None, to_date=None, location_id=None, species_id=None):
-        threading.Thread.__init__(self)
-        self._filename = filename
-        self._from_date = from_date
-        self._to_date = to_date
-        self._location_id = location_id
-        self._species_id = species_id
-
-    def export(self):
+    def __init__(self, action):
         """
-        Retrieve a set of sightings matching the criteria passed to the init method and write
-        them to file in CSV format
+        Initialiser
+
+        :param action: Callable to perform the data exchange operation
         """
-        with open(self.get_file_export_path(), mode='wt', newline='', encoding="UTF-8") as f:
-            writer = csv.writer(f)
-            writer.writerow(self.COLUMN_NAMES)
+        super().__init__(action)
 
-            sightings = list_sightings(self._from_date, self._to_date, self._location_id, self._species_id)
-            for sighting in sightings:
-                writer.writerow(sighting.csv_columns)
-
-    def run(self, *args, **kwargs):
+    @classmethod
+    def get_field_name(cls, index):
         """
-        Export sightings to a CSV file on a background thread
+        Return the name of the column at the specified index
 
-        :param args: Variable positional arguments
-        :param kwargs: Variable keyword arguments
+        :param index: Column index
+        :return: Column name
         """
-        self.export()
-
-    def get_file_export_path(self):
-        """
-        Construct and return the full path to the export file
-
-        :return: Full path to the export file
-        """
-        export_folder = os.path.join(get_data_path(), "exports")
-        if not os.path.exists(export_folder):
-            os.makedirs(export_folder)
-
-        return os.path.join(export_folder, self._filename)
+        return cls.COLUMN_NAMES[index]

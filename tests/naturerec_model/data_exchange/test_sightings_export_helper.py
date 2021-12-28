@@ -6,10 +6,10 @@ from src.naturerec_model.logic import create_category
 from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_location
 from src.naturerec_model.logic import create_sighting
-from src.naturerec_model.data_exchange import CsvExportHelper
+from src.naturerec_model.data_exchange import SightingsExportHelper
 
 
-class TestCsvExportHelper(unittest.TestCase):
+class TestSightingsExportHelper(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._category = create_category("Birds")
@@ -20,7 +20,7 @@ class TestCsvExportHelper(unittest.TestCase):
 
     def test_can_export_sightings(self):
         # Export the sightings
-        exporter = CsvExportHelper(filename="export.csv")
+        exporter = SightingsExportHelper(filename="export.csv")
         exporter.start()
         exporter.join()
 
@@ -32,7 +32,7 @@ class TestCsvExportHelper(unittest.TestCase):
                 rows.append(row)
 
         self.assertEqual(2, len(rows))
-        self.assertEqual(CsvExportHelper.COLUMN_NAMES, rows[0])
+        self.assertEqual(SightingsExportHelper.COLUMN_NAMES, rows[0])
         self.assertEqual(14, len(rows[1]))
         self.assertEqual("Black-Headed Gull", rows[1][0])
         self.assertEqual("Birds", rows[1][1])
