@@ -11,6 +11,7 @@ class Sighting(Base):
     """
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
     DATE_DISPLAY_FORMAT = "%d/%m/%Y"
+    DATE_IMPORT_FORMAT = "%d/%m/%Y"
 
     __tablename__ = "Sightings"
 

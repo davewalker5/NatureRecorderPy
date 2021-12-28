@@ -22,6 +22,11 @@
     {% include "species_selector.html" with context %}
 
     <div class="button-bar">
+        {% if import_enabled %}
+            <button type="button" value="import" class="btn btn-light">
+                <a href="{{ url_for('sightings.import_sightings') }}">Import Sightings</a>
+            </button>
+        {% endif %}
         <button type="button" name="reset" id="reset" value="reset" class="btn btn-light">Reset Filters</button>
         <button type="submit" value="filter" class="btn btn-primary">{{ action_button_label }}</button>
     </div>

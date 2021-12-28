@@ -28,8 +28,6 @@ import datetime
 from io import StringIO
 from .data_exchange_helper_base import DataExchangeHelperBase
 from ..model import SpeciesStatusRating
-from ..logic import create_category, get_category
-from ..logic import create_species
 from ..logic import get_status_scheme, create_status_scheme, create_status_rating
 from ..logic import create_species_status_rating
 
@@ -51,7 +49,7 @@ class StatusImportHelper(DataExchangeHelperBase):
         """
         self._read_csv_rows()
         for row in self._rows:
-            species_id = self._create_species(row[1], row[0])
+            species_id = self.create_species(row[1], row[0])
             rating_id = self._create_rating(row[2], row[3])
             start = datetime.datetime.strptime(row[5], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
             end = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date() \
@@ -103,32 +101,6 @@ class StatusImportHelper(DataExchangeHelperBase):
                     raise ValueError(f"Invalid end date format at row {len(self._rows) + 1}") from e
 
             self._rows.append(row)
-
-    @staticmethod
-    def _create_species(category_name, species_name):
-        """
-        Ensure the species with the specified name exists in the specified category
-
-        :param category_name: Name of the category to which the species belongs
-        :param species_name: Name of the species
-        """
-        tidied_category_name = " ".join(category_name.split()).title()
-        tidied_species_name = " ".join(species_name.split()).title()
-
-        # See if the category exists and, if not, create it and the species
-        try:
-            category = get_category(tidied_category_name)
-        except ValueError:
-            category = create_category(tidied_category_name)
-            return create_species(category.id, tidied_species_name).id
-
-        # See if the species exists against the existing category. If so, just return its ID
-        species_ids = [species.id for species in category.species if species.name == tidied_species_name]
-        if len(species_ids):
-            return species_ids[0]
-
-        # Doesn't exist so create it and return its ID
-        return create_species(category.id, tidied_species_name).id
 
     @staticmethod
     def _create_rating(scheme_name, rating_name):

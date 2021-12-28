@@ -27,6 +27,8 @@ class TestSpeciesStatusRating(unittest.TestCase):
         self.assertEqual("United Kingdom", rating.region)
         self.assertEqual(datetime.date(2015, 1, 1), rating.start_date)
         self.assertIsNone(rating.end_date)
+        self.assertEqual("01/01/2015", rating.display_start_date)
+        self.assertIsNone(rating.display_end_date)
 
     def test_cannot_create_rating_for_missing_species(self):
         with self.assertRaises(ValueError):

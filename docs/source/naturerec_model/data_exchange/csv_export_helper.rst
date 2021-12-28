@@ -1,5 +1,0 @@
-csv_export_helper.py
-====================
-
-.. automodule:: naturerec_model.data_exchange.csv_export_helper
-   :members:

@@ -5,5 +5,8 @@ The data_exchange Package
    :maxdepth: 2
    :caption: Contents:
 
-   csv_export_helper
+   data_exchange_helper_base
+   sightings_data_exchange_helper_base
    status_import_helper
+   sightings_import_helper
+   sightings_export_helper

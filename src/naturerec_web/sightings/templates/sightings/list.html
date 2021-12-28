@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 {% block title %}Sightings{% endblock %}
+{% set import_enabled = True %}
 
 {% block content %}
     <form method="post">
         <h1>Sightings</h1>
+        {% include "message.html" with context %}
         {% include "filter_selector.html" with context %}
         {% if sightings | length > 0 %}
             <p>{{ sightings | length }} matching sighting{% if sightings | length > 1 %}s{% endif %} found</p>

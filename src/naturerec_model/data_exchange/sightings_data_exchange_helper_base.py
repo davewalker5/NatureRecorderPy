@@ -61,3 +61,13 @@ class SightingsDataExchangeHelperBase(DataExchangeHelperBase):
         :param action: Callable to perform the data exchange operation
         """
         super().__init__(action)
+
+    @classmethod
+    def get_field_name(cls, index):
+        """
+        Return the name of the column at the specified index
+
+        :param index: Column index
+        :return: Column name
+        """
+        return cls.COLUMN_NAMES[index]
