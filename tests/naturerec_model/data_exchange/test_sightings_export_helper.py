@@ -6,6 +6,7 @@ from src.naturerec_model.logic import create_category
 from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_location
 from src.naturerec_model.logic import create_sighting
+from src.naturerec_model.logic import list_job_status
 from src.naturerec_model.data_exchange import SightingsExportHelper
 
 
@@ -48,3 +49,10 @@ class TestSightingsExportHelper(unittest.TestCase):
         self.assertEqual("United Kingdom",  rows[1][11])
         self.assertEqual("", rows[1][12])
         self.assertEqual("", rows[1][13])
+
+        # Confirm the job status record was created
+        job_statuses = list_job_status()
+        self.assertEqual(1, len(job_statuses))
+        self.assertEqual(SightingsExportHelper.JOB_NAME, job_statuses[0].name)
+        self.assertIsNotNone(job_statuses[0].display_end_date)
+        self.assertIsNone(job_statuses[0].error)

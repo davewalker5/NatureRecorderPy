@@ -10,6 +10,8 @@ from ..logic.sightings import list_sightings
 
 
 class SightingsExportHelper(SightingsDataExchangeHelperBase):
+    JOB_NAME = "Sightings export"
+
     def __init__(self, filename, from_date=None, to_date=None, location_id=None, species_id=None):
         super().__init__(self.export)
         self._filename = filename
@@ -17,6 +19,15 @@ class SightingsExportHelper(SightingsDataExchangeHelperBase):
         self._to_date = to_date
         self._location_id = location_id
         self._species_id = species_id
+        self.create_job_status()
+
+    def __repr__(self):
+        return f"{type(self).__name__}(" \
+               f"filename={self._filename!r}, " \
+               f"from_date={self._from_date!r}, " \
+               f"to_date={self._to_date!r}, " \
+               f"location_id={self._location_id!r}, " \
+               f"species_id={self._species_id!r})"
 
     def export(self):
         """

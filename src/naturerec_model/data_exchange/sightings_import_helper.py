@@ -12,6 +12,8 @@ from ..logic import create_sighting
 
 
 class SightingsImportHelper(SightingsDataExchangeHelperBase):
+    JOB_NAME = "Sightings import"
+
     def __init__(self, f):
         """
         Initialiser
@@ -20,6 +22,10 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         """
         super().__init__(self.import_sightings)
         self._file = f
+        self.create_job_status()
+
+    def __repr__(self):
+        return f"{type(self).__name__}(f={self._file!r})"
 
     def import_sightings(self):
         """

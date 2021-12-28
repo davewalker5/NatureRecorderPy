@@ -3,12 +3,16 @@ This module defines a base class for data exchange helpers that complete on a ba
 """
 
 import threading
+import datetime
 from typing import Optional
 from ..logic import create_category, get_category
 from ..logic import create_species
+from ..logic import create_job_status, complete_job_status
 
 
 class DataExchangeHelperBase(threading.Thread):
+    JOB_NAME = "Data Exchange Job"
+
     def __init__(self, action):
         """
         Initialiser
@@ -18,6 +22,7 @@ class DataExchangeHelperBase(threading.Thread):
         threading.Thread.__init__(self)
         self._action = action
         self._exception = None
+        self._job_status_id = None
 
     def run(self, *args, **kwargs):
         """
@@ -32,6 +37,8 @@ class DataExchangeHelperBase(threading.Thread):
             # If we get an error during import, capture it. join(), below, then raises it in the calling
             # thread
             self._exception = e
+
+        self.complete_job_status()
 
     def join(self, timeout: Optional[float] = ...) -> None:
         """
@@ -66,3 +73,17 @@ class DataExchangeHelperBase(threading.Thread):
 
         # Doesn't exist so create it and return its ID
         return create_species(category.id, tidied_species_name).id
+
+    def create_job_status(self):
+        """
+        Create a job status record for this job
+        """
+        self._job_status_id = create_job_status(self.JOB_NAME, repr(self), datetime.datetime.now()).id
+
+    def complete_job_status(self):
+        """
+        Complete the job status record for this job
+        """
+        if self._job_status_id:
+            error = str(self._exception) if self._exception else None
+            _ = complete_job_status(self._job_status_id, datetime.datetime.now(), error)

@@ -12,3 +12,4 @@ The logic Package
    status_schemes
    status_ratings
    species_status_ratings
+   job_statuses

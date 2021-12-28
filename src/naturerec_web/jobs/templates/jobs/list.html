@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Background Job Status{% endblock %}
+{% set import_enabled = True %}
+
+{% block content %}
+    <form method="post">
+        <h1>Background Job Status</h1>
+        {% if job_statuses | length > 0 %}
+            {% include "jobs/job_statuses.html" with context %}
+        {% else %}
+            <span>There are no recent background jobs in the database</span>
+        {% endif %}
+    </form>
+{% endblock %}

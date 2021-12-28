@@ -1,0 +1,26 @@
+{% if job_statuses | length > 0 %}
+    <table class="striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Parameters</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Runtime</th>
+                <th>Error</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job_status in job_statuses %}
+                <tr>
+                    <td nowrap>{{ job_status.name }}</td>
+                    <td>{{ job_status.parameters }}</td>
+                    <td nowrap>{{ job_status.display_start_date }}</td>
+                    <td nowrap>{{ job_status.display_end_date }}</td>
+                    <td nowrap>{{ job_status.runtime }}</td>
+                    <td>{{ job_status.error }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
