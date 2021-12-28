@@ -6,6 +6,7 @@ from .status_schemes import create_status_scheme, get_status_scheme, list_status
 from .status_ratings import create_status_rating, update_status_rating
 from .species_status_ratings import create_species_status_rating, get_species_status_rating, \
     list_species_status_ratings, close_species_status_rating
+from .job_statuses import create_job_status, complete_job_status, list_job_status
 
 
 __all__ = [
@@ -35,5 +36,8 @@ __all__ = [
     "create_species_status_rating",
     "close_species_status_rating",
     "get_species_status_rating",
-    "list_species_status_ratings"
+    "list_species_status_ratings",
+    "create_job_status",
+    "complete_job_status",
+    "list_job_status"
 ]
