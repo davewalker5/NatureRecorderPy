@@ -16,6 +16,7 @@ from .species import species_bp
 from .status import status_bp
 from .species_ratings import species_ratings_bp
 from .life_list import life_list_bp
+from .jobs import jobs_bp
 
 app = Flask("Nature Recorder",
             static_folder=os.path.join(os.path.dirname(__file__), "static"),
@@ -30,6 +31,7 @@ app.register_blueprint(species_bp, url_prefix='/species')
 app.register_blueprint(status_bp, url_prefix='/status')
 app.register_blueprint(species_ratings_bp, url_prefix='/species_ratings')
 app.register_blueprint(life_list_bp, url_prefix='/life_list')
+app.register_blueprint(jobs_bp, url_prefix='/jobs')
 
 
 @app.route("/")

@@ -40,6 +40,7 @@ setuptools.setup(
         "naturerec_web": naturerec_web_package_data,
         "naturerec_web.categories": ["templates/categories/*.html"],
         "naturerec_web.export": ["templates/export/*.html"],
+        "naturerec_web.jobs": ["templates/jobs/*.html"],
         "naturerec_web.life_list": ["templates/life_list/*.html"],
         "naturerec_web.locations": ["templates/locations/*.html"],
         "naturerec_web.sightings": ["templates/sightings/*.html"],

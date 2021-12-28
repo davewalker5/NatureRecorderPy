@@ -44,6 +44,10 @@ class StatusImportHelper(DataExchangeHelperBase):
         super().__init__(self.import_ratings)
         self._file = f
         self._rows = []
+        self.create_job_status()
+
+    def __repr__(self):
+        return f"{type(self).__name__}(f={self._file!r})"
 
     def import_ratings(self):
         """

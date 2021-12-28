@@ -32,14 +32,13 @@ class DataExchangeHelperBase(threading.Thread):
         :param kwargs: Variable keyword arguments
         """
         try:
-            self._create_job_status()
             self._action()
         except BaseException as e:
             # If we get an error during import, capture it. join(), below, then raises it in the calling
             # thread
             self._exception = e
 
-        self._complete_job_status()
+        self.complete_job_status()
 
     def join(self, timeout: Optional[float] = ...) -> None:
         """
@@ -75,13 +74,13 @@ class DataExchangeHelperBase(threading.Thread):
         # Doesn't exist so create it and return its ID
         return create_species(category.id, tidied_species_name).id
 
-    def _create_job_status(self):
+    def create_job_status(self):
         """
         Create a job status record for this job
         """
         self._job_status_id = create_job_status(self.JOB_NAME, repr(self), datetime.datetime.now()).id
 
-    def _complete_job_status(self):
+    def complete_job_status(self):
         """
         Complete the job status record for this job
         """

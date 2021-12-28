@@ -15,5 +15,6 @@ The model Package
    status_scheme
    status_rating
    species_status_rating
+   job_status
    utils
 

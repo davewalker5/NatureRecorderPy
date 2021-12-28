@@ -49,7 +49,7 @@ def _create_engine():
 
     :return: Instance of the SQLAlchemy Engine class
     """
-    return db.create_engine(f"sqlite:///{_get_db_path()}", echo=False)
+    return db.create_engine(f"sqlite:///{_get_db_path()}", echo=True)
 
 
 def create_database():
