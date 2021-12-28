@@ -26,6 +26,8 @@ The Nature Recorder application has a SQLite back-end with the following schema:
 +-----------------------+---------------------------------------------------------------------------------------+
 | SPECIESSTATUSRATINGS  | Conservation status for a species on a scheme, with effective dates for the rating    |
 +-----------------------+---------------------------------------------------------------------------------------+
+| JOBSTATUSES           | Status of recently submitted background jobs (data import and export jobs)            |
++-----------------------+---------------------------------------------------------------------------------------+
 | USERS                 | Not used by the Python version of the application                                     |
 +-----------------------+---------------------------------------------------------------------------------------+
 | __EFMigrationsHistory | Not used by the Python version of the application                                     |
