@@ -5,6 +5,7 @@ from src.naturerec_model.logic import get_category, create_category
 from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import get_status_scheme, create_status_scheme, create_status_rating
 from src.naturerec_model.logic import list_species_status_ratings
+from src.naturerec_model.logic import list_job_status
 from src.naturerec_model.data_exchange import StatusImportHelper
 
 
@@ -63,6 +64,13 @@ class TestStatusImportHelper(unittest.TestCase):
         self.assertEqual("2021-12-01 00:00:00", ratings[0].start)
         self.assertIsNone(ratings[0].end)
 
+        # Confirm the job status record was created
+        job_statuses = list_job_status()
+        self.assertEqual(1, len(job_statuses))
+        self.assertEqual(StatusImportHelper.JOB_NAME, job_statuses[0].name)
+        self.assertIsNotNone(job_statuses[0].display_end_date)
+        self.assertIsNone(job_statuses[0].error)
+
     def _perform_invalid_import(self, rows):
         """
         Helper to perform an import on an invalid file and confirm the expected error is raised
@@ -79,6 +87,13 @@ class TestStatusImportHelper(unittest.TestCase):
                 exporter.join()
 
         os.unlink(filename)
+
+        # Confirm the job status record was created
+        job_statuses = list_job_status()
+        self.assertEqual(1, len(job_statuses))
+        self.assertEqual(StatusImportHelper.JOB_NAME, job_statuses[0].name)
+        self.assertIsNotNone(job_statuses[0].display_end_date)
+        self.assertIsNotNone(job_statuses[0].error)
 
     def test_can_import_status(self):
         self._perform_valid_import()

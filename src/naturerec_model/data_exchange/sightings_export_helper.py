@@ -10,6 +10,8 @@ from ..logic.sightings import list_sightings
 
 
 class SightingsExportHelper(SightingsDataExchangeHelperBase):
+    JOB_NAME = "Sightings export"
+
     def __init__(self, filename, from_date=None, to_date=None, location_id=None, species_id=None):
         super().__init__(self.export)
         self._filename = filename

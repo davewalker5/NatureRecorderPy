@@ -6,6 +6,7 @@ from src.naturerec_model.logic import create_category, get_category
 from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_location, get_location
 from src.naturerec_model.logic import list_sightings
+from src.naturerec_model.logic import list_job_status
 
 
 class TestSightingsImportHelper(unittest.TestCase):
@@ -69,6 +70,13 @@ class TestSightingsImportHelper(unittest.TestCase):
         self.assertEqual(0, sightings[0].withYoung)
         self.assertEqual("2021-02-01 00:00:00", sightings[0].date)
 
+        # Confirm the job status record was created
+        job_statuses = list_job_status()
+        self.assertEqual(1, len(job_statuses))
+        self.assertEqual(SightingsImportHelper.JOB_NAME, job_statuses[0].name)
+        self.assertIsNotNone(job_statuses[0].display_end_date)
+        self.assertIsNone(job_statuses[0].error)
+
     def _perform_invalid_import(self, rows):
         """
         Helper to perform an import on an invalid file and confirm the expected error is raised
@@ -85,6 +93,13 @@ class TestSightingsImportHelper(unittest.TestCase):
                 importer.join()
 
         os.unlink(filename)
+
+        # Confirm the job status record was created
+        job_statuses = list_job_status()
+        self.assertEqual(1, len(job_statuses))
+        self.assertEqual(SightingsImportHelper.JOB_NAME, job_statuses[0].name)
+        self.assertIsNotNone(job_statuses[0].display_end_date)
+        self.assertIsNotNone(job_statuses[0].error)
 
     def test_can_import_sightings(self):
         self._perform_valid_import()

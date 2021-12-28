@@ -12,6 +12,8 @@ from ..logic import create_sighting
 
 
 class SightingsImportHelper(SightingsDataExchangeHelperBase):
+    JOB_NAME = "Sightings import"
+
     def __init__(self, f):
         """
         Initialiser

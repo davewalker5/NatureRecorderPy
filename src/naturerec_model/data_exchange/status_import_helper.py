@@ -33,6 +33,8 @@ from ..logic import create_species_status_rating
 
 
 class StatusImportHelper(DataExchangeHelperBase):
+    JOB_NAME = "Conservation status import"
+
     def __init__(self, f):
         """
         Initialiser
