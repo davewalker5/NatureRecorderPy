@@ -179,3 +179,8 @@ div.message {
   content: "  *";
   color: red;
 }
+
+.geocode {
+    color: #286090;
+    cursor: pointer;
+}

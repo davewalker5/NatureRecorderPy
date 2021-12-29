@@ -50,8 +50,8 @@
                    value="{{ county }}" required>
         </div>
         <div class="form-group">
-            <label class="control-label">City</label>
-            <input class="form-control" name="postcode" placeholder="Postcode e.g. OX1 3RF"
+            <label class="control-label">Postcode</label>
+            <input class="form-control" name="postcode" id="postcode" placeholder="Postcode e.g. OX1 3RF"
                    value="{{ postcode }}">
         </div>
         <div class="form-group required">
@@ -61,12 +61,14 @@
         </div>
         <div class="form-group">
             <label class="control-label">Latitude</label>
-            <input class="form-control" name="latitude" placeholder="Latitude e.g. 51.75948"
+            <i class="fa fa-globe geocode" title="Populate latitude and longitude from postcode"></i>
+            <input class="form-control" name="latitude" id="latitude" placeholder="Latitude e.g. 51.75948"
                    value="{{ latitude }}">
         </div>
         <div class="form-group">
             <label class="control-label">Longitude</label>
-            <input class="form-control" name="longitude" placeholder="Longitude e.g. -1.25053"
+            <i class="fa fa-globe geocode" title="Populate latitude and longitude from postcode"></i>
+            <input class="form-control" name="longitude" id="longitude" placeholder="Longitude e.g. -1.25053"
                    value="{{ longitude }}">
         </div>
         <div class="button-bar">
@@ -76,4 +78,16 @@
             <button type="submit" value="create" class="btn btn-primary">{{ submit_title }}</button>
         </div>
     </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/location-geocoder.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".geocode").click(function() {
+                var postcode = $("#postcode").val();
+                geocode_location(postcode);
+            });
+        })
+    </script>
 {% endblock %}
