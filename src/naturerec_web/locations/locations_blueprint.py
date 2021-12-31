@@ -2,10 +2,8 @@
 The locations blueprint supplies view functions and templates for location management
 """
 
-import pgeocode
-import pandas as pd
 from flask import Blueprint, render_template, request, redirect
-from naturerec_model.logic import list_locations, get_location, create_location, update_location
+from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode
 
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
@@ -86,25 +84,17 @@ def edit(location_id):
         return _render_location_editing_page(location_id, None)
 
 
-@locations_bp.route("/geocode/<postcode>")
-def geocode(postcode):
+@locations_bp.route("/geocode/<postcode>", defaults={"country": "United Kingdom"})
+@locations_bp.route("/geocode/<postcode>/<country>")
+def geocode(postcode, country):
     """
     Query a postcode and return the latitude and longitude
 
     :param postcode: Postcode to query
+    :param country: Country where the postcode is located
     :return: Dictionary containing the latitude and longitude for the postcode
     """
-    result = {"latitude": "", "longitude": ""}
-
     try:
-        # Currently only implemented for UK postcodes : Other countries to follow
-        nomi = pgeocode.Nominatim("gb")
-        geocode_sr = nomi.query_postal_code(postcode)
-        if not pd.isnull(geocode_sr.latitude) and not pd.isnull(geocode_sr.longitude):
-            result["latitude"] = round(geocode_sr.latitude, 6)
-            result["longitude"] = round(geocode_sr.longitude, 6)
+        return geocode_postcode(postcode, country)
     except ValueError:
-        # Already set up the default dictionary, above, so nothing to do here
-        pass
-
-    return result
+        return {"latitude": "", "longitude": ""}

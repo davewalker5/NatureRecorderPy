@@ -56,18 +56,20 @@
         </div>
         <div class="form-group required">
             <label class="control-label">Country</label>
-            <input class="form-control" name="country" placeholder="Country e.g. United Kingdom"
+            <input class="form-control" name="country" id="country" placeholder="Country e.g. United Kingdom"
                    value="{{ country }}" required>
         </div>
         <div class="form-group">
             <label class="control-label">Latitude</label>
-            <i class="fa fa-globe geocode" title="Populate latitude and longitude from postcode"></i>
+            <i class="fa fa-globe geocode"
+               title="Populate latitude and longitude once the postcode and country have been entered"></i>
             <input class="form-control" name="latitude" id="latitude" placeholder="Latitude e.g. 51.75948"
                    value="{{ latitude }}">
         </div>
         <div class="form-group">
             <label class="control-label">Longitude</label>
-            <i class="fa fa-globe geocode" title="Populate latitude and longitude from postcode"></i>
+            <i class="fa fa-globe geocode"
+               title="Populate latitude and longitude once the postcode and country have been entered"></i>
             <input class="form-control" name="longitude" id="longitude" placeholder="Longitude e.g. -1.25053"
                    value="{{ longitude }}">
         </div>
@@ -86,7 +88,8 @@
         $(document).ready(function() {
             $(".geocode").click(function() {
                 var postcode = $("#postcode").val();
-                geocode_location(postcode);
+                var country = $("#country").val();
+                geocode_location(postcode, country);
             });
         })
     </script>

@@ -2,8 +2,11 @@
 Locations business logic
 """
 
-from functools import singledispatch
 import sqlalchemy as db
+import pandas as pd
+import pgeocode
+import pycountry
+from functools import singledispatch
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Location
 
@@ -163,3 +166,41 @@ def list_locations(city=None, county=None, country=None):
         locations = query.order_by(db.asc(Location.name)).all()
 
     return locations
+
+
+def geocode_postcode(postcode, country):
+    """
+    Given a postcode and country, return the latitude and longitude for the postcode
+
+    :param postcode: Postcode
+    :param country: Country where the postcode is located
+    :return: A dictionary containing the latitude and longitude or blank if not found
+    """
+    # Set a default result and check we've got a postcode, at least. If not, don't bother
+    # doing any further work as we're not going to get a latitude and longitude
+    postcode = postcode.strip() if postcode else None
+    if not postcode:
+        raise ValueError("Invalid postcode for geocoding")
+
+    # Tidy up the country name then attempt to get its 2-character country code, defaulting to
+    # GB if there's an error
+    try:
+        tidied_country_name = " ".join(country.split()).title()
+        country_code = pycountry.countries.get(name=tidied_country_name).alpha_2
+    except (LookupError, AttributeError):
+        raise ValueError("Invalid country for geocoding")
+
+    # Get the geocoder instance
+    try:
+        nomi = pgeocode.Nominatim(country_code)
+    except (AttributeError, ValueError):
+        raise ValueError("Unrecognised country code for geocoding")
+
+    # Look up the latitude and longitude for the postcode
+    geocode_sr = nomi.query_postal_code(postcode)
+    if pd.isnull(geocode_sr.latitude) or pd.isnull(geocode_sr.longitude):
+        raise ValueError("Invalid postcode for geocoding")
+
+    # Return a dictionary of latitude and longitude
+    return {"latitude": round(geocode_sr.latitude, 6),
+            "longitude": round(geocode_sr.longitude, 6)}
