@@ -71,7 +71,15 @@ Running the Application
 To run the application, a virtual environment should be created, the requirements should be installed using pip and the
 environment should be activated.
 
-With those pre-requisites in place, to run the web-based application in the Flask development web server, enter the
+With those pre-requisites in place, an empty database with the correct schema in place can be created by running the
+following commands from the "src" folder:
+
+::
+
+    export NATURE_RECORDER_DB="`pwd`/../data/naturerecorder.db"
+    python -m naturerec_model
+
+The first command will need to be modified based on the current operating system. Once the database has been created, to run the web-based application in the Flask development web server, enter the
 following from the "src/naturerec_web" folder:
 
 ::
