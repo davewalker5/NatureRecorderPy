@@ -76,7 +76,7 @@ Once the container is running, browse to the following URL on the host:
 
 http://localhost:80
 
-You should see the login page for the UI.
+You should see the sightings entry page, with other data maintenance and reporting options in the menu bar at the top of the page.
 
 ## Built With
 
