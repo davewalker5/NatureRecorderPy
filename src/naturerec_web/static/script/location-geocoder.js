@@ -1,6 +1,6 @@
-function geocode_location(postcode) {
+function geocode_location(postcode, country) {
     $.ajax({
-        url: "/locations/geocode/" + postcode,
+        url: "/locations/geocode/" + postcode + "/" + country,
         type: "GET",
         cache: false,
         dataType: "json",
