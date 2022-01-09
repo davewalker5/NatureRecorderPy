@@ -1,8 +1,12 @@
+import os
+from sqlalchemy import text
 from naturerec_model.model import create_database
 from behave import fixture, use_fixture
 from selenium import webdriver
 from flask_app_runner import FlaskAppRunner
 from naturerec_web import app as nature_recorder_app
+from naturerec_model.model.database import Engine
+from naturerec_model.model.utils import get_project_path
 
 
 MAXIMUM_PAGE_LOAD_TIME = 5
@@ -59,6 +63,20 @@ def before_all(context):
     use_fixture(create_test_database, context)
     use_fixture(start_flask_server, context)
     use_fixture(start_selenium_browser, context)
+
+
+def before_scenario(context, scenario):
+    """
+    Initialise the database for every scenario
+
+    :param context: Behave context (not used)
+    :param scenario: Behave scenario
+    """
+    clear_down_script = os.path.join(get_project_path(), "features", "sql", "clear_database.sql")
+    with open(clear_down_script, mode="rt", encoding="utf-8") as f:
+        for statement in f.readlines():
+            if statement:
+                Engine.execute(text(statement))
 
 
 def after_all(_):
