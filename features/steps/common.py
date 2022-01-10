@@ -1,4 +1,5 @@
 from behave import given, when
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from naturerec_model.model import Gender
@@ -104,6 +105,10 @@ def _(context, button_text):
     :param context: Behave context
     :param button_text: Button text
     """
-    xpath = f"//button[text()='{button_text}']"
-    button = context.browser.find_element(By.XPATH, xpath)
-    button.click()
+    xpath = f"//*[text()='{button_text}']"
+    elements = context.browser.find_elements(By.XPATH, xpath)
+    for element in elements:
+        try:
+            element.click()
+        except (ElementNotInteractableException, NoSuchElementException):
+            pass
