@@ -1,9 +1,11 @@
-from behave import given, when
+import time
+from behave import given, when, then
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from naturerec_model.model import Gender
 from naturerec_model.logic import create_sighting
-from helpers import get_date_from_string, create_test_location, create_test_category, create_test_species, select_option
+from helpers import get_date_from_string, select_option
+from helpers import create_test_location, create_test_category, create_test_species, create_test_scheme
 
 
 @given("A set of locations")
@@ -70,6 +72,20 @@ def _(context):
         _ = create_sighting(location.id, species.id, sighting_date, int(row["Number"]), gender, with_young)
 
 
+@given("A set of conservation status schemes")
+def _(context):
+    """
+    Create one or more conservation status schemes presented in a data table in the following form:
+
+    | Scheme |
+    | BOCC5  |
+
+    :param context: Behave context
+    """
+    for row in context.table:
+        _ = create_test_scheme(row["Scheme"])
+
+
 @given("There are no \"{item_type}\" in the database")
 def _(_, item_type):
     """
@@ -110,3 +126,32 @@ def _(context, button_text):
             element.click()
         except (ElementNotInteractableException, NoSuchElementException):
             pass
+
+
+@when("I click on the \"{icon_type}\" icon")
+def _(context, icon_type):
+    """
+    Icon clicker based on the icon type text
+
+    :param context: Behave context
+    :param button_text: Button text
+    """
+    class_name = f"fa-{icon_type}"
+    elements = context.browser.find_elements(By.CLASS_NAME, class_name)
+    for element in elements:
+        try:
+            element.click()
+        except (ElementNotInteractableException, NoSuchElementException):
+            pass
+
+
+@then("I am taken to the \"{title}\" page")
+def _(context, title):
+    """
+    Wait for a page to serve as the result of a previous step executing then confirm it's title
+
+    :param context: Behave context
+    :param title: Expected page title text
+    """
+    time.sleep(1)
+    assert title in context.browser.title

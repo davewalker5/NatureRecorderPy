@@ -8,6 +8,7 @@ from naturerec_model.model.utils import get_data_path
 from naturerec_model.logic import get_location, create_location
 from naturerec_model.logic import get_category, create_category
 from naturerec_model.logic import get_species, create_species
+from naturerec_model.logic import get_status_scheme, create_status_scheme
 
 
 def get_date_from_string(date_string):
@@ -64,6 +65,20 @@ def create_test_species(name, category_id):
     except ValueError:
         species = create_species(category_id, name)
     return species
+
+
+def create_test_scheme(name):
+    """
+    Create a named conservation status scheme, if it doesn't already exist
+
+    :param name: Scheme name
+    :return: Instance of the StatusScheme() class
+    """
+    try:
+        scheme = get_status_scheme(name)
+    except ValueError:
+        scheme = create_status_scheme(name)
+    return scheme
 
 
 def select_option(context, element, text, delay):
