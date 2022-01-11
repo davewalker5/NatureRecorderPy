@@ -13,7 +13,6 @@ Feature: Category management
         When I navigate to the category list page
         Then The category list will be empty
 
-    @wip
     Scenario: Add a category
         Given I navigate to the category list page
         When I click on the "Add Category" button
