@@ -34,10 +34,8 @@ def on_test_stop(environment, **kwargs):
 
 class NatureRecorderUser(HttpUser):
     """
-    Demonstration Locust load test, targeting the Nature Recorder application hosted in Docker.
-    To run the tests, open a terminal window, activate the virtual environment and run:
-
-    locust -f locustfile.py
+    Demonstration Locust load test, targeting the Nature Recorder application hosted locally
+    in the flask development server
     """
 
     #: Simulated users will wait between 1 and 5 seconds per task
