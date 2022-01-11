@@ -5,23 +5,23 @@ from src.naturerec_model.logic import geocode_postcode
 class TestLocations(unittest.TestCase):
     def test_can_geocode_uk_postcode(self):
         coordinates = geocode_postcode("OX14 3HG", "United Kingdom")
-        self.assertEqual(51.6276, coordinates["latitude"])
-        self.assertEqual(-1.255983, coordinates["longitude"])
+        self.assertAlmostEqual(51.6276, coordinates["latitude"], 1)
+        self.assertAlmostEqual(-1.255983, coordinates["longitude"], 1)
 
     def test_can_geocode_postcode_with_leading_trailing_whitespace(self):
         coordinates = geocode_postcode("    OX14 3HG    ", "United Kingdom")
-        self.assertEqual(51.6276, coordinates["latitude"])
-        self.assertEqual(-1.255983, coordinates["longitude"])
+        self.assertAlmostEqual(51.6276, coordinates["latitude"], 1)
+        self.assertAlmostEqual(-1.255983, coordinates["longitude"], 1)
 
     def test_can_geocode_non_uk_postcode(self):
         coordinates = geocode_postcode("03189", "Spain")
-        self.assertEqual(37.9391, coordinates["latitude"])
-        self.assertEqual(-0.735096, coordinates["longitude"])
+        self.assertAlmostEqual(37.9391, coordinates["latitude"], 1)
+        self.assertAlmostEqual(-0.735096, coordinates["longitude"], 1)
 
     def test_can_geocode_for_country_with_whitespace(self):
         coordinates = geocode_postcode("OX14 3HG", "   united     Kingdom   ")
-        self.assertEqual(51.6276, coordinates["latitude"])
-        self.assertEqual(-1.255983, coordinates["longitude"])
+        self.assertAlmostEqual(51.6276, coordinates["latitude"], 1)
+        self.assertAlmostEqual(-1.255983, coordinates["longitude"], 1)
 
     def test_cannot_geocode_none_postcode(self):
         with self.assertRaises(ValueError):
