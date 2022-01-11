@@ -1,10 +1,9 @@
 from behave import given, when
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
 from naturerec_model.model import Gender
 from naturerec_model.logic import create_sighting
-from helpers import get_date_from_string, create_test_location, create_test_category, create_test_species
+from helpers import get_date_from_string, create_test_location, create_test_category, create_test_species, select_option
 
 
 @given("A set of locations")
@@ -93,8 +92,7 @@ def _(context, selection, selector):
     :param selection: Visible text for the selection
     :param selector: Name of the select list element
     """
-    selector = Select(context.browser.find_element(By.NAME, selector))
-    selector.select_by_visible_text(selection)
+    select_option(context, selector, selection, None)
 
 
 @when("I click on the \"{button_text}\" button")
