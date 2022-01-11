@@ -1,8 +1,10 @@
 import time
 import datetime
+import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 from naturerec_model.model import Sighting
+from naturerec_model.model.utils import get_data_path
 from naturerec_model.logic import get_location, create_location
 from naturerec_model.logic import get_category, create_category
 from naturerec_model.logic import get_species, create_species
@@ -125,3 +127,24 @@ def confirm_span_exists(context, text, delay):
     # Find the span with the specified text
     xpath = f"//span[text()='{text}']"
     _ = context.browser.find_element(By.XPATH, xpath)
+
+
+def get_export_filepath(filename):
+    """
+    Given a filename for sightings export, return the full path to the exported CSV file
+
+    :param filename: Export file name
+    :return: Full path to the export file with that name
+    """
+    return os.path.join(get_data_path(), "exports", filename)
+
+
+def delete_export_file(filename):
+    """
+    Delete the export file with the specified name
+
+    :param filename: Export file name
+    """
+    filepath = get_export_filepath(filename)
+    if os.path.exists(filepath):
+        os.unlink(filepath)

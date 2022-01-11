@@ -1,9 +1,7 @@
 import time
-import os
-from behave import given,  when, then
+from behave import when, then
 from selenium.webdriver.common.by import By
-from helpers import select_option, confirm_span_exists
-from naturerec_model.model.utils import get_data_path
+from helpers import select_option, confirm_span_exists, get_export_filepath, delete_export_file
 
 
 @when("I navigate to the export page")
@@ -17,9 +15,8 @@ def _(context):
 def _(context):
     row = context.table.rows[0]
     # We're about to do an export, so if the file already exists then delete it at this stage
-    context.export_filepath = os.path.join(get_data_path(), "exports", row["Filename"])
-    if os.path.exists(context.export_filepath):
-        os.unlink(context.export_filepath)
+    context.export_filepath = get_export_filepath(row["Filename"])
+    delete_export_file(row["Filename"])
 
     context.browser.find_element(By.NAME, "filename").send_keys(row["Filename"])
     if row["Location"].strip():
