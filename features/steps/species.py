@@ -1,13 +1,26 @@
 import time
 from behave import when, then
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 
 
 @when("I navigate to the species list page")
 def _(context):
     url = context.flask_runner.make_url("species/list")
     context.browser.get(url)
+    time.sleep(1)
     assert "Species" in context.browser.title
+
+
+@when("I fill in the species details")
+def _(context):
+    # Having clicked, we need to sleep this thread to allow the server round trip to  refresh the page.
+    # WebDriverWait won't work in this context
+    time.sleep(1)
+    row = context.table.rows[0]
+    selector = Select(context.browser.find_element(By.NAME, "category"))
+    selector.select_by_visible_text(row["Category"])
+    context.browser.find_element(By.NAME, "name").send_keys(row["Species"])
 
 
 @then("There will be {number} species in the species list")
