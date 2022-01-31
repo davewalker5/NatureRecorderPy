@@ -2,7 +2,7 @@
     {% set title = "Edit Sighting" %}
     {% set submit_title = "Save Sighting" %}
     {% set species_id = sighting.speciesId %}
-    {% set number = sighting.number %}
+    {% set number = sighting.number if sighting.number else "" %}
     {% set current_gender = sighting.gender %}
     {% set current_with_young = sighting.withYoung %}
 {% else %}
@@ -34,7 +34,7 @@
         <div class="form-group">
             <label>Number</label>
             <input class="form-control" name="number" placeholder="Number of individuals sighted"
-                   value="{{ number }}" required>
+                   value="{{ number }}">
         </div>
         <div class="form-group">
             <label>Gender</label>

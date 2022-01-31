@@ -17,7 +17,7 @@ class TestSightingsExportHelper(unittest.TestCase):
         self._gull = create_species(self._category.id, "Black-Headed Gull")
         self._cormorant = create_species(self._category.id, "Cormorant")
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN, False)
+        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
 
     def test_can_export_sightings(self):
         # Export the sightings
@@ -37,7 +37,7 @@ class TestSightingsExportHelper(unittest.TestCase):
         self.assertEqual(14, len(rows[1]))
         self.assertEqual("Black-Headed Gull", rows[1][0])
         self.assertEqual("Birds", rows[1][1])
-        self.assertEqual("0", rows[1][2])
+        self.assertEqual("", rows[1][2])
         self.assertEqual("Unknown", rows[1][3])
         self.assertEqual("No", rows[1][4])
         self.assertEqual("14/12/2021", rows[1][5])

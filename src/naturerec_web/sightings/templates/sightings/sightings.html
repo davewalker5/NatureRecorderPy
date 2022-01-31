@@ -23,7 +23,7 @@
                     <td>{{ sighting.location.name }}</td>
                     <td>{{ sighting.species.category.name }}</td>
                     <td>{{ sighting.species.name }}</td>
-                    <td>{{ sighting.number }}</td>
+                    <td>{{ sighting.number if sighting.number else "" }}</td>
                     <td>{{ sighting.gender_name }}</td>
                     <td>{{ sighting.with_young_name }}</td>
                     {% if edit_enabled %}

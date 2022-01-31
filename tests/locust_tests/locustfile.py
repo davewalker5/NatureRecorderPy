@@ -162,7 +162,7 @@ class NatureRecorderUser(HttpUser):
             "location": str(location_id),
             "category": str(category_id),
             "species": str(species_id),
-            "number": "0",
+            "number": "1",
             "gender": "0",
             "with_young": "0"
         })

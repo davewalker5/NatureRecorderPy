@@ -36,9 +36,10 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
             species_id = self.create_species(row[1], row[0])
             location_id = self._create_location(row)
             date = datetime.datetime.strptime(row[5], Sighting.DATE_IMPORT_FORMAT).date()
+            number = int(row[2]) if row[2].strip() else None
             gender = [key for key, value in Gender.gender_map().items() if value == row[3].strip().title()][0]
             with_young = 1 if row[4].strip().title() == "Yes" else 0
-            _ = create_sighting(location_id, species_id, date, int(row[2]), gender, with_young)
+            _ = create_sighting(location_id, species_id, date, number, gender, with_young)
 
     def _read_csv_rows(self):
         """
@@ -76,9 +77,9 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         if len(row) != 14:
             raise ValueError(f"Malformed data at row {row_number}")
 
-        cls._check_not_empty(row, 0, row_number)     # Species
-        cls._check_not_empty(row, 1, row_number)     # Category
-        cls._check_valid_int(row, 2, row_number)     # Number
+        cls._check_not_empty(row, 0, row_number)            # Species
+        cls._check_not_empty(row, 1, row_number)            # Category
+        cls._check_valid_int(row, 2, row_number, True)      # Number
 
         # Gender
         cls._check_valid_value(row, 3, row_number, Gender.gender_map().values())
@@ -86,12 +87,12 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         # With Young
         cls._check_valid_value(row, 4, row_number, ["Yes", "No"])
 
-        cls._check_valid_date(row, 5, row_number)    # Date
-        cls._check_not_empty(row, 6, row_number)     # Location
-        cls._check_not_empty(row, 9, row_number)     # County
-        cls._check_not_empty(row, 11, row_number)    # Country
-        cls._check_valid_float(row, 12, row_number)  # Latitude
-        cls._check_valid_float(row, 13, row_number)  # Longitude
+        cls._check_valid_date(row, 5, row_number)           # Date
+        cls._check_not_empty(row, 6, row_number)            # Location
+        cls._check_not_empty(row, 9, row_number)            # County
+        cls._check_not_empty(row, 11, row_number)           # Country
+        cls._check_valid_float(row, 12, row_number, True)   # Latitude
+        cls._check_valid_float(row, 13, row_number, True)   # Longitude
 
     @classmethod
     def _check_not_empty(cls, row, index, row_number):
@@ -121,34 +122,44 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
             raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
 
     @classmethod
-    def _check_valid_int(cls, row, index, row_number):
+    def _check_valid_int(cls, row, index, row_number, can_be_empty):
         """
         Check a field in a CSV row is a valid integer
 
         :param row: CSV row (collection of fields)
         :param index: Field index
         :param row_number: Row number for error reporting
+        :param can_be_empty: True if the value can be empty
         :raises ValueError: If the field isn't a valid int
         """
-        try:
-            _ = int(row[index])
-        except ValueError:
-            raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
+        value = row[index].strip()
+        if value:
+            try:
+                _ = int(value)
+            except ValueError:
+                raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
+        elif not can_be_empty:
+            raise ValueError(f"{cls.get_field_name(index)} cannot be empty on row {row_number}")
 
     @classmethod
-    def _check_valid_float(cls, row, index, row_number):
+    def _check_valid_float(cls, row, index, row_number, can_be_empty):
         """
         Check a field in a CSV row is a valid floating point number
 
         :param row: CSV row (collection of fields)
         :param index: Field index
         :param row_number: Row number for error reporting
+        :param can_be_empty: True if the value can be empty
         :raises ValueError: If the field isn't a valid float
         """
-        try:
-            _ = float(row[index])
-        except ValueError:
-            raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
+        value = row[index].strip()
+        if value:
+            try:
+                _ = float(value)
+            except ValueError:
+                raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
+        elif not can_be_empty:
+            raise ValueError(f"{cls.get_field_name(index)} cannot be empty on row {row_number}")
 
     @classmethod
     def _check_valid_date(cls, row, index, row_number):
@@ -171,5 +182,7 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         try:
             location = get_location(tidied_name)
         except ValueError:
-            location = create_location(tidied_name, row[9], row[11], row[7], row[8], row[10], row[12], row[13])
+            latitude = float(row[12]) if row[12].strip() else None
+            longitude = float(row[13]) if row[12].strip() else None
+            location = create_location(tidied_name, row[9], row[11], row[7], row[8], row[10], latitude, longitude)
         return location.id
