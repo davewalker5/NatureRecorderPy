@@ -19,7 +19,6 @@ class TestSighting(unittest.TestCase):
     def test_can_create_sighting(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
-            print(sighting)
         self.assertEqual("Birds",  sighting.species.category.name)
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
