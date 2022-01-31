@@ -26,8 +26,8 @@ class Sighting(Base):
     #: this field is the one that's persisted to the DB the intention is that it should be accessed via
     #: the sighting_date property
     date = Column(String, nullable=False)
-    #: Number of individuals seen
-    number = Column(Integer, default=0, nullable=False)
+    #: Number of distinct individuals seen
+    number = Column(Integer, default=None, nullable=True)
     #: Whether or not young were seen
     withYoung = Column(Integer, default=0, nullable=False)
     #: Number of individuals seen
@@ -41,7 +41,7 @@ class Sighting(Base):
     __table_args__ = (UniqueConstraint('locationId', 'speciesId', 'date', name='SIGHTING_LOCATION_SPECIES_DATE_UX'),
                       CheckConstraint(gender.in_([Gender.UNKNOWN, Gender.MALE, Gender.FEMALE, Gender.BOTH])),
                       CheckConstraint(withYoung.in_([0, 1])),
-                      CheckConstraint("number >= 0"))
+                      CheckConstraint("ifnull(number, 1) > 0"))
 
     def __repr__(self):
         return f"{type(self).__name__}(Id={self.id!r}, " \

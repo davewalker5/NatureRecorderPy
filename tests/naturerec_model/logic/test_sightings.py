@@ -13,14 +13,14 @@ class TestSightings(unittest.TestCase):
         category = create_category("Birds")
         species = create_species(category.id, "Black-Headed Gull")
         location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        create_sighting(location.id, species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN, False)
+        create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
 
     @staticmethod
     def create_additional_sightings():
         category_id = get_category("Birds").id
         species = create_species(category_id, "Blackbird")
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
-        create_sighting(location.id, species.id, datetime.date(2021, 12, 13), 0, Gender.UNKNOWN, False)
+        create_sighting(location.id, species.id, datetime.date(2021, 12, 13), None, Gender.UNKNOWN, False)
 
     def test_can_create_sighting(self):
         with Session.begin() as session:
@@ -29,7 +29,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
-        self.assertEqual(0, sighting.number)
+        self.assertIsNone(sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
 
@@ -37,7 +37,7 @@ class TestSightings(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
-        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), 0,
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), None,
                         Gender.UNKNOWN, False)
         updated = get_sighting(sighting.id)
 
@@ -45,7 +45,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  updated.species.name)
         self.assertEqual("Radley Lakes",  updated.location.name)
         self.assertEqual(datetime.date(2021, 12, 15), updated.sighting_date)
-        self.assertEqual(0, updated.number)
+        self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
 
@@ -54,7 +54,7 @@ class TestSightings(unittest.TestCase):
             sighting = session.query(Sighting).one()
 
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
-        update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+        update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
                         False)
         updated = get_sighting(sighting.id)
 
@@ -62,7 +62,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  updated.species.name)
         self.assertEqual("Brock Hill",  updated.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
-        self.assertEqual(0, updated.number)
+        self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
 
@@ -72,15 +72,15 @@ class TestSightings(unittest.TestCase):
 
         category_id = get_category("Birds").id
         species = create_species(category_id, "Blackbird")
-        update_sighting(sighting.id, sighting.location.id, species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
-                        False)
+        update_sighting(sighting.id, sighting.location.id, species.id, datetime.date(2021, 12, 14), None,
+                        Gender.UNKNOWN, False)
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
         self.assertEqual("Blackbird",  updated.species.name)
         self.assertEqual("Radley Lakes",  updated.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
-        self.assertEqual(0, updated.number)
+        self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
 
@@ -104,7 +104,7 @@ class TestSightings(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
-        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 0,
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
                         Gender.MALE, False)
         updated = get_sighting(sighting.id)
 
@@ -112,7 +112,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  updated.species.name)
         self.assertEqual("Radley Lakes",  updated.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
-        self.assertEqual(0, updated.number)
+        self.assertIsNone(updated.number)
         self.assertEqual(Gender.MALE, updated.gender)
         self.assertFalse(0, updated.withYoung)
 
@@ -120,7 +120,7 @@ class TestSightings(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
-        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 0,
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
                         Gender.UNKNOWN, True)
         updated = get_sighting(sighting.id)
 
@@ -128,7 +128,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  updated.species.name)
         self.assertEqual("Radley Lakes",  updated.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
-        self.assertEqual(0, updated.number)
+        self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertTrue(1, updated.withYoung)
 
@@ -136,19 +136,19 @@ class TestSightings(unittest.TestCase):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
-        new_sighting = create_sighting(sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), 0,
+        new_sighting = create_sighting(sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), None,
                                        Gender.UNKNOWN, False)
 
         with self.assertRaises(ValueError):
             _ = update_sighting(new_sighting.id, new_sighting.locationId, new_sighting.speciesId,
-                                datetime.date(2021, 12, 14), 0, Gender.UNKNOWN, False)
+                                datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
 
     def test_cannot_update_missing_sighting(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         with self.assertRaises(ValueError):
-            _ = update_sighting(-1, sighting.locationId, sighting.speciesId, datetime.date(2021, 12, 15), 0,
+            _ = update_sighting(-1, sighting.locationId, sighting.speciesId, datetime.date(2021, 12, 15), None,
                                 Gender.UNKNOWN, False)
 
     def test_cannot_update_sighting_for_missing_location(self):
@@ -156,7 +156,7 @@ class TestSightings(unittest.TestCase):
             sighting = session.query(Sighting).one()
 
         with self.assertRaises(ValueError):
-            _ = update_sighting(sighting.id, -1, sighting.species.id, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
+            _ = update_sighting(sighting.id, -1, sighting.species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
                                 False)
 
     def test_cannot_update_sighting_for_missing_species(self):
@@ -164,8 +164,8 @@ class TestSightings(unittest.TestCase):
             sighting = session.query(Sighting).one()
 
         with self.assertRaises(ValueError):
-            _ = update_sighting(sighting.id, sighting.location.id, -1, datetime.date(2021, 12, 14), 0, Gender.UNKNOWN,
-                                False)
+            _ = update_sighting(sighting.id, sighting.location.id, -1, datetime.date(2021, 12, 14), None,
+                                Gender.UNKNOWN, False)
 
     def test_cannot_update_sighting_with_invalid_number(self):
         with Session.begin() as session:
@@ -199,7 +199,7 @@ class TestSightings(unittest.TestCase):
         self.assertEqual("Black-Headed Gull",  sighting.species.name)
         self.assertEqual("Radley Lakes",  sighting.location.name)
         self.assertEqual(datetime.date(2021, 12, 14), sighting.sighting_date)
-        self.assertEqual(0, sighting.number)
+        self.assertIsNone(sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
 
