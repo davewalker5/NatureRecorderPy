@@ -3,7 +3,7 @@ import time
 import datetime
 from random import randrange
 from locust import HttpUser, task, between, events
-from flask_app_runner import FlaskAppRunner
+from locust_tests.flask_app_runner import FlaskAppRunner
 from naturerec_model.model import create_database, get_data_path, Sighting
 from naturerec_model.logic import list_locations, list_categories, list_species
 from naturerec_model.data_exchange import SightingsImportHelper, StatusImportHelper
@@ -58,7 +58,36 @@ def on_test_stop(environment, **kwargs):
 
 class NatureRecorderUser(HttpUser):
     """
-    Locust load test, targeting the Nature Recorder application hosted locally in the flask development server
+    Locust load test, targeting the Nature Recorder application hosted locally in the flask development server. The
+    tests are weighted as follows:
+
+    +----------------------------------+----+
+    | Test                             | %  |
+    +----------------------------------+----+
+    | go_to_home_page                  | 1  |
+    +----------------------------------+----+
+    | list_locations                   | 1  |
+    +----------------------------------+----+
+    | add_location                     | 1  |
+    +----------------------------------+----+
+    | list_categories                  | 1  |
+    +----------------------------------+----+
+    | add_category                     | 1  |
+    +----------------------------------+----+
+    | list_species                     | 1  |
+    +----------------------------------+----+
+    | add_species                      | 1  |
+    +----------------------------------+----+
+    | list_sightings                   | 20 |
+    +----------------------------------+----+
+    | add_sighting                     | 70 |
+    +----------------------------------+----+
+    | list_conservation_status_schemes | 1  |
+    +----------------------------------+----+
+    | show_life_list                   | 1  |
+    +----------------------------------+----+
+    | list_recent_background_jobs      | 1  |
+    +----------------------------------+----+
     """
 
     #: Simulated users will wait between 1 and 5 seconds per task
@@ -141,14 +170,14 @@ class NatureRecorderUser(HttpUser):
         name = self._get_name("Species")
         self.client.post("/species/add", data={"category": str(category_id), "name": name})
 
-    @task
+    @task(20)
     def list_sightings(self):
         """
         Task to simulate listing the sightings
         """
         self.client.get("/sightings/list")
 
-    @task
+    @task(70)
     def add_sighting(self):
         """
         Task to simulate adding a new sighting

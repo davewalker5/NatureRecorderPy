@@ -1,7 +1,8 @@
 #!/bin/zsh -f
 
 source ../venv/bin/activate
-SRCDIR=${0:a:h}/../src
-export PYTHONPATH=$SRCDIR
+PROJECTDIR=${0:a:h}/..
+export PYTHONPATH="$PROJECTDIR/src:$PROJECTDIR/tests"
+echo "Python path is set to: $PYTHONPATH"
 make html
 deactivate
