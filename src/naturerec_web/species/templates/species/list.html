@@ -4,7 +4,15 @@
 {% block content %}
     <form method="post">
         <h1>Species</h1>
-        {% include "category_selector.html" with context %}
+        <div class="filter-criteria">
+            {% include "category_selector.html" with context %}
+            <div class="button-bar">
+                <button type="submit" value="filter" class="btn btn-light">List Species</button>
+                <button type="button" class="btn btn-primary">
+                    <a href="{{ url_for('species.edit') }}">Add Species</a>
+                </button>
+            </div>
+        </div>
         {% if species | length > 0 %}
             {% include "species.html" with context %}
         {% elif category_id %}

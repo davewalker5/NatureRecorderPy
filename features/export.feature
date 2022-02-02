@@ -1,4 +1,5 @@
 Feature: Export Sightings
+  @export
   Scenario: Export unfiltered sightings
     Given A set of sightings
     | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |
@@ -14,6 +15,7 @@ Feature: Export Sightings
     Then The export starts
     And There will be 2 sightings in the export file
 
+  @export
   Scenario: Export filtered sightings
     Given A set of sightings
     | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |

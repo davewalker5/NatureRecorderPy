@@ -54,8 +54,8 @@ class TestSightings(unittest.TestCase):
             sighting = session.query(Sighting).one()
 
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
-        update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
-                        False)
+        update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
+                        Gender.UNKNOWN, False)
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)

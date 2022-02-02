@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}Export Life List{% endblock %}
+
+{% block content %}
+    <form method="post">
+        <h1>Life List</h1>
+        <div class="filter-criteria">
+            <div class="form-group">
+                <label>Filename</label>
+                <input class="form-control" name="filename" id="filename"
+                       placeholder="CSV file name e.g. birds_life_list.csv" required>
+            </div>
+            {% include "category_selector.html" with context %}
+            <div class="button-bar">
+                <button type="submit" value="filter" class="btn btn-primary">Export Life List</button>
+            </div>
+        </div>
+        {% include "message.html" with context %}
+    </form>
+{% endblock %}

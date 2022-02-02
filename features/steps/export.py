@@ -1,4 +1,3 @@
-import time
 from behave import when, then
 from selenium.webdriver.common.by import By
 from helpers import select_option, confirm_span_exists, get_export_filepath, delete_export_file
@@ -32,13 +31,3 @@ def _(context):
 @then("The export starts")
 def _(context):
     confirm_span_exists(context, "Matching sightings are exporting in the background", 1)
-
-
-@then("There will be {number} sightings in the export file")
-@then("There will be {number} sighting in the export file")
-def _(context, number):
-    time.sleep(2)
-    with open(context.export_filepath, mode="rt", encoding="utf-8") as f:
-        lines = f.readlines()
-    # Number of lines plus 1 to account for the headers
-    assert len(lines) == int(number) + 1

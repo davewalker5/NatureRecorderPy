@@ -6,7 +6,7 @@ import datetime
 from flask import Blueprint, render_template, request
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
-from naturerec_model.data_exchange import SightingsExportHelper
+from naturerec_model.data_exchange import SightingsExportHelper, LifeListExportHelper
 from naturerec_model.model import Sighting
 
 
@@ -49,6 +49,7 @@ def _render_export_filters_page(from_date=None,
     :param location_id: Include sightings at this location
     :param category_id: Species category for the selected species
     :param species_id: Include sightings for this species
+    :param message: Message to display on the page
     :return: The HTML for the rendered sightings export page
     """
     return render_template("export/filters.html",
@@ -63,6 +64,19 @@ def _render_export_filters_page(from_date=None,
                            categories=list_categories(),
                            action_button_label="Export Sightings",
                            edit_enabled=True)
+
+
+def _render_life_list_export_filters_page(category_id=None, message=None):
+    """
+
+    :param category_id: Species category for the selected category
+    :param message: Message to display on the page
+    :return: The HTML for the rendered life list export page
+    """
+    return render_template("export/life_list.html",
+                           message=message,
+                           categories=list_categories(),
+                           category_id=category_id)
 
 
 @export_bp.route("/filters", methods=["GET", "POST"])
@@ -90,3 +104,26 @@ def export():
         return _render_export_filters_page(from_date, to_date, location_id, category_id, species_id, message)
     else:
         return _render_export_filters_page()
+
+
+@export_bp.route("/life_list", methods=["GET", "POST"])
+def export_life_list():
+    """
+    Show the page that presents filters for exporting life lists
+
+    :return: The HTML for the life list export page
+    """
+    if request.method == "POST":
+        # Get the export parameters
+        filename = request.form["filename"]
+        category_id = _get_filter_int("category")
+
+        # Kick off the export
+        exporter = LifeListExportHelper(filename, category_id)
+        exporter.start()
+
+        # Go to the life list export page
+        message = "The selected life list is exporting in the background"
+        return _render_life_list_export_filters_page(category_id, message)
+    else:
+        return _render_life_list_export_filters_page()
