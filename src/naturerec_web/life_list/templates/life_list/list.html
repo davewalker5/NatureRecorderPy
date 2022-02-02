@@ -4,7 +4,15 @@
 {% block content %}
     <form method="post">
         <h1>Life List</h1>
-        {% include "category_selector.html" with context %}
+        <div class="filter-criteria">
+            {% include "category_selector.html" with context %}
+            <div class="button-bar">
+                <button type="button" value="import" class="btn btn-light">
+                    <a href="{{ url_for('export.export_life_list') }}">Export Life List</a>
+                </button>
+                <button type="submit" value="filter" class="btn btn-primary">List Species</button>
+            </div>
+        </div>
         {% if species | length > 0 %}
             <p>There are {{ species | length }} species in the life list for "{{ category.name }}"</p>
             {% include "species.html" with context %}

@@ -119,6 +119,7 @@ def _(context, button_text):
     :param context: Behave context
     :param button_text: Button text
     """
+    time.sleep(1)
     xpath = f"//*[text()='{button_text}']"
     elements = context.browser.find_elements(By.XPATH, xpath)
     for element in elements:
@@ -155,3 +156,13 @@ def _(context, title):
     """
     time.sleep(1)
     assert title in context.browser.title
+
+
+@then("There will be {number} {item_type} in the export file")
+@then("There will be {number} {item_type} in the export file")
+def _(context, number, item_type):
+    time.sleep(2)
+    with open(context.export_filepath, mode="rt", encoding="utf-8") as f:
+        lines = f.readlines()
+    # Number of lines plus 1 to account for the headers
+    assert len(lines) == int(number) + 1
