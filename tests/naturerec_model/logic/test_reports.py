@@ -14,30 +14,13 @@ class TestLocations(unittest.TestCase):
         create_sighting(self._location.id, species.id, datetime.date(2021, 12, 14), 30, Gender.UNKNOWN, False)
 
     def test_can_get_location_individuals_report(self):
-        report, column_names = location_individuals_report(datetime.date(2021, 12, 1), self._location.id,
-                                                           self._category.id)
-
-        self.assertEqual(1, len(report))
-        keys = [key for key in report[0].keys()]
-        self.assertEqual("Species", keys[0])
-        self.assertEqual("Count", keys[1])
-        self.assertEqual("Black-Headed Gull", report[0]["Species"])
-        self.assertEqual(30, report[0]["Count"])
-
-        self.assertEqual(2, len(column_names))
-        self.assertTrue("Species" in column_names)
-        self.assertTrue("Count" in column_names)
+        report_df = location_individuals_report(datetime.date(2021, 12, 1), self._location.id, self._category.id)
+        self.assertEqual(1, len(report_df.index))
+        self.assertTrue("Black-Headed Gull" in report_df.index)
+        self.assertEqual(30, report_df.loc["Black-Headed Gull", "Count"])
 
     def test_can_get_location_sightings_report(self):
-        report, column_names = location_days_report(datetime.date(2021, 12, 1), self._location.id, self._category.id)
-
-        self.assertEqual(1, len(report))
-        keys = [key for key in report[0].keys()]
-        self.assertEqual("Species", keys[0])
-        self.assertEqual("Count", keys[1])
-        self.assertEqual("Black-Headed Gull", report[0]["Species"])
-        self.assertEqual(1, report[0]["Count"])
-
-        self.assertEqual(2, len(column_names))
-        self.assertTrue("Species" in column_names)
-        self.assertTrue("Count" in column_names)
+        report_df = location_days_report(datetime.date(2021, 12, 1), self._location.id, self._category.id)
+        self.assertEqual(1, len(report_df.index))
+        self.assertTrue("Black-Headed Gull" in report_df.index)
+        self.assertEqual(1, report_df.loc["Black-Headed Gull", "Count"])
