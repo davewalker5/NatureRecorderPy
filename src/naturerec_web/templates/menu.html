@@ -15,8 +15,12 @@
           <div class="dropdown-menu">
               <a href="{{ url_for('sightings.list_filtered_sightings') }}" class="dropdown-item">Sightings</a>
               <a href="{{ url_for('life_list.life_list_for_category') }}" class="dropdown-item">Life List</a>
-              <a href="#" class="dropdown-item">Individuals by Species & Location</a>
-              <a href="#" class="dropdown-item">Sightings by Species & Location</a>
+              <a href="{{ url_for('reports.individuals_by_species_and_location') }}" class="dropdown-item">
+                Individuals by Species & Location
+              </a>
+              <a href="{{ url_for('reports.sightings_by_species_and_location') }}" class="dropdown-item">
+                Sightings by Species & Location
+              </a>
           </div>
         </li>
         <li class="nav-item dropdown">

@@ -4,7 +4,6 @@ This module contains the business logic for the pre-defined reports
 
 import datetime
 import pandas as pd
-import sqlalchemy as db
 from ..model import Engine, Sighting
 
 
