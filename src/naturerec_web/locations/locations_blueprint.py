@@ -4,7 +4,7 @@ The locations blueprint supplies view functions and templates for location manag
 
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode
-
+from naturerec_web.request_utils import get_posted_float
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
 
@@ -21,17 +21,6 @@ def _render_location_editing_page(location_id, error):
     return render_template("locations/edit.html",
                            location=location,
                            error=error)
-
-
-def _get_posted_float(key):
-    """
-    Retrieve a named float value from a POSTed form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key]
-    return float(value) if value else None
 
 
 @locations_bp.route("/list")
@@ -66,8 +55,8 @@ def edit(location_id):
                                     request.form["address"],
                                     request.form["city"],
                                     request.form["postcode"],
-                                    _get_posted_float("latitude"),
-                                    _get_posted_float("longitude"))
+                                    get_posted_float("latitude"),
+                                    get_posted_float("longitude"))
             else:
                 _ = create_location(request.form["name"],
                                     request.form["county"],
@@ -75,8 +64,8 @@ def edit(location_id):
                                     request.form["address"],
                                     request.form["city"],
                                     request.form["postcode"],
-                                    _get_posted_float("latitude"),
-                                    _get_posted_float("longitude"))
+                                    get_posted_float("latitude"),
+                                    get_posted_float("longitude"))
             return redirect("/locations/list")
         except ValueError as e:
             return _render_location_editing_page(location_id, e)

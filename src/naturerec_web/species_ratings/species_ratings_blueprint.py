@@ -8,7 +8,7 @@ from naturerec_model.logic import get_species
 from naturerec_model.logic import list_status_schemes, get_status_scheme
 from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
     create_species_status_rating
-
+from naturerec_web.request_utils import get_posted_int
 
 species_ratings_bp = Blueprint("species_ratings", __name__, template_folder='templates')
 
@@ -27,17 +27,6 @@ def _render_rating_addition_page(species_id, error):
                            error=error)
 
 
-def _get_posted_int(key):
-    """
-    Retrieve a named integer value from the POSTed filtering form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key]
-    return int(value) if value else None
-
-
 @species_ratings_bp.route("/list_ratings/<int:species_id>", methods=["GET", "POST"])
 def list_status_ratings(species_id):
     """
@@ -50,7 +39,7 @@ def list_status_ratings(species_id):
     error = None
     if request.method == "POST":
         try:
-            close_species_status_rating(_get_posted_int("species_status_rating_id"))
+            close_species_status_rating(get_posted_int("species_status_rating_id"))
         except ValueError as e:
             error = e
 
@@ -79,7 +68,7 @@ def add(species_id):
     if request.method == "POST":
         try:
             _ = create_species_status_rating(species_id=species_id,
-                                             status_rating_id=_get_posted_int("rating"),
+                                             status_rating_id=get_posted_int("rating"),
                                              region=request.form["region"],
                                              start=datetime.datetime.today().date())
             return redirect(f"/species_ratings/list_ratings/{species_id}")

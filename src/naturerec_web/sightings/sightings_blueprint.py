@@ -10,6 +10,7 @@ from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
 from naturerec_model.model import Gender, Sighting
 from naturerec_model.data_exchange import SightingsImportHelper
+from naturerec_web.request_utils import get_posted_date, get_posted_int, get_posted_bool
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
 
@@ -132,11 +133,11 @@ def list_filtered_sightings():
     :return: The HTML for the sightings listing page
     """
     if request.method == "POST":
-        return _render_sightings_list_page(_get_filter_date("from_date"),
-                                           _get_filter_date("to_date"),
-                                           _get_filter_int("location"),
-                                           _get_filter_int("category"),
-                                           _get_filter_int("species"))
+        return _render_sightings_list_page(get_posted_date("from_date"),
+                                           get_posted_date("to_date"),
+                                           get_posted_int("location"),
+                                           get_posted_int("category"),
+                                           get_posted_int("species"))
     else:
         return _render_sightings_list_page()
 
@@ -174,29 +175,29 @@ def edit(sighting_id):
             sighting_date = datetime.datetime.strptime(date_string, Sighting.DATE_DISPLAY_FORMAT).date()
 
             # Get the selected location and put it into session
-            location_id = request.form["location"]
+            location_id = get_posted_int("location")
             session["location_id"] = location_id
 
             # Get the selected category and put it into session
-            category_id = request.form["category"]
+            category_id = get_posted_int("category")
             session["category_id"] = category_id
 
             if sighting_id:
                 _ = update_sighting(sighting_id,
                                     location_id,
-                                    request.form["species"],
+                                    get_posted_int("species"),
                                     sighting_date,
-                                    request.form["number"],
-                                    request.form["gender"],
-                                    request.form["with_young"])
+                                    get_posted_int("number"),
+                                    get_posted_int("gender"),
+                                    get_posted_bool("with_young"))
                 sighting = get_sighting(sighting_id)
             else:
                 created_id = create_sighting(location_id,
-                                             request.form["species"],
+                                             get_posted_int("species"),
                                              sighting_date,
-                                             request.form["number"],
-                                             request.form["gender"],
-                                             request.form["with_young"]).id
+                                             get_posted_int("number"),
+                                             get_posted_int("gender"),
+                                             get_posted_bool("with_young")).id
                 sighting = get_sighting(created_id)
 
             # Construct the confirmation message
