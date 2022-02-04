@@ -10,9 +10,6 @@
         <span>There are no conservation status schemes in the database</span>
     {% endif %}
     <div class="button-bar">
-        <button type="button" class="btn btn-light">
-            <a href="{{ url_for('status.import_ratings') }}">Import Schemes and Ratings</a>
-        </button>
         <button type="button" class="btn btn-primary">
             <a href="{{ url_for('status.edit_scheme') }}">Add Conservation Status Scheme</a>
         </button>
