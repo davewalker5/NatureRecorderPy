@@ -1,15 +1,55 @@
- <strong>
-    <nav>
-        <ul class="menu">
-            <li><a href="{{ url_for('sightings.list_filtered_sightings') }}">Sightings</a></li>
-            <li><a href="{{ url_for('life_list.life_list_for_category') }}">Life List</a></li>
-            <li><a href="{{ url_for('export.export') }}">Export</a></li>
-            <li><a href="{{ url_for('locations.list_all') }}">Locations</a></li>
-            <li><a href="{{ url_for('categories.list_all') }}">Categories</a></li>
-            <li><a href="{{ url_for('species.list_filtered_species') }}">Species</a></li>
-            <li><a href="{{ url_for('status.list_all') }}">Conservation Status</a></li>
-            <li><a href="{{ url_for('jobs.list_recent') }}">Jobs</a></li>
-            <li><a href="{{ url_for('home') }}">Home</a></li>
-        </ul>
-    </nav>
-</strong>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('home') }}">Nature Recorder</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('sightings.edit') }}">Add Sighting</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Reports</a>
+          <div class="dropdown-menu">
+              <a href="{{ url_for('sightings.list_filtered_sightings') }}" class="dropdown-item">Sightings</a>
+              <a href="{{ url_for('life_list.life_list_for_category') }}" class="dropdown-item">Life List</a>
+              <a href="{{ url_for('reports.individuals_by_species_and_location') }}" class="dropdown-item">
+                Individuals by Species & Location
+              </a>
+              <a href="{{ url_for('reports.sightings_by_species_and_location') }}" class="dropdown-item">
+                Sightings by Species & Location
+              </a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Data Maintenance</a>
+          <div class="dropdown-menu">
+            <a href="{{ url_for('locations.list_all') }}" class="dropdown-item">Locations</a>
+            <a href="{{ url_for('categories.list_all') }}" class="dropdown-item">Categories</a>
+            <a href="{{ url_for('species.list_filtered_species') }}" class="dropdown-item">Species</a>
+            <a href="{{ url_for('status.list_all') }}" class="dropdown-item">Conservation Status Schemes</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Import</a>
+          <div class="dropdown-menu">
+              <a href="{{ url_for('sightings.import_sightings') }}" class="dropdown-item">Sightings</a>
+              <a href="{{ url_for('status.import_ratings') }}" class="dropdown-item">Conservation Status Schemes</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Export</a>
+          <div class="dropdown-menu">
+              <a href="{{ url_for('export.export') }}" class="dropdown-item">Sightings</a>
+              <a href="{{ url_for('export.export_life_list') }}" class="dropdown-item">Life List</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('jobs.list_recent') }}">Jobs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -5,7 +5,7 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species
-
+from naturerec_web.request_utils import get_posted_int
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
 
@@ -41,17 +41,6 @@ def _render_species_list_page(category_id=None):
                            edit_enabled=True)
 
 
-def _get_posted_int(key):
-    """
-    Retrieve a named integer value from the POSTed filtering form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key]
-    return int(value) if value else None
-
-
 @species_bp.route("/list", methods=["GET", "POST"])
 def list_filtered_species():
     """
@@ -60,7 +49,7 @@ def list_filtered_species():
     :return: The HTML for the species listing page
     """
     if request.method == "POST":
-        return _render_species_list_page(_get_posted_int("category"))
+        return _render_species_list_page(get_posted_int("category"))
     else:
         return _render_species_list_page()
 
@@ -78,9 +67,9 @@ def edit(species_id):
     if request.method == "POST":
         try:
             if species_id:
-                _ = update_species(species_id, _get_posted_int("category"), request.form["name"])
+                _ = update_species(species_id, get_posted_int("category"), request.form["name"])
             else:
-                _ = create_species(_get_posted_int("category"), request.form["name"])
+                _ = create_species(get_posted_int("category"), request.form["name"])
             return redirect("/species/list")
         except ValueError as e:
             return _render_species_editing_page(species_id, e)

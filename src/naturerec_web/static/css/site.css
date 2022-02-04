@@ -1,28 +1,35 @@
-/*
- * The navigation bar styling is based on the following blog post:
- *
- * https://pythonhow.com/python-tutorial/flask/Adding-CSS-styling-to-your-website/
- */
-
-
 /* --- Body styling -----------------------------–––------------------------- */
 body {
-  margin: 0;
-  padding: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #444;
 }
 
-.container {
-  width: 90vw;
-  margin: 0px auto;
+#main-content {
+    padding: 25px;
 }
 
-.content {
-  margin-top: 25px;
+body h1 {
+  font-size: 1.25em;
+  margin-bottom: 15px;
 }
 
-/* --- Form button bar ------------------------------------------------------ */
+body h2 {
+  font-size: 1.15em;
+}
+
+button > a {
+    text-decoration: none
+}
+
+/* --- Forms & button bar --------------------------------------------------- */
+.form-group {
+    margin-bottom: 10px;
+}
+
+label {
+    font-weight: bold;
+}
+
 .button-bar {
   border-top: 1px solid #D3D3D3;
   margin-top: 25px;
@@ -64,31 +71,6 @@ body {
     color: black;
 }
 
-/* --- Title bar ------------------------------------------------------------ */
-header {
-  background-color: #3282a9;
-  height: 35px;
-  width: 100%;
-  opacity: .9;
-  margin-bottom: 10px;
-}
-
-header h1.logo {
-  margin-top: 3px;
-  font-size: 1.5em;
-  color: #fff;
-  text-transform: uppercase;
-  float: left;
-}
-
-body h1 {
-  font-size: 1.25em;
-}
-
-body h2 {
-  font-size: 1.15em;
-}
-
 /* --- Striped tables -----------------------------------–––----------------- */
 table.striped {
     border: 1px solid grey;
@@ -108,43 +90,6 @@ table.striped td {
 
 div table.striped {
     margin-bottom: 20px;
-}
-
-/* --- Instructions tables -----------------------------------–––------------ */
-table.instructions {
-}
-
-table.instructions tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-table.instructions th {
-    padding: 5px;
-    vertical-align: top;
-}
-
-table.instructions td {
-    padding: 5px;
-    vertical-align: top;
-}
-
-/* --- Navigation -----------------------------------–––--------------------- */
-.menu {
-  float: right;
-  margin-top: 8px;
-}
-
-.menu li {
-  display: inline;
-}
-
-.menu li + li {
-  margin-left: 25px;
-}
-
-.menu li a {
-  color: white;
-  text-decoration: none;
 }
 
 /* --- Messages -------------------------------------–––--------------------- */

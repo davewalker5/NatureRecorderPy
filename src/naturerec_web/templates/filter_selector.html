@@ -7,26 +7,11 @@
         </div>
     {% endif %}
 
-    <div class="form-group">
-        <label>From</label>
-        <input class="form-control" name="from_date" id="from_date" pattern="[\d]{2}\/[\d]{2}\/[\d]{4}"
-               placeholder="Sighting date DD/MM/YYYY" value="{{ from_date }}">
-    </div>
-    <div class="form-group">
-        <label>To</label>
-        <input class="form-control" name="to_date" id="to_date" pattern="[\d]{2}\/[\d]{2}\/[\d]{4}"
-               placeholder="Sighting date DD/MM/YYYY" value="{{ to_date }}">
-    </div>
-
+    {% include "date_range_selector.html" with context %}
     {% include "location_selector.html" with context %}
     {% include "species_selector.html" with context %}
 
     <div class="button-bar">
-        {% if import_enabled %}
-            <button type="button" value="import" class="btn btn-light">
-                <a href="{{ url_for('sightings.import_sightings') }}">Import Sightings</a>
-            </button>
-        {% endif %}
         <button type="button" name="reset" id="reset" value="reset" class="btn btn-light">Reset Filters</button>
         <button type="submit" value="filter" class="btn btn-primary">{{ action_button_label }}</button>
     </div>

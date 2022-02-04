@@ -5,7 +5,7 @@ The life list blueprint supplies view functions and templates for generating spe
 from flask import Blueprint, render_template, request
 from naturerec_model.logic import list_categories, get_category
 from naturerec_model.logic import life_list
-
+from naturerec_web.request_utils import get_posted_int
 
 life_list_bp = Blueprint("life_list", __name__, template_folder='templates')
 
@@ -23,19 +23,7 @@ def _render_life_list_page(category_id=None):
                            categories=list_categories(),
                            category=category,
                            category_id=category_id,
-                           species=species,
-                           edit_enabled=True)
-
-
-def _get_posted_int(key):
-    """
-    Retrieve a named integer value from the POSTed form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key]
-    return int(value) if value else None
+                           species=species)
 
 
 @life_list_bp.route("/list", methods=["GET", "POST"])
@@ -46,6 +34,6 @@ def life_list_for_category():
     :return: The HTML for the life list page
     """
     if request.method == "POST":
-        return _render_life_list_page(_get_posted_int("category"))
+        return _render_life_list_page(get_posted_int("category"))
     else:
         return _render_life_list_page()

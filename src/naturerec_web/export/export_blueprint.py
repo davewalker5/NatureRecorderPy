@@ -2,37 +2,14 @@
 The export blueprint supplies view functions and templates for exporting sightings
 """
 
-import datetime
 from flask import Blueprint, render_template, request
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.data_exchange import SightingsExportHelper, LifeListExportHelper
 from naturerec_model.model import Sighting
-
+from naturerec_web.request_utils import get_posted_date, get_posted_int
 
 export_bp = Blueprint("export", __name__, template_folder='templates')
-
-
-def _get_filter_int(key):
-    """
-    Retrieve a named integer value from the POSTed filtering form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    value = request.form[key] if key in request.form else None
-    return int(value) if value else None
-
-
-def _get_filter_date(key):
-    """
-    Retrieve a named date value from the POSTed filtering form
-
-    :param key: Value key
-    :return: Value or None if not specified
-    """
-    date_string = request.form[key] if key in request.form else None
-    return datetime.datetime.strptime(date_string, Sighting.DATE_DISPLAY_FORMAT).date() if date_string else None
 
 
 def _render_export_filters_page(from_date=None,
@@ -89,11 +66,11 @@ def export():
     if request.method == "POST":
         # Get the export parameters
         filename = request.form["filename"]
-        from_date = _get_filter_date("from_date")
-        to_date = _get_filter_date("to_date")
-        location_id = _get_filter_int("location")
-        category_id = _get_filter_int("category")
-        species_id = _get_filter_int("species")
+        from_date = get_posted_date("from_date")
+        to_date = get_posted_date("to_date")
+        location_id = get_posted_int("location")
+        category_id = get_posted_int("category")
+        species_id = get_posted_int("species")
 
         # Kick off the export
         exporter = SightingsExportHelper(filename, from_date, to_date, location_id, species_id)
@@ -116,7 +93,7 @@ def export_life_list():
     if request.method == "POST":
         # Get the export parameters
         filename = request.form["filename"]
-        category_id = _get_filter_int("category")
+        category_id = get_posted_int("category")
 
         # Kick off the export
         exporter = LifeListExportHelper(filename, category_id)
