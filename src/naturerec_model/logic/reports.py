@@ -3,8 +3,19 @@ This module contains the business logic for the pre-defined reports
 """
 
 import datetime
+import base64
+import uuid
+import tempfile
+import os
 import pandas as pd
 from ..model import Engine, Sighting
+
+# Need to do this to prevent it from attempting to start the Matplotlib GUI
+import matplotlib
+
+matplotlib.use('Agg')
+
+import matplotlib.pyplot as plt
 
 
 def location_individuals_report(from_date, location_id, category_id, to_date=None):
@@ -69,3 +80,69 @@ def location_days_report(from_date, location_id, category_id, to_date=None):
                 f"GROUP BY sp.Name"
 
     return pd.read_sql(sql_query, Engine).set_index("Species")
+
+
+def save_report_barchart(report_df, y_column_name, x_label, y_label, title, image_path, x_column_name=None):
+    """
+    Export a PNG image containing a report barchart
+
+    :param report_df: Report dataframe
+    :param y_column_name: Name of the column containing the Y-axis values
+    :param x_label: X-axis label
+    :param y_label: Y-axis label
+    :param title: TItle
+    :param image_path: Output image path
+    :param x_column_name: Name of the column containing the X-axis labels or None to use the index
+    """
+
+    # Set up the X and  Y axes
+    x = report_df[x_column_name] if x_column_name else report_df.index
+    y = report_df[y_column_name]
+    x_pos = [i for i, _ in enumerate(x)]
+
+    # Configure the style and plot type
+    plt.style.use('ggplot')
+    plt.bar(x_pos, y, color='green')
+
+    # Set up the axes and title
+    plt.xlabel(x_label)
+    plt.xticks(x_pos, x)
+    plt.xticks(rotation=90)
+    plt.ylabel(y_label)
+    plt.title(title)
+
+    # This prevents the X-labels from going over the edge of the plot
+    plt.tight_layout()
+
+    # Save to the specified file in PNG format
+    plt.savefig(image_path, format='png', dpi=300)
+
+
+def get_image_base64(image_path):
+    """
+    Given the path to an image file, read it and return the base-64 representation of its contents
+
+    :param image_path: Path to the image file to read
+    :return: Base-64 representation of the image
+    """
+    with open(image_path, mode="rb") as f:
+        return base64.b64encode(f.read())
+
+
+def get_report_barchart_base64(report_df, y_column_name, x_label, y_label, title, x_column_name=None):
+    """
+    Return the base-64 representation of a PNG image containing a report barchart
+
+    :param report_df: Report dataframe
+    :param y_column_name: Name of the column containing the Y-axis values
+    :param x_label: X-axis label
+    :param y_label: Y-axis label
+    :param title: TItle
+    :param x_column_name: Name of the column containing the X-axis labels or None to use the index
+    :return: String containing the Base-64 representation of the barchart
+    """
+    image_path = os.path.join(tempfile.gettempdir(), f"{str(uuid.uuid4())}.png")
+    save_report_barchart(report_df, y_column_name, x_label, y_label, title, image_path, x_column_name)
+    barchart_base64 = get_image_base64(image_path).decode("utf-8")
+    os.unlink(image_path)
+    return barchart_base64

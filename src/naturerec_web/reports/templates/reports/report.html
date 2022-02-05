@@ -1,4 +1,8 @@
 {% if report.index | length > 0 %}
+<div align="center">
+    Location = {{ location.name }}, Category = {{ category.name }}<br/>
+    {{ report.index | length }} record{% if report.index | length > 1 %}s{% endif %} found<br/><br/>
+
     <table class="striped">
         <thead>
             <tr>
@@ -19,4 +23,5 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endif %}

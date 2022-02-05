@@ -5,21 +5,23 @@
 {% set index_column_name = "Species" %}
 
 {% block content %}
-    <form method="post">
-        <h1>{{ title }}</h1>
-        <div class="filter-criteria">
-            {% include "location_selector.html" with context %}
-            {% include "category_selector.html" with context %}
-            {% include "date_range_selector.html" with context %}
-            <div class="button-bar">
-                <button type="submit" value="generate" class="btn btn-primary">Generate Report</button>
-            </div>
-        </div>
         {% if report.index | length > 0 %}
-            <p>{{ report.index | length }} record{% if report.index | length > 1 %}s{% endif %} found</p>
+            <img src="data:image/png;base64,{{chart}}" alt="{{ title }}" width="100%" />
             {% include "reports/report.html" with context %}
-        {% elif report %}
-            <span>The report contains no results</span>
+        {% else %}
+            <form method="post">
+                <h1>{{ title }}</h1>
+                <div class="filter-criteria">
+                    {% include "location_selector.html" with context %}
+                    {% include "category_selector.html" with context %}
+                    {% include "date_range_selector.html" with context %}
+                    <div class="button-bar">
+                        <button type="submit" value="generate" class="btn btn-primary">Generate Report</button>
+                    </div>
+                </div>
+                {% if report.empty %}
+                    <span>The report contains no results</span>
+                {% endif %}
+            </form>
         {% endif %}
-    </form>
 {% endblock %}
