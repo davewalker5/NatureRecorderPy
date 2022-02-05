@@ -1,1 +1,2 @@
-src/naturerec_web/static/* linguist-vendored
+* linguist-vendored
+*.py linguist-vendored=false
