@@ -4,6 +4,7 @@ This module contains the business logic for the pre-defined reports
 
 import datetime
 import pandas as pd
+import matplotlib.pyplot as plt
 from ..model import Engine, Sighting
 
 
@@ -69,3 +70,39 @@ def location_days_report(from_date, location_id, category_id, to_date=None):
                 f"GROUP BY sp.Name"
 
     return pd.read_sql(sql_query, Engine).set_index("Species")
+
+
+def save_report_barchart(report_df, y_column_name, x_label, y_label, title, image_path, x_column_name=None):
+    """
+    Export a PNG image containing the data for a report
+
+    :param report_df: Report dataframe
+    :param y_column_name: Name of the column containing the Y-axis values
+    :param x_label: X-axis label
+    :param y_label: Y-axis label
+    :param title: TItle
+    :param image_path: Output image path
+    :param x_column_name: Name of the column containing the X-axis labels or None to use the index
+    """
+
+    # Set up the X and  Y axes
+    x = report_df[x_column_name] if x_column_name else report_df.index
+    y = report_df[y_column_name]
+    x_pos = [i for i, _ in enumerate(x)]
+
+    # Configure the style and plot type
+    plt.style.use('ggplot')
+    plt.bar(x_pos, y, color='green')
+
+    # Set up the axes and title
+    plt.xlabel(x_label)
+    plt.xticks(x_pos, x)
+    plt.xticks(rotation=90)
+    plt.ylabel(y_label)
+    plt.title(title)
+
+    # This prevents the X-labels from going over the edge of the plot
+    plt.tight_layout()
+
+    # Save to the specified file in PNG format
+    plt.savefig(image_path, format='png', dpi=300)
