@@ -7,7 +7,8 @@ from .status_ratings import create_status_rating, update_status_rating
 from .species_status_ratings import create_species_status_rating, get_species_status_rating, \
     list_species_status_ratings, close_species_status_rating
 from .job_statuses import create_job_status, complete_job_status, list_job_status
-from .reports import location_individuals_report, location_days_report, save_report_barchart
+from .reports import location_individuals_report, location_days_report, save_report_barchart, \
+    get_report_barchart_base64
 
 
 __all__ = [
@@ -44,5 +45,6 @@ __all__ = [
     "list_job_status",
     "location_individuals_report",
     "location_days_report",
-    "save_report_barchart"
+    "save_report_barchart",
+    "get_report_barchart_base64"
 ]
