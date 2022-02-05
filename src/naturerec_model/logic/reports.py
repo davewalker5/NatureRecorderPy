@@ -117,6 +117,11 @@ def save_report_barchart(report_df, y_column_name, x_label, y_label, title, imag
     # Save to the specified file in PNG format
     plt.savefig(image_path, format='png', dpi=300)
 
+    # And clear the plot
+    plt.clf()
+    plt.cla()
+    plt.close()
+
 
 def get_image_base64(image_path):
     """
