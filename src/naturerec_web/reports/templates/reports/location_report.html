@@ -1,3 +1,6 @@
+{% if report.index | length > 0 %}
+    {% set suppress_menu = True %}
+{% endif %}
 {% extends "layout.html" %}
 {% block title %}{{ title }}{% endblock %}
 {% set location_required = "required" %}
@@ -5,23 +8,25 @@
 {% set index_column_name = "Species" %}
 
 {% block content %}
-        {% if report.index | length > 0 %}
-            <img src="data:image/png;base64,{{chart}}" alt="{{ title }}" width="100%" />
-            {% include "reports/report.html" with context %}
-        {% else %}
-            <form method="post">
-                <h1>{{ title }}</h1>
-                <div class="filter-criteria">
-                    {% include "location_selector.html" with context %}
-                    {% include "category_selector.html" with context %}
-                    {% include "date_range_selector.html" with context %}
-                    <div class="button-bar">
-                        <button type="submit" value="generate" class="btn btn-primary">Generate Report</button>
-                    </div>
+    {% if report.index | length > 0 %}
+        {% include "reports/charts.html" with context %}
+        {% include "reports/report.html" with context %}
+    {% else %}
+        <form method="post" {{ form_target }}>
+            <h1>{{ title }}</h1>
+            <div class="filter-criteria">
+                {% include "location_selector.html" with context %}
+                {% include "category_selector.html" with context %}
+                {% include "date_range_selector.html" with context %}
+                <div class="button-bar">
+                    <button type="submit" value="generate" class="btn btn-primary">
+                        Generate Report
+                    </button>
                 </div>
-                {% if report.empty %}
-                    <span>The report contains no results</span>
-                {% endif %}
-            </form>
-        {% endif %}
+            </div>
+            {% if report.empty %}
+                <span>The report contains no results</span>
+            {% endif %}
+        </form>
+    {% endif %}
 {% endblock %}
