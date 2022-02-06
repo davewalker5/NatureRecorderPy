@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
 </head>
 <body>
-    {% include "menu.html" with context %}
+    {% if not suppress_menu %}
+        {% include "menu.html" with context %}
+    {% endif %}
     <div id="main-content" class="container-fluid">
         {% block content %}
         {% endblock %}

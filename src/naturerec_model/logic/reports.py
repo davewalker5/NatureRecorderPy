@@ -2,42 +2,36 @@
 This module contains the business logic for the pre-defined reports
 """
 
-import datetime
 import base64
-import uuid
-import tempfile
-import os
+import io
 import pandas as pd
 from ..model import Engine, Sighting
-
-# Need to do this to prevent it from attempting to start the Matplotlib GUI
 import matplotlib
 
+# Specify Agg as a non-interactive back-end
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
 
 
-def location_individuals_report(from_date, location_id, category_id, to_date=None):
+def _location_category_report(aggregator, from_date, to_date, location_id, category_id):
     """
-    Report on the total number of individuals seen, filtering by location, category and date range
+    Generate a location and category based sightings report. The output is a dataframe with the species name
+    as the index and a column called "Count" containing the result of the aggregation
 
+    :param aggregator: Aggregation clause to use in the SELECT line
     :param from_date: Start date for reporting
+    :param to_date: End-date for reporting
     :param location_id: Location id
     :param category_id: Category id
-    :param to_date: End-date for reporting or None for today
     :return: A Pandas Dataframe containing the results
     """
-    # If the "to" date isn't set, make it today
-    if not to_date:
-        to_date = datetime.datetime.today()
-
     # Format the dates in the format required in a SQL query
     from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
     to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
 
     # Construct the query
-    sql_query = f"SELECT sp.Name AS 'Species', SUM( IFNULL( s.Number, 1 ) ) AS 'Count' " \
+    sql_query = f"SELECT sp.Name AS 'Species', {aggregator} AS 'Count' " \
                 f"FROM SIGHTINGS s " \
                 f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
                 f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
@@ -50,48 +44,16 @@ def location_individuals_report(from_date, location_id, category_id, to_date=Non
     return pd.read_sql(sql_query, Engine).set_index("Species")
 
 
-def location_days_report(from_date, location_id, category_id, to_date=None):
+def get_report_barchart(report_df, y_column_name, x_label, y_label, title, subtitle, x_column_name=None):
     """
-    Report on the number of days on which a given species was seen, filtering by location, category and date range
-
-    :param from_date: Start date for reporting
-    :param location_id: Location id
-    :param category_id: Category id
-    :param to_date: End-date for reporting or None for today
-    :return: A Pandas Dataframe containing the results
-    """
-    # If the "to" date isn't set, make it today
-    if not to_date:
-        to_date = datetime.datetime.today()
-
-    # Format the dates in the format required in a SQL query
-    from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
-    to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
-
-    # Construct the query
-    sql_query = f"SELECT sp.Name AS 'Species', COUNT( s.Id ) AS 'Count' " \
-                f"FROM SIGHTINGS s " \
-                f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
-                f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
-                f"INNER JOIN CATEGORIES c ON c.Id = sp.CategoryId " \
-                f"WHERE Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
-                f"AND l.Id = {location_id} " \
-                f"AND c.Id = {category_id} " \
-                f"GROUP BY sp.Name"
-
-    return pd.read_sql(sql_query, Engine).set_index("Species")
-
-
-def save_report_barchart(report_df, y_column_name, x_label, y_label, title, image_path, x_column_name=None):
-    """
-    Export a PNG image containing a report barchart
+    Get the base-64 representation of an image containing a report barchart
 
     :param report_df: Report dataframe
     :param y_column_name: Name of the column containing the Y-axis values
     :param x_label: X-axis label
     :param y_label: Y-axis label
-    :param title: TItle
-    :param image_path: Output image path
+    :param title: Title
+    :param subtitle: Subtitle
     :param x_column_name: Name of the column containing the X-axis labels or None to use the index
     """
 
@@ -109,45 +71,59 @@ def save_report_barchart(report_df, y_column_name, x_label, y_label, title, imag
     plt.xticks(x_pos, x)
     plt.xticks(rotation=90)
     plt.ylabel(y_label)
-    plt.title(title)
+
+    # Set the chart titles
+    plt.suptitle(title, fontsize=14)
+    plt.title(subtitle, fontsize=8)
+    # plt.title(title)
 
     # This prevents the X-labels from going over the edge of the plot
     plt.tight_layout()
 
-    # Save to the specified file in PNG format
-    plt.savefig(image_path, format='png', dpi=300)
+    # Rather than saving to a file and loading that to get its base64 representation, save to a memory buffer and
+    # then get the base-64 representation from that buffer
+    # plt.savefig(image_path, format='png', dpi=300)
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png', dpi=300)
+    barchart_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
 
     # And clear the plot
     plt.clf()
     plt.cla()
     plt.close()
 
-
-def get_image_base64(image_path):
-    """
-    Given the path to an image file, read it and return the base-64 representation of its contents
-
-    :param image_path: Path to the image file to read
-    :return: Base-64 representation of the image
-    """
-    with open(image_path, mode="rb") as f:
-        return base64.b64encode(f.read())
-
-
-def get_report_barchart_base64(report_df, y_column_name, x_label, y_label, title, x_column_name=None):
-    """
-    Return the base-64 representation of a PNG image containing a report barchart
-
-    :param report_df: Report dataframe
-    :param y_column_name: Name of the column containing the Y-axis values
-    :param x_label: X-axis label
-    :param y_label: Y-axis label
-    :param title: TItle
-    :param x_column_name: Name of the column containing the X-axis labels or None to use the index
-    :return: String containing the Base-64 representation of the barchart
-    """
-    image_path = os.path.join(tempfile.gettempdir(), f"{str(uuid.uuid4())}.png")
-    save_report_barchart(report_df, y_column_name, x_label, y_label, title, image_path, x_column_name)
-    barchart_base64 = get_image_base64(image_path).decode("utf-8")
-    os.unlink(image_path)
     return barchart_base64
+
+
+def location_species_report(from_date, to_date, location_id, category_id):
+    """
+    Report on the species and sightings at a location in the specified date range
+
+    :param from_date: Start date for reporting
+    :param to_date: End-date for reporting
+    :param location_id: Location id
+    :param category_id: Category id
+    :return: A Pandas Dataframe containing the results
+    """
+
+    # Format the dates in the format required in a SQL query
+    from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
+    to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
+
+    # Construct the query
+    sql_query = f"SELECT sp.Name AS 'Species', " \
+                f"COUNT( sp.Id ) AS 'Sightings', " \
+                f"SUM( IFNULL( s.Number, 1 ) ) AS 'Total Individuals', " \
+                f"MIN( IFNULL( s.Number, 1 ) ) AS 'Minimum Seen'," \
+                f"MAX( IFNULL( s.Number, 1 ) ) AS 'Maximum Seen'," \
+                f"ROUND(AVG( IFNULL( s.Number, 1 ) ), 2) AS 'Average Seen' " \
+                f"FROM SIGHTINGS s " \
+                f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
+                f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
+                f"INNER JOIN CATEGORIES c ON c.Id = sp.CategoryId " \
+                f"WHERE Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
+                f"AND l.Id = {location_id} " \
+                f"AND c.Id = {category_id} " \
+                f"GROUP BY sp.Name"
+
+    return pd.read_sql(sql_query, Engine).set_index("Species")
