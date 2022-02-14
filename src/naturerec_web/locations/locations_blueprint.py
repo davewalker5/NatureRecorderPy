@@ -3,6 +3,7 @@ The locations blueprint supplies view functions and templates for location manag
 """
 
 from flask import Blueprint, render_template, request, redirect
+from flask_login import login_required
 from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode
 from naturerec_web.request_utils import get_posted_float
 
@@ -24,6 +25,7 @@ def _render_location_editing_page(location_id, error):
 
 
 @locations_bp.route("/list")
+@login_required
 def list_all():
     """
     Show the page that lists all locations and is the entry point for adding new ones
@@ -37,6 +39,7 @@ def list_all():
 
 @locations_bp.route("/edit", defaults={"location_id": None}, methods=["GET", "POST"])
 @locations_bp.route("/add/<int:location_id>", methods=["GET", "POST"])
+@login_required
 def edit(location_id):
     """
     Serve the page to add  new location or edit an existing one and handle the appropriate action
@@ -75,6 +78,7 @@ def edit(location_id):
 
 @locations_bp.route("/geocode/<postcode>", defaults={"country": "United Kingdom"})
 @locations_bp.route("/geocode/<postcode>/<country>")
+@login_required
 def geocode(postcode, country):
     """
     Query a postcode and return the latitude and longitude

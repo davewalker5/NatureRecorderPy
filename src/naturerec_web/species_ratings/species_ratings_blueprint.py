@@ -4,6 +4,7 @@ The species ratings blueprint supplies view functions and templates for species 
 
 import datetime
 from flask import Blueprint, render_template, request, redirect
+from flask_login import login_required
 from naturerec_model.logic import get_species
 from naturerec_model.logic import list_status_schemes, get_status_scheme
 from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
@@ -28,6 +29,7 @@ def _render_rating_addition_page(species_id, error):
 
 
 @species_ratings_bp.route("/list_ratings/<int:species_id>", methods=["GET", "POST"])
+@login_required
 def list_status_ratings(species_id):
     """
     Show the page that lists species status ratings and handles "closing" of a rating by setting its end date to
@@ -51,6 +53,7 @@ def list_status_ratings(species_id):
 
 
 @species_ratings_bp.route("/list_scheme_ratings/<int:scheme_id>")
+@login_required
 def list_scheme_ratings(scheme_id):
     """
     Return the markup for the conservation status rating selector for the specified scheme
@@ -64,6 +67,7 @@ def list_scheme_ratings(scheme_id):
 
 
 @species_ratings_bp.route("/add/<int:species_id>", methods=["GET", "POST"])
+@login_required
 def add(species_id):
     if request.method == "POST":
         try:

@@ -1,8 +1,9 @@
+from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint
 from .base import Base
 
 
-class User(Base):
+class User(UserMixin, Base):
     """
     Class representing an application user
     """

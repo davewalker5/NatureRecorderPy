@@ -3,6 +3,7 @@ The life list blueprint supplies view functions and templates for generating spe
 """
 
 from flask import Blueprint, render_template, request
+from flask_login import login_required
 from naturerec_model.logic import list_categories, get_category
 from naturerec_model.logic import life_list
 from naturerec_web.request_utils import get_posted_int
@@ -27,6 +28,7 @@ def _render_life_list_page(category_id=None):
 
 
 @life_list_bp.route("/list", methods=["GET", "POST"])
+@login_required
 def life_list_for_category():
     """
     Show the page that generates life lists for a given category, with category selection option

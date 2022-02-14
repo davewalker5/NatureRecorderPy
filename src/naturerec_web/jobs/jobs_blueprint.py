@@ -4,6 +4,7 @@ The jobs blueprint supplies view functions and templates for background job mana
 
 import datetime
 from flask import Blueprint, render_template
+from flask_login import login_required
 from naturerec_model.logic import list_job_status
 
 
@@ -11,6 +12,7 @@ jobs_bp = Blueprint("jobs", __name__, template_folder='templates')
 
 
 @jobs_bp.route("/list", methods=["GET", "POST"])
+@login_required
 def list_recent():
     """
     Show the page that lists recent background jobs

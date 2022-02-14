@@ -3,6 +3,7 @@ The export blueprint supplies view functions and templates for exporting sightin
 """
 
 from flask import Blueprint, render_template, request
+from flask_login import login_required
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.data_exchange import SightingsExportHelper, LifeListExportHelper
@@ -57,6 +58,7 @@ def _render_life_list_export_filters_page(category_id=None, message=None):
 
 
 @export_bp.route("/filters", methods=["GET", "POST"])
+@login_required
 def export():
     """
     Show the page that presents filters for exporting sightings
@@ -84,6 +86,7 @@ def export():
 
 
 @export_bp.route("/life_list", methods=["GET", "POST"])
+@login_required
 def export_life_list():
     """
     Show the page that presents filters for exporting life lists

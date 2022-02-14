@@ -4,6 +4,7 @@ The sightings blueprint supplies view functions and templates for sighting manag
 
 import datetime
 from flask import Blueprint, render_template, request, session, redirect
+from flask_login import login_required
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
@@ -126,6 +127,7 @@ def _get_filter_date(key):
 
 
 @sightings_bp.route("/list", methods=["GET", "POST"])
+@login_required
 def list_filtered_sightings():
     """
     Show the page that lists today's sightings and is the entry point for adding new ones
@@ -143,6 +145,7 @@ def list_filtered_sightings():
 
 
 @sightings_bp.route("/list_species/<int:category_id>/<int:selected_species_id>")
+@login_required
 def list_species_for_category(category_id, selected_species_id):
     """
     Return the markup for the species selector for the specified category
@@ -159,6 +162,7 @@ def list_species_for_category(category_id, selected_species_id):
 
 @sightings_bp.route("/edit", defaults={"sighting_id": None}, methods=["GET", "POST"])
 @sightings_bp.route("/edit/<int:sighting_id>", methods=["GET", "POST"])
+@login_required
 def edit(sighting_id):
     """
     Serve the page to add new sighting or edit an existing one and handle the appropriate action
@@ -214,6 +218,7 @@ def edit(sighting_id):
 
 
 @sightings_bp.route("/import", methods=["GET", "POST"])
+@login_required
 def import_sightings():
     """
     Serve the page to import sightings and handle the import when the form is submitted

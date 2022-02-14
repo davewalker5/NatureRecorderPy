@@ -5,6 +5,7 @@ The reports blueprint supplies view functions and templates for reporting on sig
 import datetime
 import os
 from flask import Blueprint, render_template, request
+from flask_login import login_required
 from naturerec_model.logic import list_locations, get_location
 from naturerec_model.logic import list_categories, get_category
 from naturerec_model.logic import location_species_report, get_report_barchart
@@ -91,6 +92,7 @@ def _render_location_report_page(from_date=None, to_date=None, location_id=None,
 
 
 @reports_bp.route("/location", methods=["GET", "POST"])
+@login_required
 def location_report():
     """
     Show the page that generates a location, species and sighting report for a given date range
