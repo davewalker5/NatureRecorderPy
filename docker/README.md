@@ -46,14 +46,14 @@ The following "docker run" parameters are recommended when running the naturerec
 | Parameter | Value | Purpose |
 | --- | --- | --- |
 | -d | - | Run as a background  process
-| -v | /local:/var/opt/naturerecorderpy.api-1.0.14.0 | Mount the host folder containing the SQLite database |
+| -v | /local:/var/opt/naturerecorderpy.api-1.0.21.0 | Mount the host folder containing the SQLite database |
 | -p | 80:5000 | Expose the container's port 5000 as port 80 on the host |
 | --rm | - | Remove the container automatically when it stops |
 
 For example:
 
 ```shell
-docker run -d -v /local:/var/opt/naturerecorderpy-1.0.14.0/ -p 80:5000 --rm davewalker5/naturerecorderpy:latest
+docker run -d -v /local:/var/opt/naturerecorderpy-1.0.21.0/ -p 80:5000 --rm davewalker5/naturerecorderpy:latest
 ```
 
 The "/local" path given to the -v argument is described, below, and should be replaced with a value appropriate for the host running the container. Similarly, the port number "80" can be replaced with any available port on the host.
@@ -69,7 +69,7 @@ That folder should contain a SQLite database named "naturerecorder.db", created 
 To run the image, enter the following commands, substituting "/local" for the host folder containing the SQLite database, as described:
 
 ```shell
-docker run -d -v /local:/var/opt/naturerecorderpy-1.0.14.0/ -p 80:5000 --rm davewalker5/naturerecorderpy:latest
+docker run -d -v /local:/var/opt/naturerecorderpy-1.0.21.0/ -p 80:5000 --rm davewalker5/naturerecorderpy:latest
 ```
 
 Once the container is running, browse to the following URL on the host:
