@@ -79,11 +79,12 @@ Creating an Empty Database
 --------------------------
 
 With the pre-requisites in place, an empty database with the correct schema in place can be created by running the
-following commands from the "src" folder:
+following commands from the root of the project:
 
 ::
 
-    export NATURE_RECORDER_DB="`pwd`/../data/naturerecorder.db"
+    export NATURE_RECORDER_DB="`pwd`/data/naturerecorder.db"
+    export PYTHONPATH=`pwd`/src
     python -m naturerec_model
 
 The first command will need to be modified based on the current operating system.
@@ -92,13 +93,13 @@ The first command will need to be modified based on the current operating system
 Adding a User to the Database
 -----------------------------
 
-Once the database has been created,
-the following commands will prompt for a username and password and will add that user to the database:
+Once the database has been created, enter the following commands from the root of the project to prompt for a
+username and password and add that user to the database:
 
 ::
 
-    export NATURE_RECORDER_DB="`pwd`/../data/naturerecorder.db"
-    export PYTHONPATH=`pwd`/..
+    export NATURE_RECORDER_DB="`pwd`/data/naturerecorder.db"
+    export PYTHONPATH=`pwd`/src
     python add_user.py
 
 The first two commands will need to be modified based on the current operating system.
