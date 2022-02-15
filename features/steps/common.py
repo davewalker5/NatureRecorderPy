@@ -135,7 +135,7 @@ def _(context, icon_type):
     Icon clicker based on the icon type text
 
     :param context: Behave context
-    :param button_text: Button text
+    :param icon_type: Type of icon to click
     """
     class_name = f"fa-{icon_type}"
     elements = context.browser.find_elements(By.CLASS_NAME, class_name)

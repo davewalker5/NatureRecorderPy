@@ -1,5 +1,4 @@
 Feature: Reporting
-    @wip
     Scenario: Report on sightings of species at a location
         Given A set of sightings
         | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung |
