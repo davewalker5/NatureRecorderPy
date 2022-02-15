@@ -12,6 +12,13 @@ def _(context):
     assert "Location Report" in context.browser.title
 
 
+@when("I navigate to the species report page")
+def _(context):
+    url = context.flask_runner.make_url("reports/species")
+    context.browser.get(url)
+    assert "Species by Date Report" in context.browser.title
+
+
 @when("I fill in the location report details")
 def _(context):
     row = context.table.rows[0]
@@ -20,6 +27,18 @@ def _(context):
     from_date = get_date_from_string(row["From"]).strftime(Sighting.DATE_DISPLAY_FORMAT)
     context.browser.find_element(By.NAME, "from_date").send_keys(from_date)
     context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ENTER)
+
+
+@when("I fill in the species report details")
+def _(context):
+    row = context.table.rows[0]
+    select_option(context, "location", row["Location"], None)
+    select_option(context, "category", row["Category"], None)
+    select_option(context, "species", row["Species"], 1)
+    from_date = get_date_from_string(row["From"]).strftime(Sighting.DATE_DISPLAY_FORMAT)
+    context.browser.find_element(By.NAME, "from_date").send_keys(from_date)
+    context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ENTER)
+
 
 @then("There will be {number} results in the report table")
 @then("There will be {number} result in the report table")

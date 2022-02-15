@@ -7,7 +7,7 @@ from .status_ratings import create_status_rating, update_status_rating
 from .species_status_ratings import create_species_status_rating, get_species_status_rating, \
     list_species_status_ratings, close_species_status_rating
 from .job_statuses import create_job_status, complete_job_status, list_job_status
-from .reports import location_species_report, get_report_barchart
+from .reports import location_species_report, species_by_date_report, get_report_barchart
 from .users import create_user, authenticate, get_user
 
 
@@ -44,6 +44,7 @@ __all__ = [
     "complete_job_status",
     "list_job_status",
     "location_species_report",
+    "species_by_date_report",
     "get_report_barchart",
     "create_user",
     "authenticate",
