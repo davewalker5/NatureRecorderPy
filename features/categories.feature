@@ -1,5 +1,4 @@
 Feature: Category management
-
     Scenario: List categories when there are some categories in the database
         Given A set of categories
         | Category |

@@ -31,13 +31,14 @@ naturerec_web_package_data.append("templates/*.html")
 
 setuptools.setup(
     name="nature_recorder",
-    version="1.0.20",
+    version="1.0.21",
     description="Wildlife sightings database",
     packages=setuptools.find_packages("src"),
     include_package_data=True,
     package_dir={"": "src"},
     package_data={
         "naturerec_web": naturerec_web_package_data,
+        "naturerec_web.auth": ["templates/auth/*.html"],
         "naturerec_web.categories": ["templates/categories/*.html"],
         "naturerec_web.export": ["templates/export/*.html"],
         "naturerec_web.jobs": ["templates/jobs/*.html"],

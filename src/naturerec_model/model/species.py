@@ -5,7 +5,7 @@ from .base import Base
 
 class Species(Base):
     """
-    Class representing the an individual species
+    Class representing an individual species
     """
     __tablename__ = "Species"
 

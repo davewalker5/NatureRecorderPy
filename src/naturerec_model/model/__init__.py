@@ -9,6 +9,7 @@ from .status_rating import StatusRating
 from .species_status_rating import SpeciesStatusRating
 from .job_status import JobStatus
 from .utils import get_data_path
+from .user import User
 
 
 __all__ = [
@@ -24,5 +25,6 @@ __all__ = [
     "StatusRating",
     "SpeciesStatusRating",
     "get_data_path",
-    "JobStatus"
+    "JobStatus",
+    "User"
 ]

@@ -10,6 +10,7 @@ from naturerec_model.model import StatusScheme
 from naturerec_model.model import StatusRating
 from naturerec_model.model import SpeciesStatusRating
 from naturerec_model.model import JobStatus
+from naturerec_model.model import User
 
 # Create/update the database. For details on where the SQLite database file is located, see the comments in the
 # _get_db_path() function in database.py

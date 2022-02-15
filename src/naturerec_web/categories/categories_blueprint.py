@@ -3,6 +3,7 @@ The categories blueprint supplies view functions and templates for species categ
 """
 
 from flask import Blueprint, render_template, request, redirect
+from flask_login import login_required
 from naturerec_model.logic import list_categories, get_category, create_category, update_category
 
 
@@ -24,6 +25,7 @@ def _render_category_editing_page(category_id, error):
 
 
 @categories_bp.route("/list")
+@login_required
 def list_all():
     """
     Show the page that lists all categories and is the entry point for adding new ones
@@ -37,6 +39,7 @@ def list_all():
 
 @categories_bp.route("/edit", defaults={"category_id": None}, methods=["GET", "POST"])
 @categories_bp.route("/add/<int:category_id>", methods=["GET", "POST"])
+@login_required
 def edit(category_id):
     """
     Serve the page to add  new category or edit an existing one and handle the appropriate action

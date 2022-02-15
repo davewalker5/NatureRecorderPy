@@ -68,19 +68,48 @@ Structure
 Running the Application
 =======================
 
+Pre-requisites
+--------------
+
 To run the application, a virtual environment should be created, the requirements should be installed using pip and the
 environment should be activated.
 
-With those pre-requisites in place, an empty database with the correct schema in place can be created by running the
-following commands from the "src" folder:
+
+Creating an Empty Database
+--------------------------
+
+With the pre-requisites in place, an empty database with the correct schema in place can be created by running the
+following commands from the root of the project:
 
 ::
 
-    export NATURE_RECORDER_DB="`pwd`/../data/naturerecorder.db"
+    export NATURE_RECORDER_DB="`pwd`/data/naturerecorder.db"
+    export PYTHONPATH=`pwd`/src
     python -m naturerec_model
 
-The first command will need to be modified based on the current operating system. Once the database has been created, to run the web-based application in the Flask development web server, enter the
-following from the "src/naturerec_web" folder:
+The first command will need to be modified based on the current operating system.
+
+
+Adding a User to the Database
+-----------------------------
+
+Once the database has been created, enter the following commands from the root of the project to prompt for a
+username and password and add that user to the database:
+
+::
+
+    export NATURE_RECORDER_DB="`pwd`/data/naturerecorder.db"
+    export PYTHONPATH=`pwd`/src
+    python add_user.py
+
+The first two commands will need to be modified based on the current operating system.
+
+
+Running the Web Application
+---------------------------
+
+To run the web-based application in the Flask development web server, enter the following from the
+"src/naturerec_web" folder:
 
 ::
 

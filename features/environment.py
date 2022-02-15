@@ -1,8 +1,12 @@
 import os
+import time
 from sqlalchemy import text
 from naturerec_model.model import create_database
+from naturerec_model.logic import create_user
 from behave import fixture, use_fixture
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from flask_app_runner import FlaskAppRunner
 from naturerec_web import app as nature_recorder_app
 from naturerec_model.model.database import Engine
@@ -52,6 +56,32 @@ def create_test_database(_):
     :param _: Behave context (not used)
     """
     create_database()
+    create_user("behave", "password")
+
+
+@fixture
+def login(context):
+    """
+    Log in to the application
+
+    :param context: Behave context
+    """
+    # Browse to the login page and enter the username and password
+    url = context.flask_runner.make_url("auth/login")
+    context.browser.get(url)
+    context.browser.find_element(By.NAME, "username").send_keys("behave")
+    context.browser.find_element(By.NAME, "password").send_keys("password")
+
+    # Click the "login" button
+    xpath = f"//*[text()='Login']"
+    elements = context.browser.find_elements(By.XPATH, xpath)
+    for element in elements:
+        try:
+            element.click()
+        except (ElementNotInteractableException, NoSuchElementException):
+            pass
+
+    time.sleep(1)
 
 
 def before_all(context):
@@ -63,6 +93,7 @@ def before_all(context):
     use_fixture(create_test_database, context)
     use_fixture(start_flask_server, context)
     use_fixture(start_selenium_browser, context)
+    use_fixture(login, context)
 
 
 def before_scenario(context, scenario):

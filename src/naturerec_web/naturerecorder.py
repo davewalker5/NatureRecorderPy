@@ -8,6 +8,7 @@ to provide button and form element styling.
 
 import os
 from flask import Flask, redirect
+from flask_login import LoginManager
 from .sightings import sightings_bp
 from .export import export_bp
 from .locations import locations_bp
@@ -18,11 +19,15 @@ from .species_ratings import species_ratings_bp
 from .life_list import life_list_bp
 from .jobs import jobs_bp
 from .reports import reports_bp
+from .auth import auth_bp
+from naturerec_model.logic import get_user
 
+# Create the app
 app = Flask("Nature Recorder",
             static_folder=os.path.join(os.path.dirname(__file__), "static"),
             template_folder=os.path.join(os.path.dirname(__file__), "templates"))
 
+# Register the blueprints
 app.secret_key = b'some secret key'
 app.register_blueprint(sightings_bp, url_prefix='/sightings')
 app.register_blueprint(export_bp, url_prefix='/export')
@@ -34,6 +39,23 @@ app.register_blueprint(species_ratings_bp, url_prefix='/species_ratings')
 app.register_blueprint(life_list_bp, url_prefix='/life_list')
 app.register_blueprint(jobs_bp, url_prefix='/jobs')
 app.register_blueprint(reports_bp, url_prefix='/reports')
+app.register_blueprint(auth_bp, url_prefix='/auth')
+
+# Create the flask-login user manager
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    """
+    Method that returns a user given their ID
+
+    :param user_id: ID of the user to retrieve
+    :return: Instance of the User class for the specified user
+    """
+    return get_user(int(user_id))
 
 
 @app.route("/")

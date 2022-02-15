@@ -3,6 +3,7 @@ The species blueprint supplies view functions and templates for species manageme
 """
 
 from flask import Blueprint, render_template, request, redirect
+from flask_login import login_required
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species
 from naturerec_web.request_utils import get_posted_int
@@ -42,6 +43,7 @@ def _render_species_list_page(category_id=None):
 
 
 @species_bp.route("/list", methods=["GET", "POST"])
+@login_required
 def list_filtered_species():
     """
     Show the page that lists species with category selection option
@@ -56,6 +58,7 @@ def list_filtered_species():
 
 @species_bp.route("/add", defaults={"species_id": None}, methods=["GET", "POST"])
 @species_bp.route("/edit/<int:species_id>", methods=["GET", "POST"])
+@login_required
 def edit(species_id):
     """
     Serve the page to add new species or edit an existing one and handle the appropriate action
