@@ -4,6 +4,7 @@ This module contains the business logic for the pre-defined reports
 
 import base64
 import io
+import datetime
 import pandas as pd
 from ..model import Engine, Sighting
 import matplotlib
@@ -12,36 +13,6 @@ import matplotlib
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt
-
-
-def _location_category_report(aggregator, from_date, to_date, location_id, category_id):
-    """
-    Generate a location and category based sightings report. The output is a dataframe with the species name
-    as the index and a column called "Count" containing the result of the aggregation
-
-    :param aggregator: Aggregation clause to use in the SELECT line
-    :param from_date: Start date for reporting
-    :param to_date: End-date for reporting
-    :param location_id: Location id
-    :param category_id: Category id
-    :return: A Pandas Dataframe containing the results
-    """
-    # Format the dates in the format required in a SQL query
-    from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
-    to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
-
-    # Construct the query
-    sql_query = f"SELECT sp.Name AS 'Species', {aggregator} AS 'Count' " \
-                f"FROM SIGHTINGS s " \
-                f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
-                f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
-                f"INNER JOIN CATEGORIES c ON c.Id = sp.CategoryId " \
-                f"WHERE Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
-                f"AND l.Id = {location_id} " \
-                f"AND c.Id = {category_id} " \
-                f"GROUP BY sp.Name"
-
-    return pd.read_sql(sql_query, Engine).set_index("Species")
 
 
 def get_report_barchart(report_df, y_column_name, x_label, y_label, title, subtitle, x_column_name=None):
@@ -114,16 +85,62 @@ def location_species_report(from_date, to_date, location_id, category_id):
     sql_query = f"SELECT sp.Name AS 'Species', " \
                 f"COUNT( sp.Id ) AS 'Sightings', " \
                 f"SUM( IFNULL( s.Number, 1 ) ) AS 'Total Individuals', " \
-                f"MIN( IFNULL( s.Number, 1 ) ) AS 'Minimum Seen'," \
-                f"MAX( IFNULL( s.Number, 1 ) ) AS 'Maximum Seen'," \
+                f"MIN( IFNULL( s.Number, 1 ) ) AS 'Minimum Seen', " \
+                f"MAX( IFNULL( s.Number, 1 ) ) AS 'Maximum Seen', " \
                 f"ROUND(AVG( IFNULL( s.Number, 1 ) ), 2) AS 'Average Seen' " \
                 f"FROM SIGHTINGS s " \
                 f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
                 f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
                 f"INNER JOIN CATEGORIES c ON c.Id = sp.CategoryId " \
-                f"WHERE Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
+                f"WHERE s.Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
                 f"AND l.Id = {location_id} " \
                 f"AND c.Id = {category_id} " \
                 f"GROUP BY sp.Name"
 
     return pd.read_sql(sql_query, Engine).set_index("Species")
+
+
+def species_by_date_report(from_date, to_date, location_id, species_id, by_week):
+    """
+    Return the species sightings report for a location, species and date range
+
+    :param from_date: Start date for reporting
+    :param to_date: End-date for reporting
+    :param location_id: Location id
+    :param species_id: Species id
+    :param by_week: True to report by week number, False to report by month
+    :return: A Pandas Dataframe containing the results
+    """
+    # Format the dates in the format required in a SQL query
+    from_date_string = from_date.strftime(Sighting.DATE_FORMAT)
+    to_date_string = to_date.strftime(Sighting.DATE_FORMAT)
+
+    # Construct and execute the query
+    format_specifier = "W" if by_week else "m"
+    interval_column_name = "Week" if by_week else "Month_Number"
+    sql_query = f"SELECT STRFTIME( '%{format_specifier}', Date ) AS {interval_column_name}, " \
+                f"COUNT( sp.Id ) AS 'Sightings', " \
+                f"MIN( IFNULL( s.Number, 1 ) ) AS 'Minimum Seen'," \
+                f"MAX( IFNULL( s.Number, 1 ) ) AS 'Maximum Seen', " \
+                f"ROUND(AVG( IFNULL( s.Number, 1 ) ), 2) AS 'Average Seen' " \
+                f"FROM SIGHTINGS s " \
+                f"INNER JOIN LOCATIONS l ON l.Id = s.LocationId " \
+                f"INNER JOIN SPECIES sp ON sp.Id = s.SpeciesId " \
+                f"WHERE s.Date BETWEEN '{from_date_string}' AND '{to_date_string}' " \
+                f"AND l.Id = {location_id} " \
+                f"AND sp.Id = {species_id} " \
+                f"GROUP BY STRFTIME( '%{format_specifier}', Date ), sp.Name"
+    report_df = pd.read_sql(sql_query, Engine)
+
+    # If we're reporting by month, add a month name column, remove the month number column and make the month
+    # name the index. Otherwise, just make the week number the index
+    if by_week:
+        report_df.set_index(interval_column_name, inplace=True)
+    else:
+        report_df["Month"] = [datetime.datetime.strptime(month_number, "%m").strftime("%b")
+                              for month_number
+                              in report_df[interval_column_name]]
+        report_df.set_index("Month", inplace=True)
+        report_df.drop(columns=[interval_column_name], inplace=True)
+
+    return report_df
