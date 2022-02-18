@@ -15,11 +15,10 @@ def set_web_app_secret():
     """
     Replace the secret key in the web application Python source file
     """
-    file = os.path.join(get_project_path(), ".env")
+    file = os.path.join(get_project_path(), "data", ".env")
     with open(file, mode="wt", encoding="utf-8") as f:
         f.writelines([
-            f"SECRET_KEY={os.urandom(32).hex()}\n",
-            "FLASK_APP=naturerec_web"
+            f"SECRET_KEY={os.urandom(32).hex()}\n"
         ])
 
 
