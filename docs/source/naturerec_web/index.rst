@@ -5,6 +5,7 @@ The naturerec_web Package
    :maxdepth: 2
    :caption: Contents:
 
+   home_blueprint
    locations_blueprint
    categories_blueprint
    species_blueprint

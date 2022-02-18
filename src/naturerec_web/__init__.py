@@ -1,5 +1,65 @@
-from .naturerecorder import app
+import os
+from flask import Flask
+from flask_login import LoginManager
+from .home import home_bp
+from .sightings import sightings_bp
+from .export import export_bp
+from .locations import locations_bp
+from .categories import categories_bp
+from .species import species_bp
+from .status import status_bp
+from .species_ratings import species_ratings_bp
+from .life_list import life_list_bp
+from .jobs import jobs_bp
+from .reports import reports_bp
+from .auth import auth_bp
+from naturerec_model.logic import get_user
 
-__all__ = [
-    "app"
-]
+
+def create_app(environment="production"):
+    """
+    Flask Application Factory
+
+    :return: An instance of the Flask application
+    """
+    app = Flask("Nature Recorder",
+                static_folder=os.path.join(os.path.dirname(__file__), "static"),
+                template_folder=os.path.join(os.path.dirname(__file__), "templates"))
+
+    config_object = f"naturerec_web.config.{'ProductionConfig' if environment == 'production' else 'DevelopmentConfig'}"
+    app.config.from_object(config_object)
+    print(config_object)
+    print(os.environ["SECRET_KEY"])
+
+    # Register the blueprints
+    app.secret_key = os.environ["SECRET_KEY"]
+    app.register_blueprint(home_bp, url_prefix="")
+    app.register_blueprint(sightings_bp, url_prefix='/sightings')
+    app.register_blueprint(export_bp, url_prefix='/export')
+    app.register_blueprint(locations_bp, url_prefix='/locations')
+    app.register_blueprint(categories_bp, url_prefix='/categories')
+    app.register_blueprint(species_bp, url_prefix='/species')
+    app.register_blueprint(status_bp, url_prefix='/status')
+    app.register_blueprint(species_ratings_bp, url_prefix='/species_ratings')
+    app.register_blueprint(life_list_bp, url_prefix='/life_list')
+    app.register_blueprint(jobs_bp, url_prefix='/jobs')
+    app.register_blueprint(reports_bp, url_prefix='/reports')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    # Create the flask-login user manager
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        """
+        Method that returns a user given their ID
+
+        :param user_id: ID of the user to retrieve
+        :return: Instance of the User class for the specified user
+        """
+        return get_user(int(user_id))
+
+    return app
+

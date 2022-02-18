@@ -8,7 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from flask_app_runner import FlaskAppRunner
-from naturerec_web import app as nature_recorder_app
+from naturerec_web import create_app
 from naturerec_model.model.database import Engine
 from naturerec_model.model.utils import get_project_path
 
@@ -23,7 +23,7 @@ def start_flask_server(context):
 
     :param context:
     """
-    context.flask_runner = FlaskAppRunner("127.0.0.1", 5000, nature_recorder_app)
+    context.flask_runner = FlaskAppRunner("127.0.0.1", 5000, create_app("development"))
     context.flask_runner.start()
     yield context.flask_runner
 
