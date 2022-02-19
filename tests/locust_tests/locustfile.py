@@ -7,10 +7,10 @@ from locust_tests.flask_app_runner import FlaskAppRunner
 from naturerec_model.model import create_database, get_data_path, Sighting
 from naturerec_model.logic import list_locations, list_categories, list_species
 from naturerec_model.data_exchange import SightingsImportHelper, StatusImportHelper
-from naturerec_web import app as nature_recorder_app
+from naturerec_web import create_app
 
 
-flask_runner = FlaskAppRunner("127.0.0.1", 5000, nature_recorder_app)
+flask_runner = FlaskAppRunner("127.0.0.1", 5000, create_app())
 
 
 @events.test_start.add_listener

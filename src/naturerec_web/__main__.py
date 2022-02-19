@@ -1,10 +1,8 @@
-import os
-from naturerec_web.naturerecorder import app
+import sys
+from naturerec_web import create_app
 
-try:
-    if os.environ["FLASK_ENV"] == "development":
-        app.run(debug=True, use_reloader=True)
-    else:
-        app.run(host="0.0.0.0")
-except KeyError:
-    app.run(host="0.0.0.0")
+environment = sys.argv[1] if len(sys.argv) > 1 else "development"
+if environment == "development":
+    create_app(environment).run(debug=True, use_reloader=True)
+else:
+    create_app(environment).run(host="0.0.0.0")
