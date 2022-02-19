@@ -28,8 +28,6 @@ def create_app(environment="production"):
 
     config_object = f"naturerec_web.config.{'ProductionConfig' if environment == 'production' else 'DevelopmentConfig'}"
     app.config.from_object(config_object)
-    print(config_object)
-    print(os.environ["SECRET_KEY"])
 
     # Register the blueprints
     app.secret_key = os.environ["SECRET_KEY"]

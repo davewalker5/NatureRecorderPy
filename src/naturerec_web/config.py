@@ -6,7 +6,10 @@ import os
 from dotenv import load_dotenv
 
 basedir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-env_file = os.path.join(basedir, "data", ".env")
+if "NATURE_RECORDER_DATA_FOLDER" in os.environ:
+    env_file = os.path.join(os.environ["NATURE_RECORDER_DATA_FOLDER"], ".env")
+else:
+    env_file = os.path.join(basedir, "data", ".env")
 load_dotenv(env_file)
 
 
@@ -15,14 +18,8 @@ class BaseConfig:
 
 
 class ProductionConfig(BaseConfig):
-    FLASK_ENV = 'production'
-    DEBUG = False
     TESTING = False
-    SERVER_NAME = "0.0.0.0"
 
 
 class DevelopmentConfig(BaseConfig):
-    FLASK_ENV = 'development'
-    DEBUG = True
     TESTING = True
-    SERVER_NAME = "127.0.0.1:5000"
