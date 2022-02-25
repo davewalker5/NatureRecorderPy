@@ -16,7 +16,8 @@ class TestSightingsExportHelper(unittest.TestCase):
         self._category = create_category("Birds")
         self._gull = create_species(self._category.id, "Black-Headed Gull")
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
+                            None)
 
     def test_can_export_life_list(self):
         # Export the sightings

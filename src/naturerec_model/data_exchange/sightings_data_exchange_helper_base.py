@@ -31,6 +31,8 @@ CSV files have the following columns:
 +-----------+-----------------------------------------------------------------------------+
 | Longitude | Longitude for the location  in decimal format                               |
 +-----------+-----------------------------------------------------------------------------+
+| Notes     | Sighting notes                                                              |
++-----------+-----------------------------------------------------------------------------+
 """
 
 from .data_exchange_helper_base import DataExchangeHelperBase
@@ -51,7 +53,8 @@ class SightingsDataExchangeHelperBase(DataExchangeHelperBase):
         'Postcode',
         'Country',
         'Latitude',
-        'Longitude'
+        'Longitude',
+        'Notes'
     ]
 
     def __init__(self, action):

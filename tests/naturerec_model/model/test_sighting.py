@@ -14,7 +14,8 @@ class TestSighting(unittest.TestCase):
         self._gull = create_species(self._category.id, "Black-Headed Gull")
         self._cormorant = create_species(self._category.id, "Cormorant")
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+        _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
+                            "Notes")
 
     def test_can_create_sighting(self):
         with Session.begin() as session:
@@ -29,10 +30,11 @@ class TestSighting(unittest.TestCase):
         self.assertEqual("Unknown", sighting.gender_name)
         self.assertFalse(0, sighting.withYoung)
         self.assertEqual("No", sighting.with_young_name)
+        self.assertEqual("Notes", sighting.notes)
 
     def test_can_create_sighting_for_males(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), None,
-                                      Gender.MALE, False).id
+                                      Gender.MALE, False, None).id
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.MALE, sighting.gender)
@@ -40,7 +42,7 @@ class TestSighting(unittest.TestCase):
 
     def test_can_create_sighting_for_females(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), None,
-                                      Gender.FEMALE, False).id
+                                      Gender.FEMALE, False, None).id
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.FEMALE, sighting.gender)
@@ -48,7 +50,7 @@ class TestSighting(unittest.TestCase):
 
     def test_can_create_sighting_for_both_genders(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), None,
-                                      Gender.BOTH, False).id
+                                      Gender.BOTH, False, None).id
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertEqual(Gender.BOTH, sighting.gender)
@@ -56,7 +58,7 @@ class TestSighting(unittest.TestCase):
 
     def test_can_create_sighting_with_young(self):
         sighting_id = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), None,
-                                      Gender.UNKNOWN, True).id
+                                      Gender.UNKNOWN, True, None).id
         with Session.begin() as session:
             sighting = session.query(Sighting).get(sighting_id)
             self.assertTrue(sighting.withYoung)
@@ -65,38 +67,38 @@ class TestSighting(unittest.TestCase):
     def test_cannot_create_sighting_for_invalid_gender(self):
         with self.assertRaises(ValueError):
             _ = create_sighting(self._location.id, self._cormorant.id, datetime.date(2021, 12, 14), None,
-                                -1, False)
+                                -1, False, None)
 
     def test_cannot_create_same_sighting_twice(self):
         with self.assertRaises(ValueError):
             _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
-                                False)
+                                False, None)
 
     def test_cannot_create_sighting_for_missing_location(self):
         with self.assertRaises(ValueError):
-            _ = create_sighting(-1, self._cormorant.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+            _ = create_sighting(-1, self._cormorant.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False, None)
 
     def test_cannot_create_sighting_for_missing_species(self):
         with self.assertRaises(ValueError):
-            _ = create_sighting(self._location.id, -1, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+            _ = create_sighting(self._location.id, -1, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False, None)
 
     def test_cannot_create_sighting_with_invalid_number(self):
         with self.assertRaises(ValueError):
             _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), -1, Gender.UNKNOWN,
-                                False)
+                                False, None)
 
     def test_cannot_create_sighting_with_invalid_gender(self):
         with self.assertRaises(ValueError):
-            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), None, 10, False)
+            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), None, 10, False, None)
 
     def test_cannot_create_sighting_with_invalid_with_young(self):
         with self.assertRaises(ValueError):
-            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), None, 10, -1)
+            _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 15), None, 10, -1, None)
 
     def test_can_get_csv_columns(self):
         with Session.begin() as session:
             columns = session.query(Sighting).one().csv_columns
-        self.assertEqual(14, len(columns))
+        self.assertEqual(15, len(columns))
         self.assertEqual("Black-Headed Gull", columns[0])
         self.assertEqual("Birds", columns[1])
         self.assertIsNone(columns[2])
@@ -111,3 +113,4 @@ class TestSighting(unittest.TestCase):
         self.assertEqual("United Kingdom",  columns[11])
         self.assertIsNone(columns[12])
         self.assertIsNone(columns[13])
+        self.assertEqual("Notes", columns[14])

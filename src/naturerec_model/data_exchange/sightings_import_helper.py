@@ -39,7 +39,8 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
             number = int(row[2]) if row[2].strip() else None
             gender = [key for key, value in Gender.gender_map().items() if value == row[3].strip().title()][0]
             with_young = 1 if row[4].strip().title() == "Yes" else 0
-            _ = create_sighting(location_id, species_id, date, number, gender, with_young)
+            notes = row[14] if row[14] else None
+            _ = create_sighting(location_id, species_id, date, number, gender, with_young, notes)
 
     def _read_csv_rows(self):
         """
@@ -74,7 +75,7 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         :param row: CSV row (collection of fields)
         :param row_number: Row number for error reporting
         """
-        if len(row) != 14:
+        if len(row) != 15:
             raise ValueError(f"Malformed data at row {row_number}")
 
         cls._check_not_empty(row, 0, row_number)            # Species

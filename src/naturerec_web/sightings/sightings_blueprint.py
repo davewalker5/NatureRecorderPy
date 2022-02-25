@@ -193,7 +193,8 @@ def edit(sighting_id):
                                     sighting_date,
                                     get_posted_int("number"),
                                     get_posted_int("gender"),
-                                    get_posted_bool("with_young"))
+                                    get_posted_bool("with_young"),
+                                    None)
                 sighting = get_sighting(sighting_id)
             else:
                 created_id = create_sighting(location_id,
@@ -201,7 +202,8 @@ def edit(sighting_id):
                                              sighting_date,
                                              get_posted_int("number"),
                                              get_posted_int("gender"),
-                                             get_posted_bool("with_young")).id
+                                             get_posted_bool("with_young"),
+                                             None).id
                 sighting = get_sighting(created_id)
 
             # Construct the confirmation message
@@ -210,7 +212,12 @@ def edit(sighting_id):
                       f"at {sighting.location.name} " \
                       f"on {sighting.display_date}"
 
-            return _render_sighting_editing_page(sighting_id, message, None)
+            # If we're editing an existing sighting, return to the sightings list page, so the
+            # change can be seen in the sightings list. Otherwise, return to the editing page
+            if sighting_id:
+                return redirect("/sightings/list")
+            else:
+                return _render_sighting_editing_page(sighting_id, message, None)
         except ValueError as e:
             return _render_sighting_editing_page(sighting_id, None, e)
     else:

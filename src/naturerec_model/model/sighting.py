@@ -32,6 +32,8 @@ class Sighting(Base):
     withYoung = Column(Integer, default=0, nullable=False)
     #: Number of individuals seen
     gender = Column(Integer, default=Gender.UNKNOWN, nullable=False)
+    #: Sighting notes
+    notes = Column(String, default=None, nullable=True)
 
     #: Related location instance
     location = relationship("Location", lazy="joined")
@@ -50,7 +52,8 @@ class Sighting(Base):
                f"date={self.date!r}, " \
                f"number={self.number!r}, " \
                f"withYoung={self.withYoung!r}, " \
-               f"gender={self.gender!r})"
+               f"gender={self.gender!r}, " \
+               f"notes={self.notes!r})"
 
     @property
     def sighting_date(self):
@@ -88,5 +91,6 @@ class Sighting(Base):
             self.location.postcode,
             self.location.country,
             self.location.latitude,
-            self.location.longitude
+            self.location.longitude,
+            self.notes
         ]
