@@ -69,7 +69,7 @@ def _(context):
         species = create_test_species(row["Species"], category.id)
         gender = [key for key, value in Gender.gender_map().items() if value == row["Gender"]][0]
         with_young = 1 if row["WithYoung"] == "Yes" else 0
-        _ = create_sighting(location.id, species.id, sighting_date, int(row["Number"]), gender, with_young)
+        _ = create_sighting(location.id, species.id, sighting_date, int(row["Number"]), gender, with_young, None)
 
 
 @given("A set of conservation status schemes")

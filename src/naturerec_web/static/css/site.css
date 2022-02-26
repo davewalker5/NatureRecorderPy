@@ -129,3 +129,13 @@ div.message {
     color: #286090;
     cursor: pointer;
 }
+
+/* --- Icons --------------------------------------------------------------- */
+
+.icon-blue {
+    color: #0c6efd;
+}
+
+.icon-grey {
+    color: grey;
+}

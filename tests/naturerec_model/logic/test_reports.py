@@ -11,7 +11,8 @@ class TestLocations(unittest.TestCase):
         self._category = create_category("Birds")
         self._species = create_species(self._category.id, "Black-Headed Gull")
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        create_sighting(self._location.id, self._species.id, datetime.date(2021, 12, 14), 30, Gender.UNKNOWN, False)
+        create_sighting(self._location.id, self._species.id, datetime.date(2021, 12, 14), 30, Gender.UNKNOWN, False,
+                        None)
 
     def test_can_get_location_species_report(self):
         report_df = location_species_report(datetime.date(2021, 12, 1), datetime.datetime.today(), self._location.id,

@@ -1,0 +1,2 @@
+ALTER TABLE Sightings
+  ADD Notes TEXT NULL;

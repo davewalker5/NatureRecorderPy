@@ -13,14 +13,14 @@ class TestSightings(unittest.TestCase):
         category = create_category("Birds")
         species = create_species(category.id, "Black-Headed Gull")
         location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+        create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False, "Notes")
 
     @staticmethod
     def create_additional_sightings():
         category_id = get_category("Birds").id
         species = create_species(category_id, "Blackbird")
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
-        create_sighting(location.id, species.id, datetime.date(2021, 12, 13), None, Gender.UNKNOWN, False)
+        create_sighting(location.id, species.id, datetime.date(2021, 12, 13), None, Gender.UNKNOWN, False, None)
 
     def test_can_create_sighting(self):
         with Session.begin() as session:
@@ -32,13 +32,14 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(sighting.number)
         self.assertEqual(Gender.UNKNOWN, sighting.gender)
         self.assertFalse(0, sighting.withYoung)
+        self.assertEqual("Notes", sighting.notes)
 
     def test_can_update_sighting_date(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), None,
-                        Gender.UNKNOWN, False)
+                        Gender.UNKNOWN, False, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -48,6 +49,7 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
 
     def test_can_update_sighting_location(self):
         with Session.begin() as session:
@@ -55,7 +57,7 @@ class TestSightings(unittest.TestCase):
 
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
         update_sighting(sighting.id, location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
-                        Gender.UNKNOWN, False)
+                        Gender.UNKNOWN, False, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -65,6 +67,7 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
 
     def test_can_update_sighting_species(self):
         with Session.begin() as session:
@@ -73,7 +76,7 @@ class TestSightings(unittest.TestCase):
         category_id = get_category("Birds").id
         species = create_species(category_id, "Blackbird")
         update_sighting(sighting.id, sighting.location.id, species.id, datetime.date(2021, 12, 14), None,
-                        Gender.UNKNOWN, False)
+                        Gender.UNKNOWN, False, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -83,13 +86,14 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
 
     def test_can_update_sighting_number(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), 10,
-                        Gender.UNKNOWN, False)
+                        Gender.UNKNOWN, False, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -99,13 +103,14 @@ class TestSightings(unittest.TestCase):
         self.assertEqual(10, updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertFalse(0, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
 
     def test_can_update_sighting_gender(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
-                        Gender.MALE, False)
+                        Gender.MALE, False, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -115,13 +120,14 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(updated.number)
         self.assertEqual(Gender.MALE, updated.gender)
         self.assertFalse(0, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
 
     def test_can_update_sighting_with_young(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
-                        Gender.UNKNOWN, True)
+                        Gender.UNKNOWN, True, "Notes")
         updated = get_sighting(sighting.id)
 
         self.assertEqual("Birds",  updated.species.category.name)
@@ -131,17 +137,35 @@ class TestSightings(unittest.TestCase):
         self.assertIsNone(updated.number)
         self.assertEqual(Gender.UNKNOWN, updated.gender)
         self.assertTrue(1, updated.withYoung)
+        self.assertEqual("Notes", updated.notes)
+
+    def test_can_update_sighting_notes(self):
+        with Session.begin() as session:
+            sighting = session.query(Sighting).one()
+
+        update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14), None,
+                        Gender.UNKNOWN, True, "Updated notes")
+        updated = get_sighting(sighting.id)
+
+        self.assertEqual("Birds",  updated.species.category.name)
+        self.assertEqual("Black-Headed Gull",  updated.species.name)
+        self.assertEqual("Radley Lakes",  updated.location.name)
+        self.assertEqual(datetime.date(2021, 12, 14), updated.sighting_date)
+        self.assertIsNone(updated.number)
+        self.assertEqual(Gender.UNKNOWN, updated.gender)
+        self.assertTrue(1, updated.withYoung)
+        self.assertEqual("Updated notes", updated.notes)
 
     def test_cannot_update_sighting_to_create_duplicate(self):
         with Session.begin() as session:
             sighting = session.query(Sighting).one()
 
         new_sighting = create_sighting(sighting.location.id, sighting.species.id, datetime.date(2021, 12, 15), None,
-                                       Gender.UNKNOWN, False)
+                                       Gender.UNKNOWN, False, None)
 
         with self.assertRaises(ValueError):
             _ = update_sighting(new_sighting.id, new_sighting.locationId, new_sighting.speciesId,
-                                datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False)
+                                datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False, None)
 
     def test_cannot_update_missing_sighting(self):
         with Session.begin() as session:
@@ -149,7 +173,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(-1, sighting.locationId, sighting.speciesId, datetime.date(2021, 12, 15), None,
-                                Gender.UNKNOWN, False)
+                                Gender.UNKNOWN, False, None)
 
     def test_cannot_update_sighting_for_missing_location(self):
         with Session.begin() as session:
@@ -157,7 +181,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(sighting.id, -1, sighting.species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
-                                False)
+                                False, None)
 
     def test_cannot_update_sighting_for_missing_species(self):
         with Session.begin() as session:
@@ -165,7 +189,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(sighting.id, sighting.location.id, -1, datetime.date(2021, 12, 14), None,
-                                Gender.UNKNOWN, False)
+                                Gender.UNKNOWN, False, None)
 
     def test_cannot_update_sighting_with_invalid_number(self):
         with Session.begin() as session:
@@ -173,7 +197,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
-                                -1, Gender.UNKNOWN, False)
+                                -1, Gender.UNKNOWN, False, None)
 
     def test_cannot_update_sighting_with_invalid_gender(self):
         with Session.begin() as session:
@@ -181,7 +205,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
-                                0, 10, False)
+                                0, 10, False, None)
 
     def test_cannot_update_sighting_with_invalid_with_young(self):
         with Session.begin() as session:
@@ -189,7 +213,7 @@ class TestSightings(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             _ = update_sighting(sighting.id, sighting.location.id, sighting.species.id, datetime.date(2021, 12, 14),
-                                0, Gender.UNKNOWN, -1)
+                                0, Gender.UNKNOWN, -1, None)
 
     def test_can_get_sighting_by_id(self):
         with Session.begin() as session:

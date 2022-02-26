@@ -33,9 +33,9 @@ class TestSightingsImportHelper(unittest.TestCase):
         filename = os.path.join(get_data_path(), "valid_status_import.csv")
         TestSightingsImportHelper._create_test_file(filename, [
             "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            "Latitude,Longitude,Notes\n",
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
-            "51.6708,-1.2880\n"
+            "51.6708,-1.2880,\n"
         ])
 
         # Import the sightings

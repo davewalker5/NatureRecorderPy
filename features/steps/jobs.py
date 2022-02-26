@@ -21,7 +21,7 @@ def _(context):
     category = create_test_category("Birds")
     species = create_test_species("Cormorant", category.id)
     gender = [key for key, value in Gender.gender_map().items() if value == "Unknown"][0]
-    _ = create_sighting(location.id, species.id, sighting_date, None, gender, 0)
+    _ = create_sighting(location.id, species.id, sighting_date, None, gender, 0, None)
 
     # Kick off the export
     exporter = SightingsExportHelper("sightings.csv", None, None, None, None)
