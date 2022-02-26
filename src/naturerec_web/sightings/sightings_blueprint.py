@@ -3,6 +3,7 @@ The sightings blueprint supplies view functions and templates for sighting manag
 """
 
 import datetime
+import html
 from flask import Blueprint, render_template, request, session, redirect
 from flask_login import login_required
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
@@ -186,6 +187,9 @@ def edit(sighting_id):
             category_id = get_posted_int("category")
             session["category_id"] = category_id
 
+            # Get the notes and escape them
+            notes = html.escape(request.form["notes"])
+
             if sighting_id:
                 _ = update_sighting(sighting_id,
                                     location_id,
@@ -194,7 +198,7 @@ def edit(sighting_id):
                                     get_posted_int("number"),
                                     get_posted_int("gender"),
                                     get_posted_bool("with_young"),
-                                    None)
+                                    notes)
                 sighting = get_sighting(sighting_id)
             else:
                 created_id = create_sighting(location_id,
@@ -203,7 +207,7 @@ def edit(sighting_id):
                                              get_posted_int("number"),
                                              get_posted_int("gender"),
                                              get_posted_bool("with_young"),
-                                             None).id
+                                             notes).id
                 sighting = get_sighting(created_id)
 
             # Construct the confirmation message

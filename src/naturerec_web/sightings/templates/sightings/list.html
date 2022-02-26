@@ -9,6 +9,7 @@
         {% if sightings | length > 0 %}
             <p>{{ sightings | length }} matching sighting{% if sightings | length > 1 %}s{% endif %} found</p>
             {% include "sightings/sightings.html" with context %}
+            {% include "sightings/notes.html" with context %}
         {% else %}
             <span>There are no sightings in the database matching the specified criteria</span>
         {% endif %}
@@ -30,6 +31,18 @@
                 $("#species").val("");
                 $("#category").val("");
                 document.forms[0].submit();
+            });
+
+            // Wire up the model "notes" dialog content update
+            var notesModal = document.getElementById('notes-popup');
+            notesModal.addEventListener('show.bs.modal', function (event) {
+                // Extract the content from the element that triggered the modal
+                var element = event.relatedTarget;
+                var notes = element.getAttribute('data-bs-sighting-notes');
+
+                // Apply the notes to the modal
+                var modalBody = notesModal.querySelector('.modal-body');
+                modalBody.innerHTML = notes;
             });
         })
     </script>
