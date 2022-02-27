@@ -4,7 +4,8 @@ The locations blueprint supplies view functions and templates for location manag
 
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
-from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode
+from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode, \
+    delete_location
 from naturerec_web.request_utils import get_posted_float, get_posted_int
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
@@ -37,8 +38,8 @@ def list_all():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                pass
-        except BaseException as e:
+                delete_location(delete_record_id)
+        except ValueError as e:
             error = e
 
     return render_template("locations/list.html",

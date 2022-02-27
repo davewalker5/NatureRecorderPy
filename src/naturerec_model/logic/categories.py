@@ -134,11 +134,11 @@ def delete_category(category_id):
     Delete a category
 
     :param category_id: ID of the category to delete
-    :raises ValueError: If the species doesn't exist
-    :raises ValueError: If the species has sightings
+    :raises ValueError: If the category doesn't exist
+    :raises ValueError: If the category has sightings
     """
     with Session.begin() as session:
-        # Get the species instance
+        # Get the category instance
         category = session.query(Category).get(category_id)
         if not category:
             raise ValueError("Species not found")
@@ -152,5 +152,5 @@ def delete_category(category_id):
         if len(species) > 0:
             raise ValueError("Cannot delete a category that has species assigned to it")
 
-        # Delete the species
+        # Delete the category
         session.delete(category)

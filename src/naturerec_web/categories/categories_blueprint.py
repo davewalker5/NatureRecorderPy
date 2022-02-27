@@ -38,7 +38,7 @@ def list_all():
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
                 delete_category(delete_record_id)
-        except BaseException as e:
+        except ValueError as e:
             error = e
 
     return render_template("categories/list.html",
