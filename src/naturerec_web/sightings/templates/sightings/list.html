@@ -3,6 +3,7 @@
 
 {% block content %}
     <form method="post">
+        <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Sightings</h1>
         {% include "message.html" with context %}
         {% include "filter_selector.html" with context %}
@@ -26,7 +27,10 @@
             initialise_species_selection("{{ category_id }}", "{{ species_id }}");
 
             // Initialise the confirmation popup, used to confirm record deletions
-            initialise_confirm_popup(alert);
+            initialise_confirm_popup(function(recordId) {
+                $("#delete_record_id").val(recordId);
+                document.forms[0].submit();
+            });
 
             // Wire up the reset filters button
             $("#reset").click(function() {

@@ -51,6 +51,12 @@ def list_filtered_species():
     :return: The HTML for the species listing page
     """
     if request.method == "POST":
+        # If a record ID has been posted back for deletion, delete it before re-rendering the list
+        # with the same filtering criteria
+        delete_record_id = get_posted_int("delete_record_id")
+        if delete_record_id:
+            pass
+
         return _render_species_list_page(get_posted_int("category"))
     else:
         return _render_species_list_page()

@@ -5,7 +5,7 @@ The locations blueprint supplies view functions and templates for location manag
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
 from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode
-from naturerec_web.request_utils import get_posted_float
+from naturerec_web.request_utils import get_posted_float, get_posted_int
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
 
@@ -24,7 +24,7 @@ def _render_location_editing_page(location_id, error):
                            error=error)
 
 
-@locations_bp.route("/list")
+@locations_bp.route("/list", methods=["GET", "POST"])
 @login_required
 def list_all():
     """
@@ -32,6 +32,13 @@ def list_all():
 
     :return: The HTML for the location listing page
     """
+    if request.method == "POST":
+        # If a record ID has been posted back for deletion, delete it before re-rendering the list
+        # with the same filtering criteria
+        delete_record_id = get_posted_int("delete_record_id")
+        if delete_record_id:
+            pass
+
     return render_template("locations/list.html",
                            locations=list_locations(),
                            edit_enabled=True)

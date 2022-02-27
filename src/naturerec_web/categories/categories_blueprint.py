@@ -5,7 +5,7 @@ The categories blueprint supplies view functions and templates for species categ
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
 from naturerec_model.logic import list_categories, get_category, create_category, update_category
-
+from naturerec_web.request_utils import get_posted_int
 
 categories_bp = Blueprint("categories", __name__, template_folder='templates')
 
@@ -24,7 +24,7 @@ def _render_category_editing_page(category_id, error):
                            error=error)
 
 
-@categories_bp.route("/list")
+@categories_bp.route("/list", methods=["GET", "POST"])
 @login_required
 def list_all():
     """
@@ -32,6 +32,13 @@ def list_all():
 
     :return: The HTML for the category listing page
     """
+    if request.method == "POST":
+        # If a record ID has been posted back for deletion, delete it before re-rendering the list
+        # with the same filtering criteria
+        delete_record_id = get_posted_int("delete_record_id")
+        if delete_record_id:
+            pass
+
     return render_template("categories/list.html",
                            categories=list_categories(),
                            edit_enabled=True)
