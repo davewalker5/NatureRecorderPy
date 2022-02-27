@@ -32,16 +32,19 @@ def list_all():
 
     :return: The HTML for the location listing page
     """
+    error = None
     if request.method == "POST":
-        # If a record ID has been posted back for deletion, delete it before re-rendering the list
-        # with the same filtering criteria
-        delete_record_id = get_posted_int("delete_record_id")
-        if delete_record_id:
-            pass
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+        except BaseException as e:
+            error = e
 
     return render_template("locations/list.html",
                            locations=list_locations(),
-                           edit_enabled=True)
+                           edit_enabled=True,
+                           error=error)
 
 
 @locations_bp.route("/edit", defaults={"location_id": None}, methods=["GET", "POST"])

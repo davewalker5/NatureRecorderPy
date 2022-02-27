@@ -19,6 +19,7 @@
     <h1>{{ title }}</h1>
     {% include "error.html" with context %}
     <form method="post">
+        <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <div class="filter-criteria">
             <div class="form-group">
                 <label>Name</label>
@@ -41,7 +42,22 @@
     {% if status_ratings %}
         <h1>Status Ratings</h1>
         {% include "status/status_ratings.html" with context %}
+        {% include "confirm.html" with context %}
     {% elif status_scheme %}
         <span>There are no ratings in the database for this conservation status scheme</span>
     {% endif %}
 {% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/confirm-popup.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialise the confirmation popup, used to confirm record deletions
+            initialise_confirm_popup(function(recordId) {
+                $("#delete_record_id").val(recordId);
+                document.forms[0].submit();
+            });
+        })
+    </script>
+{% endblock %}
+

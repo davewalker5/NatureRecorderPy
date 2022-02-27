@@ -5,13 +5,14 @@
     <form method="post">
         <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Species</h1>
+        {% include "error.html" with context %}
         <div class="filter-criteria">
             {% include "category_selector.html" with context %}
             <div class="button-bar">
-                <button type="submit" value="filter" class="btn btn-light">List Species</button>
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-light">
                     <a href="{{ url_for('species.edit') }}">Add Species</a>
                 </button>
+                <button type="submit" value="filter" class="btn btn-primary">List Species</button>
             </div>
         </div>
         {% if species | length > 0 %}

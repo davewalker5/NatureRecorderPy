@@ -5,6 +5,7 @@
     <form method="post">
         <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Sightings</h1>
+        {% include "error.html" with context %}
         {% include "message.html" with context %}
         {% include "filter_selector.html" with context %}
         {% if sightings | length > 0 %}

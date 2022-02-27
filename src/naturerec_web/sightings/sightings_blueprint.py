@@ -56,7 +56,8 @@ def _render_sighting_editing_page(sighting_id, message, error):
                            error=error)
 
 
-def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, category_id=None, species_id=None):
+def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, category_id=None, species_id=None,
+                                error=None):
     """
     Helper to render the sightings list page
 
@@ -65,6 +66,7 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
     :param location_id: Include sightings at this location
     :param category_id: Species category for the selected species
     :param species_id: Include sightings for this species
+    :param error: Error message to display on the page
     :return: The HTML for the rendered sightings list page
     """
     # If there aren't any filtering criteria, set the from date to today to prevent the whole database being
@@ -91,6 +93,7 @@ def _render_sightings_list_page(from_date=None, to_date=None, location_id=None, 
                            action_button_label="Filter Sightings",
                            sightings=sightings,
                            message=message,
+                           error=error,
                            edit_enabled=True)
 
 
@@ -136,17 +139,20 @@ def list_filtered_sightings():
     :return: The HTML for the sightings listing page
     """
     if request.method == "POST":
-        # If a record ID has been posted back for deletion, delete it before re-rendering the list
-        # with the same filtering criteria
-        delete_record_id = get_posted_int("delete_record_id")
-        if delete_record_id:
-            pass
+        error = None
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+        except BaseException as e:
+            error = e
 
         return _render_sightings_list_page(get_posted_date("from_date"),
                                            get_posted_date("to_date"),
                                            get_posted_int("location"),
                                            get_posted_int("category"),
-                                           get_posted_int("species"))
+                                           get_posted_int("species"),
+                                           error)
     else:
         return _render_sightings_list_page()
 

@@ -2,11 +2,13 @@
 {% block title %}Conservation Status Ratings{% endblock %}
 
 {% block content %}
-    <h1>Conservation Status Ratings</h1>
-    {% include "error.html" with context %}
     <form method="post">
+        <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
+        <h1>Conservation Status Ratings</h1>
+        {% include "error.html" with context %}
         {% if species_status_ratings | length > 0 %}
             {% include "species_ratings/species_ratings.html" with context %}
+            {% include "confirm.html" with context %}
         {% else %}
             <span>There are no conservation status ratings in the database for the specified species</span>
         {% endif %}
@@ -16,4 +18,17 @@
             <a href="{{ url_for( 'species_ratings.add', species_id = species.id ) }}">Add Conservation Status Rating</a>
         </button>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/confirm-popup.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialise the confirmation popup, used to confirm record deletions
+            initialise_confirm_popup(function(recordId) {
+                $("#delete_record_id").val(recordId);
+                document.forms[0].submit();
+            });
+        })
+    </script>
 {% endblock %}

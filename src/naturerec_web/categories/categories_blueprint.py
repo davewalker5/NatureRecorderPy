@@ -32,16 +32,19 @@ def list_all():
 
     :return: The HTML for the category listing page
     """
+    error = None
     if request.method == "POST":
-        # If a record ID has been posted back for deletion, delete it before re-rendering the list
-        # with the same filtering criteria
-        delete_record_id = get_posted_int("delete_record_id")
-        if delete_record_id:
-            pass
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+        except BaseException as e:
+            error = e
 
     return render_template("categories/list.html",
                            categories=list_categories(),
-                           edit_enabled=True)
+                           edit_enabled=True,
+                           error=error)
 
 
 @categories_bp.route("/edit", defaults={"category_id": None}, methods=["GET", "POST"])

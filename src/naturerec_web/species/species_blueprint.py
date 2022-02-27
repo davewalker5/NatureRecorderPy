@@ -27,11 +27,12 @@ def _render_species_editing_page(species_id, error):
                            error=error)
 
 
-def _render_species_list_page(category_id=None):
+def _render_species_list_page(category_id=None, error=None):
     """
     Helper to render the species list page
 
     :param category_id: ID of the category for which to list species
+    :param error: Error message to show on the page
     :return: Rendered species list template
     """
     species = list_species(category_id) if category_id else []
@@ -39,7 +40,8 @@ def _render_species_list_page(category_id=None):
                            categories=list_categories(),
                            category_id=category_id,
                            species=species,
-                           edit_enabled=True)
+                           edit_enabled=True,
+                           error=error)
 
 
 @species_bp.route("/list", methods=["GET", "POST"])
@@ -51,13 +53,15 @@ def list_filtered_species():
     :return: The HTML for the species listing page
     """
     if request.method == "POST":
-        # If a record ID has been posted back for deletion, delete it before re-rendering the list
-        # with the same filtering criteria
-        delete_record_id = get_posted_int("delete_record_id")
-        if delete_record_id:
-            pass
+        error = None
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+        except BaseException as e:
+            error = e
 
-        return _render_species_list_page(get_posted_int("category"))
+        return _render_species_list_page(get_posted_int("category"), error)
     else:
         return _render_species_list_page()
 

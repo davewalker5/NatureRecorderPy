@@ -5,6 +5,7 @@
     <form method="post">
         <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Locations</h1>
+        {% include "error.html" with context %}
         {% if locations | length > 0 %}
             {% include "locations/locations.html" with context %}
             {% include "confirm.html" with context %}

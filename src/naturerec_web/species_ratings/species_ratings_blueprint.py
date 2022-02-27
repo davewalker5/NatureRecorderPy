@@ -40,8 +40,13 @@ def list_status_ratings(species_id):
     """
     error = None
     if request.method == "POST":
+        error = None
         try:
-            close_species_status_rating(get_posted_int("species_status_rating_id"))
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+            else:
+                close_species_status_rating(get_posted_int("species_status_rating_id"))
         except ValueError as e:
             error = e
 
