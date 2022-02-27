@@ -118,3 +118,17 @@ def list_species_status_ratings(scheme_id=None, species_id=None, region=None, cu
         ratings = query.all()
 
     return ratings
+
+
+def delete_species_status_rating(species_status_rating_id):
+    """
+    Delete a sighting
+
+    :param species_status_rating_id: ID of the species status rating to delete
+    :raises ValueError: If the sighting doesn't exist
+    """
+    with Session.begin() as session:
+        species_status_rating = session.query(SpeciesStatusRating).get(species_status_rating_id)
+        if not species_status_rating:
+            raise ValueError("Species status rating not found")
+        session.delete(species_status_rating)

@@ -8,7 +8,7 @@ from flask_login import login_required
 from naturerec_model.logic import get_species
 from naturerec_model.logic import list_status_schemes, get_status_scheme
 from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
-    create_species_status_rating
+    create_species_status_rating, delete_species_status_rating
 from naturerec_web.request_utils import get_posted_int
 
 species_ratings_bp = Blueprint("species_ratings", __name__, template_folder='templates')
@@ -44,7 +44,7 @@ def list_status_ratings(species_id):
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                pass
+                delete_species_status_rating(delete_record_id)
             else:
                 close_species_status_rating(get_posted_int("species_status_rating_id"))
         except ValueError as e:
