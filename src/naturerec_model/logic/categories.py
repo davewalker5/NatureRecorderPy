@@ -5,7 +5,7 @@ Category business logic
 from functools import singledispatch
 import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from ..model import Session, Category
+from ..model import Session, Category, Species
 
 
 def _check_for_existing_records(session, name):
@@ -127,3 +127,30 @@ def list_categories():
     with Session.begin() as session:
         categories = session.query(Category).order_by(db.asc(Category.name)).all()
     return categories
+
+
+def delete_category(category_id):
+    """
+    Delete a category
+
+    :param category_id: ID of the category to delete
+    :raises ValueError: If the species doesn't exist
+    :raises ValueError: If the species has sightings
+    """
+    with Session.begin() as session:
+        # Get the species instance
+        category = session.query(Category).get(category_id)
+        if not category:
+            raise ValueError("Species not found")
+
+        # Check there are no species assigned to it
+        species = session.query(Species)\
+            .filter(Species.categoryId == category_id)\
+            .limit(1)\
+            .all()
+
+        if len(species) > 0:
+            raise ValueError("Cannot delete a category that has species assigned to it")
+
+        # Delete the species
+        session.delete(category)

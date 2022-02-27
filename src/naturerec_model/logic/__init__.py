@@ -1,4 +1,4 @@
-from .categories import create_category, get_category, list_categories, update_category
+from .categories import create_category, get_category, list_categories, update_category, delete_category
 from .species import create_species, get_species, list_species, update_species, delete_species
 from .locations import create_location, get_location, list_locations, update_location, geocode_postcode
 from .sightings import create_sighting, get_sighting, list_sightings, update_sighting, life_list, delete_sighting
@@ -16,6 +16,7 @@ __all__ = [
     "update_category",
     "get_category",
     "list_categories",
+    "delete_category",
     "create_species",
     "update_species",
     "get_species",
