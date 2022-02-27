@@ -4,7 +4,8 @@ from src.naturerec_model.model import create_database, Session, Sighting, Gender
 from src.naturerec_model.logic import create_category, get_category
 from src.naturerec_model.logic import create_species, get_species
 from src.naturerec_model.logic import create_location, get_location
-from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings, update_sighting, life_list
+from src.naturerec_model.logic import create_sighting, get_sighting, list_sightings, update_sighting, life_list, \
+    delete_sighting
 
 
 class TestSightings(unittest.TestCase):
@@ -13,7 +14,8 @@ class TestSightings(unittest.TestCase):
         category = create_category("Birds")
         species = create_species(category.id, "Black-Headed Gull")
         location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
-        create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False, "Notes")
+        self._sighting = create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
+                                         False, "Notes")
 
     @staticmethod
     def create_additional_sightings():
@@ -288,3 +290,14 @@ class TestSightings(unittest.TestCase):
         species = life_list(category_id)
         self.assertEqual(1, len(species))
         self.assertEqual("Black-Headed Gull", species[0].name)
+
+    def test_can_delete_sighting(self):
+        sightings = list_sightings()
+        self.assertEqual(1, len(sightings))
+        delete_sighting(self._sighting.id)
+        sightings = list_sightings()
+        self.assertEqual(0, len(sightings))
+
+    def test_cannot_delete_missing_sighting(self):
+        with self.assertRaises(ValueError):
+            delete_sighting(-1)

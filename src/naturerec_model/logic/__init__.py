@@ -1,7 +1,7 @@
 from .categories import create_category, get_category, list_categories, update_category
 from .species import create_species, get_species, list_species, update_species
 from .locations import create_location, get_location, list_locations, update_location, geocode_postcode
-from .sightings import create_sighting, get_sighting, list_sightings, update_sighting, life_list
+from .sightings import create_sighting, get_sighting, list_sightings, update_sighting, life_list, delete_sighting
 from .status_schemes import create_status_scheme, get_status_scheme, list_status_schemes, update_status_scheme
 from .status_ratings import create_status_rating, update_status_rating
 from .species_status_ratings import create_species_status_rating, get_species_status_rating, \
@@ -29,6 +29,7 @@ __all__ = [
     "get_sighting",
     "list_sightings",
     "life_list",
+    "delete_sighting",
     "update_sighting",
     "create_status_scheme",
     "update_status_scheme",

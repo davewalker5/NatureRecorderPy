@@ -6,7 +6,7 @@ import datetime
 import html
 from flask import Blueprint, render_template, request, session, redirect
 from flask_login import login_required
-from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting
+from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting, delete_sighting
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
@@ -143,8 +143,8 @@ def list_filtered_sightings():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                pass
-        except BaseException as e:
+                delete_sighting(delete_record_id)
+        except ValueError as e:
             error = e
 
         return _render_sightings_list_page(get_posted_date("from_date"),
