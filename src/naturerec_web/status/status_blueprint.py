@@ -5,9 +5,9 @@ The status blueprint supplies view functions and templates for conservation stat
 from flask import Blueprint, render_template, request, redirect, session
 from flask_login import login_required
 from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme
-from naturerec_model.logic import create_status_rating, update_status_rating
+from naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
 from naturerec_model.data_exchange import StatusImportHelper
-
+from naturerec_web.request_utils import get_posted_int
 
 status_bp = Blueprint("status", __name__, template_folder='templates')
 
@@ -57,7 +57,7 @@ def _render_ratings_import_page(error):
                            error=error)
 
 
-@status_bp.route("/list")
+@status_bp.route("/list", methods=["GET", "POST"])
 @login_required
 def list_all():
     """
@@ -65,10 +65,20 @@ def list_all():
 
     :return: The HTML for the listing page
     """
+    error = None
+    if request.method == "POST":
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                pass
+        except BaseException as e:
+            error = e
+
     message = session.pop("message") if "message" in session else None
     return render_template("status/list.html",
                            status_schemes=list_status_schemes(),
                            message=message,
+                           error=error,
                            edit_enabled=True)
 
 
@@ -85,7 +95,11 @@ def edit_scheme(status_scheme_id):
     """
     if request.method == "POST":
         try:
-            if status_scheme_id:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                delete_status_rating(delete_record_id)
+                return _render_status_scheme_editing_page(status_scheme_id, None)
+            elif status_scheme_id:
                 _ = update_status_scheme(status_scheme_id, request.form["name"])
             else:
                 _ = create_status_scheme(request.form["name"])

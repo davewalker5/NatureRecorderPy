@@ -180,3 +180,17 @@ def life_list(category_id):
             .all()
 
     return species
+
+
+def delete_sighting(sighting_id):
+    """
+    Delete a sighting
+
+    :param sighting_id: ID of the sighting to delete
+    :raises ValueError: If the sighting doesn't exist
+    """
+    with Session.begin() as session:
+        sighting = session.query(Sighting).get(sighting_id)
+        if not sighting:
+            raise ValueError("Sighting not found")
+        session.delete(sighting)

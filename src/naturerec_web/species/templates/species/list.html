@@ -3,20 +3,36 @@
 
 {% block content %}
     <form method="post">
+        <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Species</h1>
+        {% include "error.html" with context %}
         <div class="filter-criteria">
             {% include "category_selector.html" with context %}
             <div class="button-bar">
-                <button type="submit" value="filter" class="btn btn-light">List Species</button>
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-light">
                     <a href="{{ url_for('species.edit') }}">Add Species</a>
                 </button>
+                <button type="submit" value="filter" class="btn btn-primary">List Species</button>
             </div>
         </div>
         {% if species | length > 0 %}
             {% include "species.html" with context %}
+            {% include "confirm.html" with context %}
         {% elif category_id %}
             <span>There are no species in the database for the specified category</span>
         {% endif %}
     </form>
+{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/confirm-popup.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Initialise the confirmation popup, used to confirm record deletions
+            initialise_confirm_popup(function(recordId) {
+                $("#delete_record_id").val(recordId);
+                document.forms[0].submit();
+            });
+        })
+    </script>
 {% endblock %}

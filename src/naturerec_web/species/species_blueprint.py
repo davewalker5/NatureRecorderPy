@@ -5,7 +5,7 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
 from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species, get_species, create_species, update_species
+from naturerec_model.logic import list_species, get_species, create_species, update_species, delete_species
 from naturerec_web.request_utils import get_posted_int
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -27,11 +27,12 @@ def _render_species_editing_page(species_id, error):
                            error=error)
 
 
-def _render_species_list_page(category_id=None):
+def _render_species_list_page(category_id=None, error=None):
     """
     Helper to render the species list page
 
     :param category_id: ID of the category for which to list species
+    :param error: Error message to show on the page
     :return: Rendered species list template
     """
     species = list_species(category_id) if category_id else []
@@ -39,7 +40,8 @@ def _render_species_list_page(category_id=None):
                            categories=list_categories(),
                            category_id=category_id,
                            species=species,
-                           edit_enabled=True)
+                           edit_enabled=True,
+                           error=error)
 
 
 @species_bp.route("/list", methods=["GET", "POST"])
@@ -51,7 +53,15 @@ def list_filtered_species():
     :return: The HTML for the species listing page
     """
     if request.method == "POST":
-        return _render_species_list_page(get_posted_int("category"))
+        error = None
+        try:
+            delete_record_id = get_posted_int("delete_record_id")
+            if delete_record_id:
+                delete_species(delete_record_id)
+        except ValueError as e:
+            error = e
+
+        return _render_species_list_page(get_posted_int("category"), error)
     else:
         return _render_species_list_page()
 

@@ -1,12 +1,14 @@
 import unittest
 from src.naturerec_model.model import create_database, Session, Category
-from src.naturerec_model.logic import create_category, get_category, list_categories, update_category
+from src.naturerec_model.logic import create_category, get_category, list_categories, update_category, delete_category
+from src.naturerec_model.logic import create_species
+
 
 
 class TestCategories(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        _ = create_category("Birds")
+        self._category = create_category("Birds")
 
     def test_can_create_category(self):
         with Session.begin() as session:
@@ -78,3 +80,19 @@ class TestCategories(unittest.TestCase):
         categories = list_categories()
         self.assertEqual(1, len(categories))
         self.assertEqual("Birds", categories[0].name)
+
+    def test_can_delete_category(self):
+        categories = list_categories()
+        self.assertEqual(1, len(categories))
+        delete_category(self._category.id)
+        categories = list_categories()
+        self.assertEqual(0, len(categories))
+
+    def test_cannot_delete_missing_category(self):
+        with self.assertRaises(ValueError):
+            delete_category(-1)
+
+    def test_cannot_delete_category_with_species(self):
+        _ = create_species(self._category.id, "Blackbird")
+        with self.assertRaises(ValueError):
+            delete_category(self._category.id)

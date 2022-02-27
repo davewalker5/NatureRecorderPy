@@ -1,19 +1,23 @@
 import unittest
-from src.naturerec_model.model import create_database, Session, Location
-from src.naturerec_model.logic import create_location, get_location, list_locations, update_location
+import datetime
+from src.naturerec_model.model import create_database, Session, Location, Gender
+from src.naturerec_model.logic import create_location, get_location, list_locations, update_location, delete_location
+from src.naturerec_model.logic import create_category
+from src.naturerec_model.logic import create_species
+from src.naturerec_model.logic import create_sighting
 
 
 class TestLocations(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        create_location(name="Lashford Lane Fen",
-                        address="Lashford Lane",
-                        city="Wooton",
-                        county="Oxfordshire",
-                        postcode="OX13 6DY",
-                        country="United Kingdom",
-                        latitude=51.706694,
-                        longitude=-1.324120)
+        self._location = create_location(name="Lashford Lane Fen",
+                                         address="Lashford Lane",
+                                         city="Wooton",
+                                         county="Oxfordshire",
+                                         postcode="OX13 6DY",
+                                         country="United Kingdom",
+                                         latitude=51.706694,
+                                         longitude=-1.324120)
 
     @staticmethod
     def create_additional_locations():
@@ -196,3 +200,22 @@ class TestLocations(unittest.TestCase):
     def test_can_list_locations_by_missing_country(self):
         locations = list_locations(city="Belgium")
         self.assertEqual(0, len(locations))
+
+    def test_can_delete_location(self):
+        locations = list_locations()
+        self.assertEqual(1, len(locations))
+        delete_location(self._location.id)
+        locations = list_locations()
+        self.assertEqual(0, len(locations))
+
+    def test_cannot_delete_missing_location(self):
+        with self.assertRaises(ValueError):
+            delete_location(-1)
+
+    def test_cannot_delete_location_with_sightings(self):
+        category = create_category("Birds")
+        species = create_species(category.id, "Wren")
+        _ = create_sighting(self._location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
+                            "Notes")
+        with self.assertRaises(ValueError):
+            delete_location(-1)

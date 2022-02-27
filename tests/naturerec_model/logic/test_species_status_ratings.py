@@ -6,7 +6,7 @@ from src.naturerec_model.logic import create_species
 from src.naturerec_model.logic import create_status_scheme
 from src.naturerec_model.logic import create_status_rating
 from src.naturerec_model.logic import create_species_status_rating, get_species_status_rating, \
-    list_species_status_ratings, close_species_status_rating
+    list_species_status_ratings, close_species_status_rating, delete_species_status_rating
 
 
 class TestStatusRating(unittest.TestCase):
@@ -16,8 +16,9 @@ class TestStatusRating(unittest.TestCase):
         self._species = create_species(self._category.id, "Reed Bunting")
         self._scheme = create_status_scheme("BOCC4")
         self._rating = create_status_rating(self._scheme.id, "Amber")
-        _ = create_species_status_rating(self._species.id, self._rating.id, "United Kingdom",
-                                         datetime.date(2015, 1, 1), datetime.date(2015, 12, 31))
+        self._species_status_rating = create_species_status_rating(self._species.id, self._rating.id, "United Kingdom",
+                                                                   datetime.date(2015, 1, 1),
+                                                                   datetime.date(2015, 12, 31))
 
     def test_can_create_rating(self):
         with Session.begin() as session:
@@ -136,3 +137,14 @@ class TestStatusRating(unittest.TestCase):
         self.assertEqual("United Kingdom", ratings[0].region)
         self.assertEqual(datetime.date(2016, 1, 1), ratings[0].start_date)
         self.assertIsNone(ratings[0].end_date)
+
+    def test_can_delete_species_status_rating(self):
+        ratings = list_species_status_ratings()
+        self.assertEqual(1, len(ratings))
+        delete_species_status_rating(self._species_status_rating.id)
+        ratings = list_species_status_ratings()
+        self.assertEqual(0, len(ratings))
+
+    def test_cannot_delete_missing_species_status_rating(self):
+        with self.assertRaises(ValueError):
+            delete_species_status_rating(-1)

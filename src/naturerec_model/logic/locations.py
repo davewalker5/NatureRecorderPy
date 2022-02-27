@@ -8,7 +8,7 @@ import pgeocode
 import pycountry
 from functools import singledispatch
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from ..model import Session, Location
+from ..model import Session, Location, Sighting
 
 
 def _check_for_existing_records(session, name):
@@ -204,3 +204,30 @@ def geocode_postcode(postcode, country):
     # Return a dictionary of latitude and longitude
     return {"latitude": round(geocode_sr.latitude, 6),
             "longitude": round(geocode_sr.longitude, 6)}
+
+
+def delete_location(location_id):
+    """
+    Delete a location
+
+    :param location_id: ID of the species to delete
+    :raises ValueError: If the location doesn't exist
+    :raises ValueError: If the location has sightings
+    """
+    with Session.begin() as session:
+        # Get the species instance
+        location = session.query(Location).get(location_id)
+        if not location:
+            raise ValueError("Location not found")
+
+        # Check there are no sightings against it
+        sightings = session.query(Sighting)\
+            .filter(Sighting.locationId == location_id)\
+            .limit(1)\
+            .all()
+
+        if len(sightings) > 0:
+            raise ValueError("Cannot delete a location that has sightings recorded against it")
+
+        # Delete the location
+        session.delete(location)

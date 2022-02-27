@@ -5,7 +5,7 @@ Species business logic
 from functools import singledispatch
 import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from ..model import Session, Species
+from ..model import Session, Species, Sighting, SpeciesStatusRating
 
 
 def _check_for_existing_records(session, category_id, name):
@@ -135,3 +135,37 @@ def list_species(category_id):
             .order_by(db.asc(Species.name))\
             .all()
     return species
+
+
+def delete_species(species_id):
+    """
+    Delete a species
+
+    :param species_id: ID of the species to delete
+    :raises ValueError: If the species doesn't exist
+    :raises ValueError: If the species has sightings
+    """
+    with Session.begin() as session:
+        # Get the species instance
+        species = session.query(Species).get(species_id)
+        if not species:
+            raise ValueError("Species not found")
+
+        # Check there are no sightings against it
+        sightings = session.query(Sighting)\
+            .filter(Sighting.speciesId == species_id)\
+            .limit(1)\
+            .all()
+
+        if len(sightings) > 0:
+            raise ValueError("Cannot delete a species that has sightings recorded against it")
+
+        # Delete any conservation status rating records
+        statuses = session.query(SpeciesStatusRating)\
+            .filter(SpeciesStatusRating.speciesId == species_id)\
+            .all()
+        for status in statuses:
+            session.delete(status)
+
+        # Delete the species
+        session.delete(species)

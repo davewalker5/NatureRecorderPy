@@ -3,13 +3,16 @@
 
 {% block content %}
     <form method="post">
+        <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Sightings</h1>
+        {% include "error.html" with context %}
         {% include "message.html" with context %}
         {% include "filter_selector.html" with context %}
         {% if sightings | length > 0 %}
             <p>{{ sightings | length }} matching sighting{% if sightings | length > 1 %}s{% endif %} found</p>
             {% include "sightings/sightings.html" with context %}
             {% include "sightings/notes.html" with context %}
+            {% include "confirm.html" with context %}
         {% else %}
             <span>There are no sightings in the database matching the specified criteria</span>
         {% endif %}
@@ -18,10 +21,17 @@
 
 {% block scripts %}
     <script type="text/javascript" src="{{ url_for( 'static', filename='script/category-selection.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for( 'static', filename='script/confirm-popup.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             // Initialise the category/species linked select lists
             initialise_species_selection("{{ category_id }}", "{{ species_id }}");
+
+            // Initialise the confirmation popup, used to confirm record deletions
+            initialise_confirm_popup(function(recordId) {
+                $("#delete_record_id").val(recordId);
+                document.forms[0].submit();
+            });
 
             // Wire up the reset filters button
             $("#reset").click(function() {
