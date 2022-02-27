@@ -3,7 +3,7 @@ Conservation status scheme rating business logic
 """
 
 from sqlalchemy.exc import IntegrityError
-from ..model import Session, StatusRating
+from ..model import Session, StatusRating, SpeciesStatusRating
 
 
 def _check_for_existing_records(session, status_scheme_id, name):
@@ -84,3 +84,30 @@ def update_status_rating(status_rating_id, name):
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
 
     return rating
+
+
+def delete_status_rating(status_rating_id):
+    """
+    Delete a status rating
+
+    :param status_rating_id: ID of the status rating to delete
+    :raises ValueError: If the rating doesn't exist
+    :raises ValueError: If there are species ratings for the status rating
+    """
+    with Session.begin() as session:
+        # Get the status rating instance
+        status_rating = session.query(StatusRating).get(status_rating_id)
+        if not status_rating:
+            raise ValueError("Status rating not found")
+
+        # Check there are no species ratings against it
+        species_status_ratings = session.query(SpeciesStatusRating)\
+            .filter(SpeciesStatusRating.statusRatingId == status_rating_id)\
+            .limit(1)\
+            .all()
+
+        if len(species_status_ratings) > 0:
+            raise ValueError("Cannot delete a status rating that has species ratings recorded against it")
+
+        # Delete the rating
+        session.delete(status_rating)

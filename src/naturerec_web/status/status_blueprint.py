@@ -5,7 +5,7 @@ The status blueprint supplies view functions and templates for conservation stat
 from flask import Blueprint, render_template, request, redirect, session
 from flask_login import login_required
 from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme
-from naturerec_model.logic import create_status_rating, update_status_rating
+from naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
 from naturerec_model.data_exchange import StatusImportHelper
 from naturerec_web.request_utils import get_posted_int
 
@@ -97,6 +97,7 @@ def edit_scheme(status_scheme_id):
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
+                delete_status_rating(delete_record_id)
                 return _render_status_scheme_editing_page(status_scheme_id, None)
             elif status_scheme_id:
                 _ = update_status_scheme(status_scheme_id, request.form["name"])
