@@ -1,5 +1,5 @@
 from .categories import create_category, get_category, list_categories, update_category
-from .species import create_species, get_species, list_species, update_species
+from .species import create_species, get_species, list_species, update_species, delete_species
 from .locations import create_location, get_location, list_locations, update_location, geocode_postcode
 from .sightings import create_sighting, get_sighting, list_sightings, update_sighting, life_list, delete_sighting
 from .status_schemes import create_status_scheme, get_status_scheme, list_status_schemes, update_status_scheme
@@ -20,6 +20,7 @@ __all__ = [
     "update_species",
     "get_species",
     "list_species",
+    "delete_species",
     "create_location",
     "update_location",
     "get_location",

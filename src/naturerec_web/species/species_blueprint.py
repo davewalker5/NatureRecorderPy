@@ -5,7 +5,7 @@ The species blueprint supplies view functions and templates for species manageme
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
 from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species, get_species, create_species, update_species
+from naturerec_model.logic import list_species, get_species, create_species, update_species, delete_species
 from naturerec_web.request_utils import get_posted_int
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -57,8 +57,8 @@ def list_filtered_species():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                pass
-        except BaseException as e:
+                delete_species(delete_record_id)
+        except ValueError as e:
             error = e
 
         return _render_species_list_page(get_posted_int("category"), error)

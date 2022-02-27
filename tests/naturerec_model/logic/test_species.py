@@ -1,14 +1,17 @@
 import unittest
-from src.naturerec_model.model import create_database, Session, Species
+import datetime
+from src.naturerec_model.model import create_database, Session, Species, Gender
+from src.naturerec_model.logic import create_location
 from src.naturerec_model.logic import create_category, get_category
-from src.naturerec_model.logic import create_species, get_species, list_species, update_species
+from src.naturerec_model.logic import create_species, get_species, list_species, update_species, delete_species
+from src.naturerec_model.logic import create_sighting
 
 
 class TestSpecies(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         category = create_category("Birds")
-        _ = create_species(category.id, "Red Kite")
+        self._species = create_species(category.id, "Red Kite")
 
     def test_can_create_species(self):
         category = get_category("Birds")
@@ -92,3 +95,22 @@ class TestSpecies(unittest.TestCase):
         species = list_species(category_id)
         self.assertEqual(1, len(species))
         self.assertEqual("Red Kite", species[0].name)
+
+    def test_can_delete_species(self):
+        category_id = get_category("Birds").id
+        species = list_species(category_id)
+        self.assertEqual(1, len(species))
+        delete_species(self._species.id)
+        species = list_species(category_id)
+        self.assertEqual(0, len(species))
+
+    def test_cannot_delete_missing_species(self):
+        with self.assertRaises(ValueError):
+            delete_species(-1)
+
+    def test_cannot_delete_species_with_sightings(self):
+        location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
+        _ = create_sighting(location.id, self._species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
+                            "Notes")
+        with self.assertRaises(ValueError):
+            delete_species(self._species.id)
