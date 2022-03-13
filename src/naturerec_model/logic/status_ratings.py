@@ -88,7 +88,7 @@ def update_status_rating(status_rating_id, name):
 
 def delete_status_rating(status_rating_id):
     """
-    Delete a status rating
+    Delete a conservation status rating
 
     :param status_rating_id: ID of the status rating to delete
     :raises ValueError: If the rating doesn't exist
@@ -98,7 +98,7 @@ def delete_status_rating(status_rating_id):
         # Get the status rating instance
         status_rating = session.query(StatusRating).get(status_rating_id)
         if not status_rating:
-            raise ValueError("Status rating not found")
+            raise ValueError("Conservation status rating not found")
 
         # Check there are no species ratings against it
         species_status_ratings = session.query(SpeciesStatusRating)\
@@ -107,7 +107,7 @@ def delete_status_rating(status_rating_id):
             .all()
 
         if len(species_status_ratings) > 0:
-            raise ValueError("Cannot delete a status rating that has species ratings recorded against it")
+            raise ValueError("Cannot delete a conservation status rating that has species ratings recorded against it")
 
         # Delete the rating
         session.delete(status_rating)

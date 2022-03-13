@@ -5,7 +5,7 @@ Conservation status scheme business logic
 from functools import singledispatch
 import sqlalchemy as db
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from ..model import Session, StatusScheme
+from ..model import Session, StatusScheme, SpeciesStatusRating
 
 
 def _check_for_existing_records(session, name):
@@ -126,3 +126,36 @@ def list_status_schemes():
     with Session.begin() as session:
         schemes = session.query(StatusScheme).order_by(db.asc(StatusScheme.name)).all()
     return schemes
+
+
+def delete_status_scheme(scheme_id):
+    """
+    Delete a conservation status scheme
+
+    :param scheme_id: ID for the scheme to delete
+    :raises ValueError: If the scheme doesn't exist
+    :raises ValueError: If there are any species ratings using the scheme
+    """
+    with Session.begin() as session:
+        # Get the status rating instance
+        scheme = session.query(StatusScheme).get(scheme_id)
+        if not scheme:
+            raise ValueError("Conservation status scheme not found")
+
+        # Check there are no species ratings using this scheme
+        for rating in scheme.ratings:
+            species_status_ratings = session.query(SpeciesStatusRating) \
+                .filter(SpeciesStatusRating.statusRatingId == rating.id) \
+                .limit(1) \
+                .all()
+
+            if len(species_status_ratings) > 0:
+                raise ValueError("Cannot delete a conservation status scheme that has species ratings recorded "
+                                 "against it")
+
+        # Delete the ratings
+        for rating in scheme.ratings:
+            session.delete(rating)
+
+        # Delete the scheme
+        session.delete(scheme)

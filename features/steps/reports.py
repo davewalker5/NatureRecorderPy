@@ -26,6 +26,8 @@ def _(context):
     select_option(context, "category", row["Category"], None)
     from_date = get_date_from_string(row["From"]).strftime(Sighting.DATE_DISPLAY_FORMAT)
     context.browser.find_element(By.NAME, "from_date").send_keys(from_date)
+    # With the date-picker in place, use ESC to close it then ENTER to submit the form
+    context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ESCAPE)
     context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ENTER)
 
 
@@ -37,6 +39,8 @@ def _(context):
     select_option(context, "species", row["Species"], 1)
     from_date = get_date_from_string(row["From"]).strftime(Sighting.DATE_DISPLAY_FORMAT)
     context.browser.find_element(By.NAME, "from_date").send_keys(from_date)
+    # With the date-picker in place, use ESC to close it then ENTER to submit the form
+    context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ESCAPE)
     context.browser.find_element(By.NAME, "from_date").send_keys(Keys.ENTER)
 
 
