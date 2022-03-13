@@ -6,7 +6,7 @@ WORKDIR /opt/naturerecorderpy-1.0.27.0
 
 RUN apt-get update -y
 RUN pip install -r requirements.txt
-RUN pip install nature_recorder-1.0.26-py3-none-any.whl
+RUN pip install nature_recorder-1.0.27-py3-none-any.whl
 
 ENV NATURE_RECORDER_DATA_FOLDER=/var/opt/naturerecorderpy-1.0.27.0
 ENV NATURE_RECORDER_DB=/var/opt/naturerecorderpy-1.0.27.0/naturerecorder.db
