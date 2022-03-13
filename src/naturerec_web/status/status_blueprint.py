@@ -4,7 +4,8 @@ The status blueprint supplies view functions and templates for conservation stat
 
 from flask import Blueprint, render_template, request, redirect, session
 from flask_login import login_required
-from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme
+from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme, \
+    delete_status_scheme
 from naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
 from naturerec_model.data_exchange import StatusImportHelper
 from naturerec_web.request_utils import get_posted_int
@@ -70,8 +71,8 @@ def list_all():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                pass
-        except BaseException as e:
+                delete_status_scheme(delete_record_id)
+        except ValueError as e:
             error = e
 
     message = session.pop("message") if "message" in session else None

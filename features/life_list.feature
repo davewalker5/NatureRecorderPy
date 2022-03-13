@@ -4,9 +4,9 @@ Feature: Life List
 
     Scenario: Life list contains species
         Given A set of sightings
-        | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |
-        | 01/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        |
-        | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung | Notes      |
+        | 01/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        | Some notes |
+        | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        | More notes |
 
         When I navigate to the life list page
         And I select "Birds" as the "category"
@@ -26,9 +26,9 @@ Feature: Life List
     @export
     Scenario: Export life list
         Given A set of sightings
-        | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |
-        | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        |
-        | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung | Notes      |
+        | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        | Some notes |
+        | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        | More notes |
 
         When I navigate to the export life list page
         And I enter the life list export properties

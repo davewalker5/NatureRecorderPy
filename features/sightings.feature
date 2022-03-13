@@ -1,18 +1,18 @@
 Feature: Sightings Management
     Scenario: List today's sightings
         Given A set of sightings
-        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung |
-        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        |
-        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung | Notes      |
+        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        | Some notes |
+        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        | More notes |
 
         When I navigate to the sightings page
         Then There will be 2 sightings in the sightings list
 
     Scenario: List filtered sightings
         Given A set of sightings
-        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung |
-        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        |
-        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung | Notes      |
+        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        | Some notes |
+        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        | More notes |
 
         When I navigate to the sightings page
         And I fill in the sightings filter form

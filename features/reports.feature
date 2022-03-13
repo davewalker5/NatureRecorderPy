@@ -1,11 +1,11 @@
 Feature: Reporting
     Scenario: Report on sightings of species at a location
         Given A set of sightings
-        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung |
-        | TODAY      | Test Location | Birds      | Woodpigeon    | 1      | Unknown | No        |
-        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        |
-        | TODAY      | Test Location | Birds      | Robin         | 1      | Unknown | No        |
-        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung | Notes         |
+        | TODAY      | Test Location | Birds      | Woodpigeon    | 1      | Unknown | No        | Some notes    |
+        | TODAY      | Test Location | Birds      | Blackbird     | 1      | Male    | No        | More notes    |
+        | TODAY      | Test Location | Birds      | Robin         | 1      | Unknown | No        | It's a robin! |
+        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        | Squirrel!     |
 
         When I navigate to the location report page
         And I fill in the location report details
@@ -19,9 +19,9 @@ Feature: Reporting
 
     Scenario: Report on sightings of species over time
         Given A set of sightings
-        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung |
-        | TODAY      | Test Location | Birds      | Woodpigeon    | 1      | Unknown | No        |
-        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        |
+        | Date       | Location      | Category   | Species       | Number | Gender  | WithYoung | Notes      |
+        | TODAY      | Test Location | Birds      | Woodpigeon    | 1      | Unknown | No        | Some notes |
+        | TODAY      | Test Location | Mammals    | Grey Squirrel | 1      | Unknown | No        | More notes |
 
         When I navigate to the species report page
         And I fill in the species report details

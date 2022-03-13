@@ -2,9 +2,9 @@ Feature: Export Sightings
   @export
   Scenario: Export unfiltered sightings
     Given A set of sightings
-    | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |
-    | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        |
-    | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        |
+    | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung | Notes      |
+    | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        | Some notes |
+    | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        | More notes |
 
     When I navigate to the export page
     And I enter the export properties
@@ -18,9 +18,9 @@ Feature: Export Sightings
   @export
   Scenario: Export filtered sightings
     Given A set of sightings
-    | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung |
-    | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        |
-    | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        |
+    | Date       | Location      | Category   | Species   | Number | Gender  | WithYoung | Notes      |
+    | 10/01/2022 | Test Location | Birds      | Blackbird | 1      | Male    | No        | Some notes |
+    | 01/01/2022 | Test Location | Amphibians | Frog      | 1      | Unknown | No        | More notes |
 
     When I navigate to the export page
     And I enter the export properties
