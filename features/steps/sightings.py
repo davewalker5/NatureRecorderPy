@@ -36,12 +36,17 @@ def _(context):
     context.sighting_date = datetime.datetime.today().date().strftime(Sighting.DATE_DISPLAY_FORMAT)
 
     # Select the values
+    category = row["Category"]
     select_option(context, "location", row["Location"], None)
-    select_option(context, "category", row["Category"], None)
+    select_option(context, "category", category, None)
     select_option(context, "species", row["Species"], 1)
-    context.browser.find_element(By.NAME, "number").send_keys(row["Number"])
-    select_option(context, "gender", row["Gender"], 0)
-    select_option(context, "with_young", row["WithYoung"], 1)
+
+    # Some controls are only displayed for certain categories
+    if category.casefold() in ["birds", "mammals"]:
+        context.browser.find_element(By.NAME, "number").send_keys(row["Number"])
+        select_option(context, "gender", row["Gender"], 1)
+        context.browser.find_element(By.NAME, "with_young").send_keys("")
+        select_option(context, "with_young", row["WithYoung"], 1)
 
 
 @then("There will be {number} sightings in the sightings list")
