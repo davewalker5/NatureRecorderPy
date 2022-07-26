@@ -92,6 +92,15 @@ div table.striped {
     margin-bottom: 20px;
 }
 
+.td-nowrap {
+    white-space: nowrap;
+}
+
+.div-align-center {
+    display: flex;
+    justify-content: center;
+}
+
 /* --- Messages -------------------------------------–––--------------------- */
 
 div.error {
