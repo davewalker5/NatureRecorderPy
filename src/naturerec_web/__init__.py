@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from .home import home_bp
 from .sightings import sightings_bp
 from .export import export_bp
@@ -14,6 +15,9 @@ from .jobs import jobs_bp
 from .reports import reports_bp
 from .auth import auth_bp
 from naturerec_model.logic import get_user
+
+
+csrf = CSRFProtect()
 
 
 def create_app(environment="production"):
@@ -48,6 +52,9 @@ def create_app(environment="production"):
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+
+    # Enable CSRF protection
+    csrf.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id):

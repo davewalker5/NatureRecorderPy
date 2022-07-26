@@ -5,6 +5,7 @@
     <h1>Import Conservation Status Ratings</h1>
     {% include "error.html" with context %}
     <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label>Ratings File</label>
             <input class="form-control" type="file" name="csv_file_name" required>

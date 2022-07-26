@@ -12,6 +12,7 @@
         {% include "reports/report.html" with context %}
     {% else %}
         <form method="post" {{ form_target }}>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <h1>{{ title }}</h1>
             <div class="filter-criteria">
                 {% include "location_selector.html" with context %}

@@ -15,6 +15,7 @@
     <h1>{{ title }}</h1>
     {% include "error.html" with context %}
     <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="form-group">
             <label>Name</label>
             <input class="form-control" name="name" placeholder="Conservation status rating name e.g. Amber"
