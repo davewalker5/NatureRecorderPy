@@ -119,7 +119,7 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         :param valid_values: Collection of valid values to compare with
         :raises ValueError: If the field isn't in the valid values collection
         """
-        if not row[index].strip().title() in valid_values:
+        if row[index].strip().title() not in valid_values:
             raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
 
     @classmethod
