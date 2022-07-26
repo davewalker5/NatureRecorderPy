@@ -1,5 +1,6 @@
 {% if species_status_ratings | length > 0 %}
     <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="species_status_rating_id" id="species_status_rating_id"/>
         <table class="striped">
             <thead>

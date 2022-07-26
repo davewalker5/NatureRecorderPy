@@ -3,6 +3,7 @@
 
 {% block content %}
     <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" value="" name="delete_record_id" id="delete_record_id" />
         <h1>Conservation Status Schemes</h1>
         {% include "error.html" with context %}
