@@ -13,11 +13,11 @@
         <tbody>
             {% for job_status in job_statuses %}
                 <tr>
-                    <td nowrap>{{ job_status.name }}</td>
+                    <td class="td-nowrap">{{ job_status.name }}</td>
                     <td>{{ job_status.parameters }}</td>
-                    <td nowrap>{{ job_status.display_start_date }}</td>
-                    <td nowrap>{{ job_status.display_end_date }}</td>
-                    <td nowrap>{{ job_status.runtime }}</td>
+                    <td class="td-nowrap">{{ job_status.display_start_date }}</td>
+                    <td class="td-nowrap">{{ job_status.display_end_date }}</td>
+                    <td class="td-nowrap">{{ job_status.runtime }}</td>
                     <td>{{ job_status.error }}</td>
                 </tr>
             {% endfor %}
