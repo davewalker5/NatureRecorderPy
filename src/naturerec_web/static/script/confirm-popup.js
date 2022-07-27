@@ -4,10 +4,10 @@ function set_record_id(recordId) {
 
 function attach_yes_handler(confirmCallback) {
     $('#confirm-popup .modal-footer button').on('click', function(event) {
-        var buttonId = $(event.target).attr("id");
+        let buttonId = $(event.target).attr("id");
         $(this).closest('.modal').one('hidden.bs.modal', function() {
             // Get the previously stored record ID and clear the field used to store it
-            var recordId = $(".modal-body #confirm-record-id").val();
+            let recordId = $(".modal-body #confirm-record-id").val();
             set_record_id("");
 
             // If the action's confirmed, call the supplied callback, passing in the record ID
@@ -23,8 +23,8 @@ function attach_show_modal_handler() {
     confirmModal.addEventListener('show.bs.modal', function (event) {
         // The confirmation popup's used to confirm a destructive action (deletion). The control used to trigger
         // the popup is associated with a specific record ID. Get that ID
-        var element = event.relatedTarget;
-        var recordId = element.getAttribute('data-bs-record-id');
+        let element = event.relatedTarget;
+        let recordId = element.getAttribute('data-bs-record-id');
 
         // Store the record ID for later use
         set_record_id(recordId);

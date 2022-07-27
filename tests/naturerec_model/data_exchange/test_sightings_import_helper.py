@@ -10,6 +10,9 @@ from src.naturerec_model.logic import list_job_status
 
 
 class TestSightingsImportHelper(unittest.TestCase):
+    IMPORT_FILE_HEADER_ROW = "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode," \
+                             "Country,Latitude,Longitude\n"
+
     def setUp(self) -> None:
         create_database()
 
@@ -120,8 +123,7 @@ class TestSightingsImportHelper(unittest.TestCase):
 
     def test_cannot_import_duplicate_sighting(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,-1.2880\n",
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
@@ -130,95 +132,83 @@ class TestSightingsImportHelper(unittest.TestCase):
 
     def test_cannot_import_sighting_with_blank_species(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             ",Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_blank_category(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_number(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,Not A Number,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,"
             "United Kingdom,51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_gender(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Not A Valid Gender,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,"
             "United Kingdom,51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_with_young(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,Not A Valid With Young Value,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,"
             "OX14,United Kingdom,51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_date(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,Not A Date,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_blank_location(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_blank_county(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,,OX14,United Kingdom,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_blank_country(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,,"
             "51.6708,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_latitude(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "Not A Decimal,-1.2880\n"
         ])
 
     def test_cannot_import_sighting_with_invalid_longitude(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon,An Address,Abingdon,Oxfordshire,OX14,United Kingdom,"
             "51.6708,Not A Decimal\n"
         ])
 
     def test_cannot_import_file_with_malformed_row(self):
         self._perform_invalid_import([
-            "Species,Category,Number,Gender,WithYoung,Date,Location,Address,City,County,Postcode,Country,"
-            "Latitude,Longitude\n",
+            TestSightingsImportHelper.IMPORT_FILE_HEADER_ROW,
             "Robin,Birds,1,Unknown,No,01/02/2021,Abingdon\n"
         ])

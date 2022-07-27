@@ -8,10 +8,10 @@ function update_rating_selector(scheme_id) {
         type: "GET",
         cache: false,
         dataType: "html",
-        success: function(data, textStatus, jqXHR)  {
+        success: function(data, _textStatus, _jqXHR)  {
             $("#rating_selector").html(data);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function(_jqXHR, textStatus, _errorThrown) {
             $("#rating_selector").html("Error getting conservation status rating list: " + textStatus);
         }
     });
@@ -23,7 +23,7 @@ function initialise_rating_selection() {
 
     // When the scheme selection changes, update the rating list
     $("#scheme").change(function () {
-        var scheme_id = $("#scheme").val();
+        let scheme_id = $("#scheme").val();
         update_rating_selector(scheme_id);
     });
 }

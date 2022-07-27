@@ -10,6 +10,8 @@ from src.naturerec_model.data_exchange import StatusImportHelper
 
 
 class TestStatusImportHelper(unittest.TestCase):
+    IMPORT_FILE_HEADER_ROW = "Species,Category,Scheme,Rating,Region,Start,End\n"
+
     def setUp(self) -> None:
         create_database()
 
@@ -32,7 +34,7 @@ class TestStatusImportHelper(unittest.TestCase):
         # Create the test file
         filename = os.path.join(get_data_path(), "valid_status_import.csv")
         TestStatusImportHelper._create_test_file(filename, [
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
 
@@ -118,54 +120,54 @@ class TestStatusImportHelper(unittest.TestCase):
 
     def test_cannot_import_file_with_blank_species(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             ",Birds,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
 
     def test_cannot_import_file_with_blank_category(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,,BOCC5,Red,United Kingdom,01/12/2021,\n"
         ])
 
     def test_cannot_import_file_with_blank_scheme(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,,Red,United Kingdom,01/12/2021,\n"
         ])
 
     def test_cannot_import_file_with_blank_rating(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,,United Kingdom,01/12/2021,\n"
         ])
 
     def test_cannot_import_file_with_blank_region(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,Red,,01/12/2021,\n"
         ])
 
     def test_cannot_import_file_with_blank_start(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,,\n"
         ])
 
     def test_cannot_import_file_with_invalid_start(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,Not A Date,\n"
         ])
 
     def test_cannot_import_file_with_invalid_end(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,Red,United Kingdom,01/12/2021,Not A Date\n"
         ])
 
     def test_cannot_import_file_with_malformed_row(self):
         self._perform_invalid_import([
-            "Species,Category,Scheme,Rating,Region,Start,End\n",
+            TestStatusImportHelper.IMPORT_FILE_HEADER_ROW,
             "Arctic skua,Birds,BOCC5,\n"
         ])

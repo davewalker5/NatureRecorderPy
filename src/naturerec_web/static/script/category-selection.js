@@ -10,10 +10,10 @@ function update_species_selector(category_id, selected_species_id) {
         type: "GET",
         cache: false,
         dataType: "html",
-        success: function(data, textStatus, jqXHR)  {
+        success: function(data, _textStatus, _jqXHR)  {
             $("#species_selector").html(data);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function(_jqXHR, textStatus, _errorThrown) {
             $("#species_selector").html("Error getting species list: " + textStatus);
         }
     });
@@ -25,7 +25,7 @@ function initialise_species_selection(category_id, species_id) {
 
     // When the category selection changes, update the species list
     $("#category").change(function () {
-        var category_id = $("#category").val();
-        update_species_selector(category_id, 0);
+        let updated_category_id = $("#category").val();
+        update_species_selector(updated_category_id, 0);
     });
 }
