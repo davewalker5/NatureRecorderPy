@@ -4,6 +4,7 @@
 {% block content %}
     <h1>Export Sightings</h1>
     <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         {% include "filter_selector.html" with context %}
     </form>
     {% include "message.html" with context %}
