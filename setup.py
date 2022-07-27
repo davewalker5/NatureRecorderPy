@@ -31,7 +31,7 @@ naturerec_web_package_data.append("templates/*.html")
 
 setuptools.setup(
     name="nature_recorder",
-    version="1.0.28",
+    version="1.0.29",
     description="Wildlife sightings database",
     packages=setuptools.find_packages("src"),
     include_package_data=True,

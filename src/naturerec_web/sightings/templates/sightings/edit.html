@@ -94,6 +94,7 @@
         $(document).ready(function() {
             initialise_species_selection({{ category_id }}, {{ species_id }});
             show_hide_default_fields();
+            $("#date").focus();
             $("#category").change(function() {
                 show_hide_default_fields();
             })
