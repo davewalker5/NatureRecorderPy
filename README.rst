@@ -6,6 +6,10 @@
     :target: https://codecov.io/gh/davewalker5/NatureRecorderPy
     :alt: Coverage
 
+.. image:: https://sonarcloud.io/api/project_badges/measure?project=davewalker5_NatureRecorderPy&metric=alert_status
+    :target: https://sonarcloud.io/summary/new_code?id=davewalker5_NatureRecorderPy
+    :alt: Quality Gate
+
 .. image:: https://img.shields.io/github/issues/davewalker5/NatureRecorderPy
     :target: https://github.com/davewalker5/NatureRecorderPy/issues
     :alt: GitHub issues
