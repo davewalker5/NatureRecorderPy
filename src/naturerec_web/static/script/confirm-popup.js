@@ -19,7 +19,7 @@ function attach_yes_handler(confirmCallback) {
 }
 
 function attach_show_modal_handler() {
-    var confirmModal = document.getElementById('confirm-popup');
+    let confirmModal = document.getElementById('confirm-popup');
     confirmModal.addEventListener('show.bs.modal', function (event) {
         // The confirmation popup's used to confirm a destructive action (deletion). The control used to trigger
         // the popup is associated with a specific record ID. Get that ID
