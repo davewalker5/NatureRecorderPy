@@ -1,5 +1,6 @@
 import os
 import time
+import platform
 from sqlalchemy import text
 from naturerec_model.model import create_database
 from naturerec_model.logic import create_user
@@ -39,8 +40,16 @@ def start_selenium_browser(context):
 
     :param context: Behave context
     """
-    # TODO: Cross-platform default browser
-    context.browser = webdriver.Safari()
+    # Determine the OS and create an appropriate browser instance
+    os_name = platform.system()
+    if os_name == "Darwin":
+        context.browser = webdriver.Safari()
+    elif os_name == "Windows":
+        # This requires the msedge-selenium-tools package
+        context.browser = webdriver.Edge(r"msedgedriver.exe")
+    else:
+        raise NotImplementedError()
+
     context.browser.implicitly_wait(MAXIMUM_PAGE_LOAD_TIME)
     yield context.browser
 
