@@ -45,8 +45,7 @@ def start_selenium_browser(context):
     if os_name == "Darwin":
         context.browser = webdriver.Safari()
     elif os_name == "Windows":
-        # This requires the msedge-selenium-tools package
-        context.browser = webdriver.Edge(r"msedgedriver.exe")
+        context.browser = webdriver.Edge()
     else:
         raise NotImplementedError()
 
