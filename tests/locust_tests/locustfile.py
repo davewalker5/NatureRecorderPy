@@ -1,13 +1,17 @@
 import os
 import time
 import datetime
+from bs4 import BeautifulSoup
 from random import randrange
 from locust import HttpUser, task, between, events
 from locust_tests.flask_app_runner import FlaskAppRunner
 from naturerec_model.model import create_database, get_data_path, Sighting
-from naturerec_model.logic import list_locations, list_categories, list_species
+from naturerec_model.logic import list_locations, list_categories, list_species, create_user
 from naturerec_model.data_exchange import SightingsImportHelper, StatusImportHelper
 from naturerec_web import create_app
+
+TEST_USER_NAME = "locust"
+TEST_PASSWORD = "password"
 
 
 flask_runner = FlaskAppRunner("127.0.0.1", 5000, create_app())
@@ -23,6 +27,9 @@ def on_test_start(environment, **kwargs):
     """
     # Reset the database
     create_database()
+
+    # Create a login
+    create_user(TEST_USER_NAME, TEST_PASSWORD)
 
     # Import some sample sightings
     sightings_file = os.path.join(get_data_path(), "imports", "locust_sightings.csv")
@@ -104,6 +111,7 @@ class NatureRecorderUser(HttpUser):
         """
         self._locations = list_locations()
         self._categories = list_categories()
+        self._login()
 
     @task
     def go_to_home_page(self):
@@ -124,6 +132,7 @@ class NatureRecorderUser(HttpUser):
         """
         Task to simulate adding a location
         """
+        csrf_token = self._get_csrf_token_for_form("/locations/edit")
         name = self._get_name("Location")
         county = self._get_name("County")
         country = self._get_name("Country")
@@ -135,7 +144,8 @@ class NatureRecorderUser(HttpUser):
             "postcode": "",
             "country": country,
             "latitude": "",
-            "longitude": ""
+            "longitude": "",
+            "csrf_token": csrf_token
         })
 
     @task
@@ -150,25 +160,38 @@ class NatureRecorderUser(HttpUser):
         """
         Task to simulate adding a category
         """
+        csrf_token = self._get_csrf_token_for_form("/categories/edit")
         name = self._get_name("Category")
-        self.client.post("/categories/edit", data={"name": name})
+        self.client.post("/categories/edit", data={
+            "name": name,
+            "csrf_token": csrf_token
+        })
 
     @task
     def list_species(self):
         """
         Task to simulate listing the species belonging to a selected category
         """
+        csrf_token = self._get_csrf_token_for_form("/species/list")
         category_id = self._get_random_category_id()
-        self.client.post("/species/list", data={"category": str(category_id)})
+        self.client.post("/species/list", data={
+            "category": str(category_id),
+            "csrf_token": csrf_token
+        })
 
     @task
     def add_species(self):
         """
         Task to simulate adding a species
         """
+        csrf_token = self._get_csrf_token_for_form("/species/add")
         category_id = self._get_random_category_id()
         name = self._get_name("Species")
-        self.client.post("/species/add", data={"category": str(category_id), "name": name})
+        self.client.post("/species/add", data={
+            "category": str(category_id),
+            "name": name,
+            "csrf_token": csrf_token
+        })
 
     @task(20)
     def list_sightings(self):
@@ -182,6 +205,7 @@ class NatureRecorderUser(HttpUser):
         """
         Task to simulate adding a new sighting
         """
+        csrf_token = self._get_csrf_token_for_form("/sightings/edit")
         sighting_date = datetime.datetime.today().strftime(Sighting.DATE_DISPLAY_FORMAT)
         location_id = self._get_random_location_id()
         category_id = self._get_random_category_id()
@@ -193,7 +217,9 @@ class NatureRecorderUser(HttpUser):
             "species": str(species_id),
             "number": "1",
             "gender": "0",
-            "with_young": "0"
+            "with_young": "0",
+            "notes": "",
+            "csrf_token": csrf_token
         })
 
     @task
@@ -208,8 +234,12 @@ class NatureRecorderUser(HttpUser):
         """
         Task to simulate showing the life list for a category
         """
+        csrf_token = self._get_csrf_token_for_form("/life_list/list")
         category_id = self._get_random_category_id()
-        self.client.post("/life_list/list", data={"category": str(category_id)})
+        self.client.post("/life_list/list", data={
+            "category": str(category_id),
+            "csrf_token": csrf_token
+        })
 
     @task
     def list_recent_background_jobs(self):
@@ -217,6 +247,29 @@ class NatureRecorderUser(HttpUser):
         Task to simulate listing the recent background jobs
         """
         self.client.get("/jobs/list")
+
+    def _login(self):
+        """
+        Log in using the test account
+        """
+        csrf_token = self._get_csrf_token_for_form("/auth/login")
+        self.client.post("/auth/login", data={
+            "username": TEST_USER_NAME,
+            "password": TEST_PASSWORD,
+            "csrf_token": csrf_token
+        })
+
+    def _get_csrf_token_for_form(self, url):
+        """
+        Request a page containing a form and return the CSRF token from it
+
+        :param url: URL for the page containing the form
+        :return: CSFR token
+        """
+        response = self.client.get(url)
+        form_data = BeautifulSoup(response.text, "html.parser")
+        csrf_token_field = form_data.find(attrs={"name": "csrf_token"})
+        return csrf_token_field["value"]
 
     def _get_random_location_id(self):
         """
