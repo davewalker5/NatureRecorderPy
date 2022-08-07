@@ -95,10 +95,8 @@
             initialise_species_selection({{ category_id }}, {{ species_id }});
             show_hide_default_fields();
 
-            // Need to set focus on the first control in the form but this will pop-up the date picker
-            // so we then need to specifically close the date picker dropdown
+            // Need to set focus on the first control in the form
             $("#date").focus();
-            $(".datepicker-dropdown").hide();
 
             $("#category").change(function() {
                 show_hide_default_fields();
