@@ -23,7 +23,12 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy'
+                format: 'dd/mm/yyyy',
+                showOnFocus: false
+            });
+
+            $('.datepicker').click(function() {
+                $(this).datepicker("show");
             });
         });
     </script>
