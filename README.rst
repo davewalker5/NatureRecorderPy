@@ -26,7 +26,7 @@
     :target: https://www.python.org
     :alt: Language
 
-.. image:: https://img.shields.io/github/languages/code-size/davewalker5/FlightBookingSQL
+.. image:: https://img.shields.io/github/languages/code-size/davewalker5/NatureRecorderPy
     :target: https://github.com/davewalker5/NatureRecorderPy/
     :alt: GitHub code size in bytes
 
