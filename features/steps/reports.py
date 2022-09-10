@@ -2,7 +2,7 @@ from behave import when, then
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from features.steps.helpers import select_option, get_date_from_string, confirm_table_row_count
-from naturerec_model.model import Sighting
+from src.naturerec_model.model import Sighting
 
 
 @when("I navigate to the location report page")

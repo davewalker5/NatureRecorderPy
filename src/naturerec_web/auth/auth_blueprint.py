@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_user, logout_user
-from naturerec_model.logic import authenticate
+from src.naturerec_model.logic import authenticate
 
 auth_bp = Blueprint("auth", __name__, template_folder='templates')
 

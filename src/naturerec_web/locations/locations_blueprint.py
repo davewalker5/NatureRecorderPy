@@ -4,9 +4,9 @@ The locations blueprint supplies view functions and templates for location manag
 
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
-from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode, \
+from src.naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode, \
     delete_location
-from naturerec_web.request_utils import get_posted_float, get_posted_int
+from src.naturerec_web.request_utils import get_posted_float, get_posted_int
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
 

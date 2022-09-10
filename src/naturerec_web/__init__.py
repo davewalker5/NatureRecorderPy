@@ -14,7 +14,7 @@ from .life_list import life_list_bp
 from .jobs import jobs_bp
 from .reports import reports_bp
 from .auth import auth_bp
-from naturerec_model.logic import get_user
+from src.naturerec_model.logic import get_user
 
 
 csrf = CSRFProtect()
