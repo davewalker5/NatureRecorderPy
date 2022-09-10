@@ -2,8 +2,8 @@ import time
 from behave import given, when, then
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
-from naturerec_model.model import Gender
-from naturerec_model.logic import create_sighting
+from src.naturerec_model.model import Gender
+from src.naturerec_model.logic import create_sighting
 from helpers import get_date_from_string, select_option
 from helpers import create_test_location, create_test_category, create_test_species, create_test_scheme
 

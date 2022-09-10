@@ -1,9 +1,9 @@
 import datetime
 from behave import given, when, then
 from helpers import confirm_table_row_count, create_test_location, create_test_category, create_test_species
-from naturerec_model.model import Gender, Session, JobStatus
-from naturerec_model.logic import create_sighting
-from naturerec_model.data_exchange import SightingsExportHelper
+from src.naturerec_model.model import Gender, Session, JobStatus
+from src.naturerec_model.logic import create_sighting
+from src.naturerec_model.data_exchange import SightingsExportHelper
 
 @given("The jobs list is empty")
 def _(context):

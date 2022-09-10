@@ -2,7 +2,7 @@ import datetime
 from behave import when, then
 from selenium.webdriver.common.by import By
 from helpers import confirm_table_row_count, confirm_span_exists, select_option
-from naturerec_model.model import Sighting
+from src.naturerec_model.model import Sighting
 
 
 @when("I navigate to the sightings page")

@@ -4,9 +4,9 @@ The species blueprint supplies view functions and templates for species manageme
 
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
-from naturerec_model.logic import list_categories
-from naturerec_model.logic import list_species, get_species, create_species, update_species, delete_species
-from naturerec_web.request_utils import get_posted_int
+from src.naturerec_model.logic import list_categories
+from src.naturerec_model.logic import list_species, get_species, create_species, update_species, delete_species
+from src.naturerec_web.request_utils import get_posted_int
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
 

@@ -5,11 +5,11 @@ The species ratings blueprint supplies view functions and templates for species 
 import datetime
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
-from naturerec_model.logic import get_species
-from naturerec_model.logic import list_status_schemes, get_status_scheme
-from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
+from src.naturerec_model.logic import get_species
+from src.naturerec_model.logic import list_status_schemes, get_status_scheme
+from src.naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
     create_species_status_rating, delete_species_status_rating
-from naturerec_web.request_utils import get_posted_int
+from src.naturerec_web.request_utils import get_posted_int
 
 species_ratings_bp = Blueprint("species_ratings", __name__, template_folder='templates')
 

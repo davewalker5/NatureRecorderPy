@@ -4,7 +4,7 @@ This module contains utilities for extracting values from POSTed form data
 
 import datetime
 from flask import request
-from naturerec_model.model import Sighting
+from src.naturerec_model.model import Sighting
 
 
 def get_posted_int(key):

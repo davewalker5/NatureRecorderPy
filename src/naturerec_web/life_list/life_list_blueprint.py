@@ -4,9 +4,9 @@ The life list blueprint supplies view functions and templates for generating spe
 
 from flask import Blueprint, render_template, request
 from flask_login import login_required
-from naturerec_model.logic import list_categories, get_category
-from naturerec_model.logic import life_list
-from naturerec_web.request_utils import get_posted_int
+from src.naturerec_model.logic import list_categories, get_category
+from src.naturerec_model.logic import life_list
+from src.naturerec_web.request_utils import get_posted_int
 
 life_list_bp = Blueprint("life_list", __name__, template_folder='templates')
 

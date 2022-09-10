@@ -3,12 +3,12 @@ import datetime
 import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
-from naturerec_model.model import Sighting
-from naturerec_model.model.utils import get_data_path
-from naturerec_model.logic import get_location, create_location
-from naturerec_model.logic import get_category, create_category
-from naturerec_model.logic import get_species, create_species
-from naturerec_model.logic import get_status_scheme, create_status_scheme
+from src.naturerec_model.model import Sighting
+from src.naturerec_model.model.utils import get_data_path
+from src.naturerec_model.logic import get_location, create_location
+from src.naturerec_model.logic import get_category, create_category
+from src.naturerec_model.logic import get_species, create_species
+from src.naturerec_model.logic import get_status_scheme, create_status_scheme
 
 
 def get_date_from_string(date_string):

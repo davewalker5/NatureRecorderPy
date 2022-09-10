@@ -2,16 +2,16 @@ import os
 import time
 import platform
 from sqlalchemy import text
-from naturerec_model.model import create_database
-from naturerec_model.logic import create_user
+from src.naturerec_model.model import create_database
+from src.naturerec_model.logic import create_user
 from behave import fixture, use_fixture
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from flask_app_runner import FlaskAppRunner
-from naturerec_web import create_app
-from naturerec_model.model.database import Engine
-from naturerec_model.model.utils import get_project_path
+from src.naturerec_web import create_app
+from src.naturerec_model.model.database import Engine
+from src.naturerec_model.model.utils import get_project_path
 
 
 MAXIMUM_PAGE_LOAD_TIME = 5
