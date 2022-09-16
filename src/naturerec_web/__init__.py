@@ -32,6 +32,11 @@ def create_app(environment="production"):
 
     config_object = f"naturerec_web.config.{'ProductionConfig' if environment == 'production' else 'DevelopmentConfig'}"
     app.config.from_object(config_object)
+    app.config.update(
+        SESSION_COOKIE_SAMESITE="Strict",
+        SESSION_COOKIE_HTTPONLY=True,
+        PERMANENT_SESSION_LIFETIME=600
+    )
 
     # Register the blueprints
     app.secret_key = os.environ["SECRET_KEY"]
@@ -66,5 +71,20 @@ def create_app(environment="production"):
         """
         return get_user(int(user_id))
 
+    @app.after_request
+    def add_security_headers(response):
+        """
+        Enforce security-related response headers
+
+        :param response: Response object
+        :return: Response object with headers set
+        """
+        response.headers["Content-Security-Policy"] = "default-src 'self'; frame-ancestors 'none'; form-action 'self'"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-XSS-Protection"] = "1; mode=block"
+        return response
+
     return app
+
 
