@@ -102,10 +102,36 @@
                 show_hide_default_fields();
             })
 
-            // ENTER key submits the form, though not if we're in a drop-down list or editing the notes
-            $("#sightings_form").keydown(function() {
+            // Suppress ENTER on the drop-downs. Without this, hitting ENTER does submit the form
+            // but the action very briefly pops up the select list items if a select has focus
+            $("#location").keydown(function(e) {
                 if (e.which == 13) {
-                    $("#sightings_form").submit();
+                    e.preventDefault();
+                }
+            });
+
+            $("#category").keydown(function(e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                }
+            });
+
+            $("#species_selector").keydown(function(e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                }
+            });
+
+            $("#gender").keydown(function(e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                }
+            });
+            
+            // ENTER key submits the form, though not if we're in a drop-down list or editing the notes
+            $(document).keydown(function(e) {
+                if (e.which == 13) {
+                    $(".btn-primary").click();
                 }
             });
         })
