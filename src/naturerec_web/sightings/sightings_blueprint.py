@@ -6,13 +6,13 @@ import datetime
 import html
 from flask import Blueprint, render_template, request, session, redirect
 from flask_login import login_required
-from src.naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting, delete_sighting
-from src.naturerec_model.logic import list_locations
-from src.naturerec_model.logic import list_categories
-from src.naturerec_model.logic import list_species
-from src.naturerec_model.model import Gender, Sighting
-from src.naturerec_model.data_exchange import SightingsImportHelper
-from src.naturerec_web.request_utils import get_posted_date, get_posted_int, get_posted_bool
+from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting, delete_sighting
+from naturerec_model.logic import list_locations
+from naturerec_model.logic import list_categories
+from naturerec_model.logic import list_species
+from naturerec_model.model import Gender, Sighting
+from naturerec_model.data_exchange import SightingsImportHelper
+from naturerec_web.request_utils import get_posted_date, get_posted_int, get_posted_bool
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
 

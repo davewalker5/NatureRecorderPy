@@ -5,7 +5,7 @@ The jobs blueprint supplies view functions and templates for background job mana
 import datetime
 from flask import Blueprint, render_template
 from flask_login import login_required
-from src.naturerec_model.logic import list_job_status
+from naturerec_model.logic import list_job_status
 
 
 jobs_bp = Blueprint("jobs", __name__, template_folder='templates')

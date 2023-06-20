@@ -6,12 +6,12 @@ import datetime
 import os
 from flask import Blueprint, render_template, request
 from flask_login import login_required
-from src.naturerec_model.logic import list_locations, get_location
-from src.naturerec_model.logic import list_categories, get_category
-from src.naturerec_model.logic import get_species
-from src.naturerec_model.logic import location_species_report, get_report_barchart, species_by_date_report
-from src.naturerec_model.model import Sighting
-from src.naturerec_web.request_utils import get_posted_date, get_posted_int
+from naturerec_model.logic import list_locations, get_location
+from naturerec_model.logic import list_categories, get_category
+from naturerec_model.logic import get_species
+from naturerec_model.logic import location_species_report, get_report_barchart, species_by_date_report
+from naturerec_model.model import Sighting
+from naturerec_web.request_utils import get_posted_date, get_posted_int
 
 reports_bp = Blueprint("reports", __name__, template_folder='templates')
 

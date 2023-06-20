@@ -4,8 +4,8 @@ The categories blueprint supplies view functions and templates for species categ
 
 from flask import Blueprint, render_template, request, redirect
 from flask_login import login_required
-from src.naturerec_model.logic import list_categories, get_category, create_category, update_category, delete_category
-from src.naturerec_web.request_utils import get_posted_int
+from naturerec_model.logic import list_categories, get_category, create_category, update_category, delete_category
+from naturerec_web.request_utils import get_posted_int
 
 categories_bp = Blueprint("categories", __name__, template_folder='templates')
 

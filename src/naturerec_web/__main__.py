@@ -1,5 +1,5 @@
 import sys
-from src.naturerec_web import create_app
+from naturerec_web import create_app
 
 environment = sys.argv[1] if len(sys.argv) > 1 else "development"
 if environment == "development":
