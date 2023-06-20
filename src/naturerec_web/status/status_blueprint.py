@@ -4,11 +4,11 @@ The status blueprint supplies view functions and templates for conservation stat
 
 from flask import Blueprint, render_template, request, redirect, session
 from flask_login import login_required
-from src.naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme, \
+from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme, \
     delete_status_scheme
-from src.naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
-from src.naturerec_model.data_exchange import StatusImportHelper
-from src.naturerec_web.request_utils import get_posted_int
+from naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
+from naturerec_model.data_exchange import StatusImportHelper
+from naturerec_web.request_utils import get_posted_int
 
 status_bp = Blueprint("status", __name__, template_folder='templates')
 
