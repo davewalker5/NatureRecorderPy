@@ -99,7 +99,7 @@ def edit_scheme(status_scheme_id):
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
                 delete_status_rating(delete_record_id)
-                return _render_status_scheme_editing_page(status_scheme_id, None, current_user)
+                return _render_status_scheme_editing_page(status_scheme_id, None)
             elif status_scheme_id:
                 _ = update_status_scheme(status_scheme_id, request.form["name"], current_user)
             else:
