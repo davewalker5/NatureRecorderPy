@@ -5,10 +5,10 @@ from bs4 import BeautifulSoup
 from random import randrange
 from locust import HttpUser, task, between, events
 from locust_tests.flask_app_runner import FlaskAppRunner
-from src.naturerec_model.model import create_database, get_data_path, Sighting
-from src.naturerec_model.logic import list_locations, list_categories, list_species, create_user
-from src.naturerec_model.data_exchange import SightingsImportHelper, StatusImportHelper
-from src.naturerec_web import create_app
+from naturerec_model.model import create_database, get_data_path, Sighting
+from naturerec_model.logic import list_locations, list_categories, list_species, create_user
+from naturerec_model.data_exchange import SightingsImportHelper, StatusImportHelper
+from naturerec_web import create_app
 
 TEST_USER_NAME = "locust"
 TEST_PASSWORD = "password"

@@ -13,6 +13,9 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     #: Category name
     name = Column(String, nullable=False, unique=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Species associated with this category
     species = relationship("Species",

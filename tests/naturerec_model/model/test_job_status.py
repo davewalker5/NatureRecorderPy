@@ -1,13 +1,14 @@
 import unittest
 import datetime
-from src.naturerec_model.model import Session, create_database, JobStatus
-from src.naturerec_model.logic import create_job_status
+from naturerec_model.model import Session, create_database, JobStatus, User
+from naturerec_model.logic import create_job_status
 
 
 class TestJobStatus(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        _ = create_job_status("A Test Job", "Some Job Parameters", datetime.datetime(2021, 12, 1, 10, 45, 0))
+        self._user = User(id=1)
+        _ = create_job_status("A Test Job", "Some Job Parameters", datetime.datetime(2021, 12, 1, 10, 45, 0), self._user)
 
     def test_can_create_job_status(self):
         with Session.begin() as session:
@@ -26,16 +27,16 @@ class TestJobStatus(unittest.TestCase):
 
     def test_cannot_create_job_status_with_no_name(self):
         with self.assertRaises(ValueError):
-            _ = create_job_status(None, None, datetime.datetime(2021, 12, 1, 10, 45, 0))
+            _ = create_job_status(None, None, datetime.datetime(2021, 12, 1, 10, 45, 0), self._user)
 
     def test_cannot_create_job_status_with_blank_name(self):
         with self.assertRaises(ValueError):
-            _ = create_job_status("", None, datetime.datetime(2021, 12, 1, 10, 45, 0))
+            _ = create_job_status("", None, datetime.datetime(2021, 12, 1, 10, 45, 0), self._user)
 
     def test_cannot_create_job_status_with_whitespace_name(self):
         with self.assertRaises(ValueError):
-            _ = create_job_status("      ", None, datetime.datetime(2021, 12, 1, 10, 45, 0))
+            _ = create_job_status("      ", None, datetime.datetime(2021, 12, 1, 10, 45, 0), self._user)
 
     def test_cannot_create_job_status_with_no_start(self):
         with self.assertRaises(ValueError):
-            _ = create_job_status("A Test Job", None, None)
+            _ = create_job_status("A Test Job", None, None, self._user)

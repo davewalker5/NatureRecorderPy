@@ -34,6 +34,9 @@ class Sighting(Base):
     gender = Column(Integer, default=Gender.UNKNOWN, nullable=False)
     #: Sighting notes
     notes = Column(String, default=None, nullable=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Related location instance
     location = relationship("Location", lazy="joined")

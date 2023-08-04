@@ -20,11 +20,12 @@ def _check_for_existing_records(session, name):
     return [category.id for category in categories]
 
 
-def create_category(name):
+def create_category(name, user):
     """
     Create a new species category
 
     :param name: Category name
+    :param user: Current user
     :returns: An instance of the Category class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the category is a duplicate
@@ -38,7 +39,7 @@ def create_category(name):
             if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate category found")
 
-            category = Category(name=tidied)
+            category = Category(name=tidied, created_by=user.id, updated_by=user.id)
             session.add(category)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
@@ -46,12 +47,13 @@ def create_category(name):
     return category
 
 
-def update_category(category_id, name):
+def update_category(category_id, name, user):
     """
     Update an existing species category
 
     :param category_id: ID for the category record to update
     :param name: Category name
+    :param user: Current user
     :returns: An instance of the Category class for the updated record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the category is a duplicate
@@ -78,6 +80,7 @@ def update_category(category_id, name):
                 raise ValueError("Category not found")
 
             category.name = tidied
+            category.updated_by = user.id
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
 

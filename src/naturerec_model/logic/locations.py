@@ -23,13 +23,14 @@ def _check_for_existing_records(session, name):
     return [location.id for location in locations]
 
 
-def create_location(name, county, country, address=None, city=None, postcode=None, latitude=None, longitude=None):
+def create_location(name, county, country, user, address=None, city=None, postcode=None, latitude=None, longitude=None):
     """
     Create a new location
 
     :param name: Location name
     :param county: County
     :param country: Country
+    :param user: Current user
     :param address: Address or None
     :param city: City or None
     :param postcode: Postcode or None
@@ -52,7 +53,9 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
                                 postcode=" ".join(postcode.split()).upper() if postcode else None,
                                 country=" ".join(country.split()) if country else None,
                                 latitude=latitude,
-                                longitude=longitude)
+                                longitude=longitude,
+                                created_by=user.id,
+                                updated_by=user.id)
             session.add(location)
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
@@ -60,7 +63,7 @@ def create_location(name, county, country, address=None, city=None, postcode=Non
     return location
 
 
-def update_location(location_id, name, county, country, address=None, city=None, postcode=None, latitude=None,
+def update_location(location_id, name, county, country, user, address=None, city=None, postcode=None, latitude=None,
                     longitude=None):
     """
     Update an existing new location
@@ -69,6 +72,7 @@ def update_location(location_id, name, county, country, address=None, city=None,
     :param name: Location name
     :param county: County
     :param country: Country
+    :param user: Current user
     :param address: Address or None
     :param city: City or None
     :param postcode: Postcode or None
@@ -103,6 +107,7 @@ def update_location(location_id, name, county, country, address=None, city=None,
             location.country = " ".join(country.split()) if country else None
             location.latitude = latitude
             location.longitude = longitude
+            location.updated_by = user.id
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
 

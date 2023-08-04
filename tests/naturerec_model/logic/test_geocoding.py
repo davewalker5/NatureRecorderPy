@@ -1,5 +1,5 @@
 import unittest
-from src.naturerec_model.logic import geocode_postcode
+from naturerec_model.logic import geocode_postcode
 
 
 class TestLocations(unittest.TestCase):

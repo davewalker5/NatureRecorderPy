@@ -13,8 +13,8 @@ class LifeListExportHelper(DataExchangeHelperBase):
     JOB_NAME = "Life List export"
     COLUMN_NAMES = ["Category", "Species"]
 
-    def __init__(self, filename, category_id):
-        super().__init__(self.export)
+    def __init__(self, filename, category_id, user):
+        super().__init__(self.export, user)
         self._filename = filename
         self._category_id = category_id
         self.create_job_status()

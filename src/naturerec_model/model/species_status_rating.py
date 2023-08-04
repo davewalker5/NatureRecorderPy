@@ -31,6 +31,9 @@ class SpeciesStatusRating(Base):
     start = Column(String, nullable=False)
     #: End date for the rating - see comments about the start date
     end = Column(String, nullable=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Related species
     species = relationship("Species", lazy="joined")

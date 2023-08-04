@@ -1,12 +1,12 @@
 import unittest
 import os
-from src.naturerec_model.data_exchange.sightings_import_helper import SightingsImportHelper
-from src.naturerec_model.model import create_database, get_data_path, Gender
-from src.naturerec_model.logic import create_category, get_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import create_location, get_location
-from src.naturerec_model.logic import list_sightings
-from src.naturerec_model.logic import list_job_status
+from naturerec_model.data_exchange.sightings_import_helper import SightingsImportHelper
+from naturerec_model.model import create_database, get_data_path, Gender, User
+from naturerec_model.logic import create_category, get_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import create_location, get_location
+from naturerec_model.logic import list_sightings
+from naturerec_model.logic import list_job_status
 
 
 class TestSightingsImportHelper(unittest.TestCase):
@@ -15,6 +15,7 @@ class TestSightingsImportHelper(unittest.TestCase):
 
     def setUp(self) -> None:
         create_database()
+        self._user = User(id=1)
 
     @staticmethod
     def _create_test_file(filename, rows):
@@ -43,7 +44,7 @@ class TestSightingsImportHelper(unittest.TestCase):
 
         # Import the sightings
         with open(filename, mode="rt", encoding="UTF-8") as f:
-            exporter = SightingsImportHelper(f)
+            exporter = SightingsImportHelper(f, self._user)
             exporter.start()
             exporter.join()
         os.unlink(filename)
@@ -90,7 +91,7 @@ class TestSightingsImportHelper(unittest.TestCase):
         TestSightingsImportHelper._create_test_file(filename, rows)
 
         with open(filename, mode="rt", encoding="UTF-8") as f:
-            importer = SightingsImportHelper(f)
+            importer = SightingsImportHelper(f, self._user)
             importer.start()
             with self.assertRaises(ValueError):
                 importer.join()
@@ -108,16 +109,16 @@ class TestSightingsImportHelper(unittest.TestCase):
         self._perform_valid_import()
 
     def test_can_import_sighting_for_existing_category(self):
-        _ = create_category("Birds")
+        _ = create_category("Birds", self._user)
         self._perform_valid_import()
 
     def test_can_import_sighting_for_existing_species(self):
-        category = create_category("Birds")
-        _ = create_species(category.id, "Robin")
+        category = create_category("Birds", self._user)
+        _ = create_species(category.id, "Robin", self._user)
         self._perform_valid_import()
 
     def test_can_import_sighting_for_existing_location(self):
-        _ = create_location("Abingdon", "Oxfordshire", "United Kingdom", "An Address", "Abingdon", "OX14", 51.6708,
+        _ = create_location("Abingdon", "Oxfordshire", "United Kingdom", self._user, "An Address", "Abingdon", "OX14", 51.6708,
                             -1.2880)
         self._perform_valid_import()
 

@@ -14,13 +14,14 @@ from ..logic import create_sighting
 class SightingsImportHelper(SightingsDataExchangeHelperBase):
     JOB_NAME = "Sightings import"
 
-    def __init__(self, f):
+    def __init__(self, f, user):
         """
         Initialiser
 
         :param f: IO stream (result of open() or a FileStorage object)
+        :param user: Current user
         """
-        super().__init__(self.import_sightings)
+        super().__init__(self.import_sightings, user)
         self._file = f
         self.create_job_status()
 
@@ -40,7 +41,7 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
             gender = [key for key, value in Gender.gender_map().items() if value == row[3].strip().title()][0]
             with_young = 1 if row[4].strip().title() == "Yes" else 0
             notes = row[14] if row[14] else None
-            _ = create_sighting(location_id, species_id, date, number, gender, with_young, notes)
+            _ = create_sighting(location_id, species_id, date, number, gender, with_young, notes, self._user)
 
     def _read_csv_rows(self):
         """
@@ -177,13 +178,12 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         except ValueError:
             raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
 
-    @staticmethod
-    def _create_location(row):
+    def _create_location(self, row):
         tidied_name = " ".join(row[6].split()).title()
         try:
             location = get_location(tidied_name)
         except ValueError:
             latitude = float(row[12]) if row[12].strip() else None
             longitude = float(row[13]) if row[12].strip() else None
-            location = create_location(tidied_name, row[9], row[11], row[7], row[8], row[10], latitude, longitude)
+            location = create_location(tidied_name, row[9], row[11], self._user, row[7], row[8], row[10], latitude, longitude)
         return location.id

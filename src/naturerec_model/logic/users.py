@@ -21,12 +21,13 @@ def _check_for_existing_records(session, username):
     return [user.id for user in users]
 
 
-def create_user(username, password):
+def create_user(username, password, user):
     """
     Create a new user
 
     :param username: Username
     :param password: Password
+    :param user: Current user
     :returns: An instance of the User class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the specified password is None, an empty string or consists solely of whitespace
@@ -53,7 +54,7 @@ def create_user(username, password):
             b64password = base64.b64encode(hashed_password).decode("utf-8")
 
             # Create the user
-            user = User(username=tidied, salt=b64salt, password=b64password)
+            user = User(username=tidied, salt=b64salt, password=b64password, created_by=user.id, updated_by=user.id)
             session.add(user)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate user") from e

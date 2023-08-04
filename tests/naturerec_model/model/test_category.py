@@ -1,14 +1,15 @@
 import unittest
-from src.naturerec_model.model import create_database, Session, Category
-from src.naturerec_model.logic import create_category, get_category
-from src.naturerec_model.logic import create_species
+from naturerec_model.model import create_database, Session, Category, User
+from naturerec_model.logic import create_category, get_category
+from naturerec_model.logic import create_species
 
 
 class TestCategory(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        category = create_category("Birds")
-        _ = create_species(category.id, "Red Kite")
+        self._user = User(id=1)
+        category = create_category("Birds", self._user)
+        _ = create_species(category.id, "Red Kite", self._user)
 
     def test_can_create_category(self):
         with Session.begin() as session:
@@ -18,19 +19,19 @@ class TestCategory(unittest.TestCase):
     def test_cannot_create_duplicate_species(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError):
-            _ = create_species(category.id, "Red Kite")
+            _ = create_species(category.id, "Red Kite", self._user)
 
     def test_cannot_create_none_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category(None)
+            _ = create_category(None, self._user)
 
     def test_cannot_create_blank_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category("")
+            _ = create_category("", self._user)
 
     def test_cannot_create_whitespace_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category("       ")
+            _ = create_category("       ", self._user)
 
     def test_related_species_returned_with_category(self):
         category = get_category("Birds")

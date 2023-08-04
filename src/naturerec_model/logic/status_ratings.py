@@ -22,12 +22,13 @@ def _check_for_existing_records(session, status_scheme_id, name):
     return [rating.id for rating in ratings]
 
 
-def create_status_rating(status_scheme_id, name):
+def create_status_rating(status_scheme_id, name, user):
     """
     Create a new species conservation status scheme rating
 
     :param status_scheme_id: ID for the conservation status scheme
     :param name: Rating name
+    :param user: Current user
     :returns: An instance of the StatusRating class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the status rating is a duplicate
@@ -41,7 +42,7 @@ def create_status_rating(status_scheme_id, name):
             if len(_check_for_existing_records(session, status_scheme_id, tidied)):
                 raise ValueError("Duplicate conservation status rating found")
 
-            scheme = StatusRating(statusSchemeId=status_scheme_id, name=tidied)
+            scheme = StatusRating(statusSchemeId=status_scheme_id, name=tidied, created_by=user.id, updated_by=user.id)
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
@@ -49,12 +50,13 @@ def create_status_rating(status_scheme_id, name):
     return scheme
 
 
-def update_status_rating(status_rating_id, name):
+def update_status_rating(status_rating_id, name, user):
     """
     Update an existing species conservation status scheme rating
 
     :param status_rating_id: ID for the conservation status rating
     :param name: Rating name
+    :param user: Current user
     :returns: An instance of the StatusRating class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the status rating is a duplicate
@@ -80,6 +82,7 @@ def update_status_rating(status_rating_id, name):
                 raise ValueError("Duplicate conservation status scheme found")
 
             rating.name = tidied
+            rating.updated_by = user.id
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
 

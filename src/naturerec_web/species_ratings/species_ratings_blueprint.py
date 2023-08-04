@@ -4,7 +4,7 @@ The species ratings blueprint supplies view functions and templates for species 
 
 import datetime
 from flask import Blueprint, render_template, request, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 from naturerec_model.logic import get_species
 from naturerec_model.logic import list_status_schemes, get_status_scheme
 from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
@@ -79,7 +79,8 @@ def add(species_id):
             _ = create_species_status_rating(species_id=species_id,
                                              status_rating_id=get_posted_int("rating"),
                                              region=request.form["region"],
-                                             start=datetime.datetime.today().date())
+                                             start=datetime.datetime.today().date(),
+                                             user=current_user)
             return redirect(f"/species_ratings/list_ratings/{species_id}")
         except ValueError as e:
             return _render_rating_addition_page(species_id, e)

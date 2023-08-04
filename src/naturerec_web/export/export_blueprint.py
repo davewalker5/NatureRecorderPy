@@ -3,7 +3,7 @@ The export blueprint supplies view functions and templates for exporting sightin
 """
 
 from flask import Blueprint, render_template, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from naturerec_model.logic import list_locations
 from naturerec_model.logic import list_categories
 from naturerec_model.data_exchange import SightingsExportHelper, LifeListExportHelper
@@ -75,7 +75,7 @@ def export():
         species_id = get_posted_int("species")
 
         # Kick off the export
-        exporter = SightingsExportHelper(filename, from_date, to_date, location_id, species_id)
+        exporter = SightingsExportHelper(filename, current_user, from_date, to_date, location_id, species_id)
         exporter.start()
 
         # Go to the export filter page
@@ -99,7 +99,7 @@ def export_life_list():
         category_id = get_posted_int("category")
 
         # Kick off the export
-        exporter = LifeListExportHelper(filename, category_id)
+        exporter = LifeListExportHelper(filename, category_id, current_user)
         exporter.start()
 
         # Go to the life list export page

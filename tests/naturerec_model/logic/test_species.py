@@ -1,17 +1,18 @@
 import unittest
 import datetime
-from src.naturerec_model.model import create_database, Session, Species, Gender
-from src.naturerec_model.logic import create_location
-from src.naturerec_model.logic import create_category, get_category
-from src.naturerec_model.logic import create_species, get_species, list_species, update_species, delete_species
-from src.naturerec_model.logic import create_sighting
+from naturerec_model.model import create_database, Session, Species, Gender, User
+from naturerec_model.logic import create_location
+from naturerec_model.logic import create_category, get_category
+from naturerec_model.logic import create_species, get_species, list_species, update_species, delete_species
+from naturerec_model.logic import create_sighting
 
 
 class TestSpecies(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        category = create_category("Birds")
-        self._species = create_species(category.id, "Red Kite")
+        self._user = User(id=1)
+        category = create_category("Birds", self._user)
+        self._species = create_species(category.id, "Red Kite", self._user)
 
     def test_can_create_species(self):
         category = get_category("Birds")
@@ -23,50 +24,50 @@ class TestSpecies(unittest.TestCase):
     def test_cannot_create_duplicate_species(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             category_id = session.query(Species).one().categoryId
-            _ = create_species(category_id, "Red Kite")
+            _ = create_species(category_id, "Red Kite", self._user)
 
     def test_can_update_species(self):
-        category_id = create_category("Insects").id
+        category_id = create_category("Insects", self._user).id
         with Session.begin() as session:
             species_id = session.query(Species).one().id
-            _ = update_species(species_id, category_id, "Azure Damselfly")
+            _ = update_species(species_id, category_id, "Azure Damselfly", self._user)
         species = get_species(species_id)
         self.assertEqual("Insects", species.category.name)
         self.assertEqual("Azure Damselfly", species.name)
 
     def test_cannot_update_species_to_create_duplicate(self):
         category = get_category("Birds")
-        species = create_species(category.id, "Robin")
+        species = create_species(category.id, "Robin", self._user)
         with self.assertRaises(ValueError):
-            _ = update_species(species.id, category.id, "Red Kite")
+            _ = update_species(species.id, category.id, "Red Kite", self._user)
 
     def test_cannot_update_missing_species(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError):
-            _ = update_species(-1, category.id, "Robin")
+            _ = update_species(-1, category.id, "Robin", self._user)
 
     def test_cannot_update_species_with_missing_category(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             species_id = session.query(Species).one().id
-            _ = update_species(species_id, -1, "Robin")
+            _ = update_species(species_id, -1, "Robin", self._user)
 
     def test_cannot_update_species_with_none_name(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError), Session.begin() as session:
             species_id = session.query(Species).one().id
-            _ = update_species(species_id, category.id, None)
+            _ = update_species(species_id, category.id, None, self._user)
 
     def test_cannot_update_species_with_blank_name(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError), Session.begin() as session:
             species_id = session.query(Species).one().id
-            _ = update_species(species_id, category.id, "")
+            _ = update_species(species_id, category.id, "", self._user)
 
     def test_cannot_update_species_with_whitespace_name(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError), Session.begin() as session:
             species_id = session.query(Species).one().id
-            _ = update_species(species_id, category.id, "      ")
+            _ = update_species(species_id, category.id, "      ", self._user)
 
     def test_can_get_species_by_name(self):
         species = get_species("Red Kite")
@@ -109,8 +110,8 @@ class TestSpecies(unittest.TestCase):
             delete_species(-1)
 
     def test_cannot_delete_species_with_sightings(self):
-        location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
+        location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         _ = create_sighting(location.id, self._species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
-                            "Notes")
+                            "Notes", self._user)
         with self.assertRaises(ValueError):
             delete_species(self._species.id)

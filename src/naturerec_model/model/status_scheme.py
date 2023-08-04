@@ -13,6 +13,9 @@ class StatusScheme(Base):
     id = Column(Integer, primary_key=True)
     #: Scheme name
     name = Column(String, nullable=False, unique=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Ratings associated with this conservation status scheme
     ratings = relationship("StatusRating",

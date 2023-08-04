@@ -3,7 +3,7 @@ The categories blueprint supplies view functions and templates for species categ
 """
 
 from flask import Blueprint, render_template, request, redirect
-from flask_login import login_required
+from flask_login import login_required, current_user
 from naturerec_model.logic import list_categories, get_category, create_category, update_category, delete_category
 from naturerec_web.request_utils import get_posted_int
 
@@ -61,9 +61,9 @@ def edit(category_id):
     if request.method == "POST":
         try:
             if category_id:
-                _ = update_category(category_id, request.form["name"])
+                _ = update_category(category_id, request.form["name"], current_user)
             else:
-                _ = create_category(request.form["name"])
+                _ = create_category(request.form["name"], current_user)
             return redirect("/categories/list")
         except ValueError as e:
             return _render_category_editing_page(category_id, e)
