@@ -1,27 +1,28 @@
 import unittest
 import datetime
 import csv
-from src.naturerec_model.model import create_database, Gender
-from src.naturerec_model.logic import create_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import create_location
-from src.naturerec_model.logic import create_sighting
-from src.naturerec_model.logic import list_job_status
-from src.naturerec_model.data_exchange import LifeListExportHelper
+from naturerec_model.model import create_database, Gender, User
+from naturerec_model.logic import create_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import create_location
+from naturerec_model.logic import create_sighting
+from naturerec_model.logic import list_job_status
+from naturerec_model.data_exchange import LifeListExportHelper
 
 
 class TestSightingsExportHelper(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        self._category = create_category("Birds")
-        self._gull = create_species(self._category.id, "Black-Headed Gull")
-        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
+        self._user = User(id=1)
+        self._category = create_category("Birds", self._user)
+        self._gull = create_species(self._category.id, "Black-Headed Gull", self._user)
+        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
-                            None)
+                            None, self._user)
 
     def test_can_export_life_list(self):
         # Export the sightings
-        exporter = LifeListExportHelper(filename="life_list_export.csv", category_id=self._category.id)
+        exporter = LifeListExportHelper(filename="life_list_export.csv", category_id=self._category.id, user=self._user)
         exporter.start()
         exporter.join()
 

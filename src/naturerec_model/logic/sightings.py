@@ -27,7 +27,7 @@ def _check_for_existing_records(session, location_id, species_id, date):
     return [sighting.id for sighting in sightings]
 
 
-def create_sighting(location_id, species_id, date, number, gender, with_young, notes):
+def create_sighting(location_id, species_id, date, number, gender, with_young, notes, user):
     """
     Create a new sighting
 
@@ -38,6 +38,7 @@ def create_sighting(location_id, species_id, date, number, gender, with_young, n
     :param gender: Gender of the individuals seen
     :param with_young: Whether or not young were seen
     :param notes: Sighting notes
+    :param user: Current user
     :return: An instance of the Sighting class for the created record
     """
     try:
@@ -53,7 +54,9 @@ def create_sighting(location_id, species_id, date, number, gender, with_young, n
                                 number=number,
                                 gender=gender,
                                 withYoung=with_young,
-                                notes=notes)
+                                notes=notes,
+                                created_by=user.id,
+                                updated_by=user.id)
             session.add(sighting)
     except IntegrityError as e:
         raise ValueError("Invalid sighting properties") from e
@@ -61,7 +64,7 @@ def create_sighting(location_id, species_id, date, number, gender, with_young, n
     return sighting
 
 
-def update_sighting(sighting_id, location_id, species_id, date, number, gender, with_young, notes):
+def update_sighting(sighting_id, location_id, species_id, date, number, gender, with_young, notes, user):
     """
     Update an existing sighting
 
@@ -73,6 +76,7 @@ def update_sighting(sighting_id, location_id, species_id, date, number, gender, 
     :param gender: Gender of the individuals seen
     :param with_young: Whether or not young were seen
     :param notes: Sighting notes
+    :param user: Current user
     :return: An instance of the Sighting class for the updated record
     """
     try:
@@ -101,6 +105,7 @@ def update_sighting(sighting_id, location_id, species_id, date, number, gender, 
             sighting.gender = gender
             sighting.withYoung = with_young
             sighting.notes = notes
+            sighting.updated_by = user.id
             session.add(sighting)
     except IntegrityError as e:
         raise ValueError("Invalid sighting properties") from e

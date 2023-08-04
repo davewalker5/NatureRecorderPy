@@ -57,13 +57,14 @@ class SightingsDataExchangeHelperBase(DataExchangeHelperBase):
         'Notes'
     ]
 
-    def __init__(self, action):
+    def __init__(self, action, user):
         """
         Initialiser
 
         :param action: Callable to perform the data exchange operation
+        :param user: Current user
         """
-        super().__init__(action)
+        super().__init__(action, user)
 
     @classmethod
     def get_field_name(cls, index):

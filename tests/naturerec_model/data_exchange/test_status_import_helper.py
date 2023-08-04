@@ -1,12 +1,12 @@
 import unittest
 import os
-from src.naturerec_model.model import create_database, get_data_path
-from src.naturerec_model.logic import get_category, create_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import get_status_scheme, create_status_scheme, create_status_rating
-from src.naturerec_model.logic import list_species_status_ratings
-from src.naturerec_model.logic import list_job_status
-from src.naturerec_model.data_exchange import StatusImportHelper
+from naturerec_model.model import create_database, get_data_path, User
+from naturerec_model.logic import get_category, create_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import get_status_scheme, create_status_scheme, create_status_rating
+from naturerec_model.logic import list_species_status_ratings
+from naturerec_model.logic import list_job_status
+from naturerec_model.data_exchange import StatusImportHelper
 
 
 class TestStatusImportHelper(unittest.TestCase):
@@ -14,6 +14,7 @@ class TestStatusImportHelper(unittest.TestCase):
 
     def setUp(self) -> None:
         create_database()
+        self._user = User(id=1)
 
     @staticmethod
     def _create_test_file(filename, rows):
@@ -40,7 +41,7 @@ class TestStatusImportHelper(unittest.TestCase):
 
         # Import the statuses
         with open(filename, mode="rt", encoding="UTF-8") as f:
-            exporter = StatusImportHelper(f)
+            exporter = StatusImportHelper(f, self._user)
             exporter.start()
             exporter.join()
         os.unlink(filename)
@@ -83,7 +84,7 @@ class TestStatusImportHelper(unittest.TestCase):
         TestStatusImportHelper._create_test_file(filename, rows)
 
         with open(filename, mode="rt", encoding="UTF-8") as f:
-            exporter = StatusImportHelper(f)
+            exporter = StatusImportHelper(f, self._user)
             exporter.start()
             with self.assertRaises(ValueError):
                 exporter.join()
@@ -101,21 +102,21 @@ class TestStatusImportHelper(unittest.TestCase):
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_category(self):
-        _ = create_category("Birds")
+        _ = create_category("Birds", self._user)
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_species(self):
-        category = create_category("Birds")
-        _ = create_species(category.id, "Arctic Skua")
+        category = create_category("Birds", self._user)
+        _ = create_species(category.id, "Arctic Skua", self._user)
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_scheme(self):
-        _ = create_status_scheme("BOCC5")
+        _ = create_status_scheme("BOCC5", self._user)
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_rating(self):
-        scheme = create_status_scheme("BOCC5")
-        _ = create_status_rating(scheme.id, "Red")
+        scheme = create_status_scheme("BOCC5", self._user)
+        _ = create_status_rating(scheme.id, "Red", self._user)
         self._perform_valid_import()
 
     def test_cannot_import_file_with_blank_species(self):

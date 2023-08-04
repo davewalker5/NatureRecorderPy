@@ -20,11 +20,12 @@ def _check_for_existing_records(session, name):
     return [scheme.id for scheme in schemes]
 
 
-def create_status_scheme(name):
+def create_status_scheme(name, user):
     """
     Create a new species conservation status scheme
 
     :param name: Scheme name
+    :param user: Current user
     :returns: An instance of the StatusScheme class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the status scheme is a duplicate
@@ -38,7 +39,7 @@ def create_status_scheme(name):
             if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate conservation status scheme found")
 
-            scheme = StatusScheme(name=tidied)
+            scheme = StatusScheme(name=tidied, created_by=user.id, updated_by=user.id)
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
@@ -46,12 +47,13 @@ def create_status_scheme(name):
     return scheme
 
 
-def update_status_scheme(status_scheme_id, name):
+def update_status_scheme(status_scheme_id, name, user):
     """
     Update an existing conservation status scheme
 
     :param status_scheme_id: ID for the scheme to update
     :param name: Scheme name
+    :param user: Current user
     :returns: An instance of the StatusScheme class for the updated record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
     :raises ValueError: If the status scheme is a duplicate
@@ -77,6 +79,7 @@ def update_status_scheme(status_scheme_id, name):
                 raise ValueError("Conservation status scheme not found")
 
             scheme.name = tidied
+            scheme.updated_by = user.id
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
 

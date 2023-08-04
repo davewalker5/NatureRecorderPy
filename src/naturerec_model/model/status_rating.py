@@ -15,6 +15,9 @@ class StatusRating(Base):
     statusSchemeId = Column(Integer, ForeignKey("StatusSchemes.id"), nullable=False)
     #: Rating name
     name = Column(String, nullable=False)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Parent scheme instance
     scheme = relationship("StatusScheme", back_populates="ratings", lazy="joined")

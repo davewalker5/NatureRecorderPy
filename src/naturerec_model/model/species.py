@@ -15,6 +15,9 @@ class Species(Base):
     categoryId = Column(Integer, ForeignKey("Categories.id"), nullable=False)
     #: Species name
     name = Column(String, nullable=False, unique=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     #: Parent airline instance
     category = relationship("Category", back_populates="species", lazy="joined")

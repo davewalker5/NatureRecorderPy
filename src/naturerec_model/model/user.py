@@ -17,6 +17,9 @@ class User(UserMixin, Base):
     salt = Column(String, nullable=False)
     #: Hashed password
     password = Column(String, nullable=False)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     __table_args__ = (UniqueConstraint('username', name='USER_NAME_UX'),
                       CheckConstraint("LENGTH(TRIM(username)) > 0"),

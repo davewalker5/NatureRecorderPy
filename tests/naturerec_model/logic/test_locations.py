@@ -1,15 +1,16 @@
 import unittest
 import datetime
-from src.naturerec_model.model import create_database, Session, Location, Gender
-from src.naturerec_model.logic import create_location, get_location, list_locations, update_location, delete_location
-from src.naturerec_model.logic import create_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import create_sighting
+from naturerec_model.model import create_database, Session, Location, Gender, User
+from naturerec_model.logic import create_location, get_location, list_locations, update_location, delete_location
+from naturerec_model.logic import create_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import create_sighting
 
 
 class TestLocations(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
+        self._user = User(id=1)
         self._location = create_location(name="Lashford Lane Fen",
                                          address="Lashford Lane",
                                          city="Wooton",
@@ -17,13 +18,13 @@ class TestLocations(unittest.TestCase):
                                          postcode="OX13 6DY",
                                          country="United Kingdom",
                                          latitude=51.706694,
-                                         longitude=-1.324120)
+                                         longitude=-1.324120,
+                                         user=self._user)
 
-    @staticmethod
-    def create_additional_locations():
-        create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom")
-        create_location(name="Puttles Bridge", city="Brockenhurst", county="Hampshire", country="United Kingdom")
-        create_location(name="Playa Flamenca", city="Alicante", county="Orihuela Costa", country="España")
+    def create_additional_locations(self):
+        create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom", user=self._user)
+        create_location(name="Puttles Bridge", city="Brockenhurst", county="Hampshire", country="United Kingdom", user=self._user)
+        create_location(name="Playa Flamenca", city="Alicante", county="Orihuela Costa", country="España", user=self._user)
 
     def test_can_create_location(self):
         with Session.begin() as session:
@@ -41,8 +42,8 @@ class TestLocations(unittest.TestCase):
         with Session.begin() as session:
             location_id = session.query(Location).one().id
 
-        update_location(location_id, "Lashford Lane Fen", "A County", "United Kingdom", "An Address", "A City",
-                        "AB1 1AB", 51.123, -1.123)
+        update_location(location_id, "Lashford Lane Fen", "A County", "United Kingdom", self._user,  "An Address",
+                        "A City", "AB1 1AB", 51.123, -1.123)
         updated = get_location(location_id)
 
         self.assertEqual("Lashford Lane Fen", updated.name)
@@ -58,7 +59,7 @@ class TestLocations(unittest.TestCase):
         with Session.begin() as session:
             location_id = session.query(Location).one().id
 
-        update_location(location_id, "Some Location", "Oxfordshire", "United Kingdom")
+        update_location(location_id, "Some Location", "Oxfordshire", "United Kingdom", self._user)
         updated = get_location(location_id)
 
         self.assertEqual("Some Location", updated.name)
@@ -66,59 +67,59 @@ class TestLocations(unittest.TestCase):
         self.assertEqual("United Kingdom", updated.country)
 
     def test_cannot_update_location_to_create_duplicate(self):
-        TestLocations.create_additional_locations()
+        self.create_additional_locations()
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).filter(Location.name == "Lashford Lane Fen").one().id
-            _ = update_location(location_id, "Brock Hill", "A County", "UK")
+            _ = update_location(location_id, "Brock Hill", "A County", "UK", self._user)
 
     def test_cannot_update_missing_location(self):
         with self.assertRaises(ValueError):
-            _ = update_location(-1, "Some Location", "A County", "UK")
+            _ = update_location(-1, "Some Location", "A County", "UK", self._user)
 
     def test_cannot_update_location_with_none_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, None, "A County", "UK")
+            _ = update_location(location_id, None, "A County", "UK", self._user)
 
     def test_cannot_update_location_with_blank_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "", "A County", "UK")
+            _ = update_location(location_id, "", "A County", "UK", self._user)
 
     def test_cannot_update_location_with_whitespace_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "    ", "A County", "UK")
+            _ = update_location(location_id, "    ", "A County", "UK", self._user)
 
     def test_cannot_update_location_with_none_county(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", None, "UK")
+            _ = update_location(location_id, "Some Location", None, "UK", self._user)
 
     def test_cannot_update_location_with_blank_county(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", "", "UK")
+            _ = update_location(location_id, "Some Location", "", "UK", self._user)
 
     def test_cannot_update_location_with_whitespace_county(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", "      ", "UK")
+            _ = update_location(location_id, "Some Location", "      ", "UK", self._user)
 
     def test_cannot_update_location_with_none_country(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", "A County", None)
+            _ = update_location(location_id, "Some Location", "A County", None, self._user)
 
     def test_cannot_update_location_with_blank_country(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", "A County", "")
+            _ = update_location(location_id, "Some Location", "A County", "", self._user)
 
     def test_cannot_update_location_with_whitespace_country(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             location_id = session.query(Location).one().id
-            _ = update_location(location_id, "Some Location", "A County", "        ")
+            _ = update_location(location_id, "Some Location", "A County", "        ", self._user)
 
     def test_can_get_location_by_name(self):
         location = get_location("Lashford Lane Fen")
@@ -157,7 +158,7 @@ class TestLocations(unittest.TestCase):
             _ = get_location([])
 
     def test_can_list_all_locations(self):
-        TestLocations.create_additional_locations()
+        self.create_additional_locations()
         locations = list_locations()
         names = [location.name for location in locations]
         self.assertEqual(4, len(locations))
@@ -167,7 +168,7 @@ class TestLocations(unittest.TestCase):
         self.assertTrue("Playa Flamenca" in names)
 
     def test_can_list_locations_by_city(self):
-        TestLocations.create_additional_locations()
+        self.create_additional_locations()
         locations = list_locations(city="Alicante")
         self.assertEqual(1, len(locations))
         self.assertEqual("Playa Flamenca", locations[0].name)
@@ -177,7 +178,7 @@ class TestLocations(unittest.TestCase):
         self.assertEqual(0, len(locations))
 
     def test_can_list_locations_by_county(self):
-        TestLocations.create_additional_locations()
+        self.create_additional_locations()
         locations = list_locations(county="Hampshire")
         names = [location.name for location in locations]
         self.assertEqual(2, len(locations))
@@ -189,7 +190,7 @@ class TestLocations(unittest.TestCase):
         self.assertEqual(0, len(locations))
 
     def test_can_list_locations_by_country(self):
-        TestLocations.create_additional_locations()
+        self.create_additional_locations()
         locations = list_locations(country="United Kingdom")
         names = [location.name for location in locations]
         self.assertEqual(3, len(locations))
@@ -213,9 +214,9 @@ class TestLocations(unittest.TestCase):
             delete_location(-1)
 
     def test_cannot_delete_location_with_sightings(self):
-        category = create_category("Birds")
-        species = create_species(category.id, "Wren")
+        category = create_category("Birds", self._user)
+        species = create_species(category.id, "Wren", self._user)
         _ = create_sighting(self._location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
-                            "Notes")
+                            "Notes", self._user)
         with self.assertRaises(ValueError):
             delete_location(-1)

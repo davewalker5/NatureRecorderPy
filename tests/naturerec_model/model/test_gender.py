@@ -1,5 +1,5 @@
 import unittest
-from src.naturerec_model.model import Gender
+from naturerec_model.model import Gender
 
 
 class TestGender(unittest.TestCase):

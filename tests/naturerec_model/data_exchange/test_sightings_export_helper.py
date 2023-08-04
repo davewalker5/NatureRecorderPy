@@ -1,28 +1,29 @@
 import unittest
 import datetime
 import csv
-from src.naturerec_model.model import create_database, Gender
-from src.naturerec_model.logic import create_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import create_location
-from src.naturerec_model.logic import create_sighting
-from src.naturerec_model.logic import list_job_status
-from src.naturerec_model.data_exchange import SightingsExportHelper
+from naturerec_model.model import create_database, Gender, User
+from naturerec_model.logic import create_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import create_location
+from naturerec_model.logic import create_sighting
+from naturerec_model.logic import list_job_status
+from naturerec_model.data_exchange import SightingsExportHelper
 
 
 class TestSightingsExportHelper(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        self._category = create_category("Birds")
-        self._gull = create_species(self._category.id, "Black-Headed Gull")
-        self._cormorant = create_species(self._category.id, "Cormorant")
-        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
+        self._user = User(id=1)
+        self._category = create_category("Birds", self._user)
+        self._gull = create_species(self._category.id, "Black-Headed Gull", self._user)
+        self._cormorant = create_species(self._category.id, "Cormorant", self._user)
+        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
-                            None)
+                            None, self._user)
 
     def test_can_export_sightings(self):
         # Export the sightings
-        exporter = SightingsExportHelper(filename="export.csv")
+        exporter = SightingsExportHelper(filename="export.csv", user=self._user)
         exporter.start()
         exporter.join()
 

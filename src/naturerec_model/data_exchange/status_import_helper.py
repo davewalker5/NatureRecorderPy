@@ -35,13 +35,14 @@ from ..logic import create_species_status_rating
 class StatusImportHelper(DataExchangeHelperBase):
     JOB_NAME = "Conservation status import"
 
-    def __init__(self, f):
+    def __init__(self, f, user):
         """
         Initialiser
 
         :param f: IO stream (result of open() or a FileStorage object)
+        :param user: Current user
         """
-        super().__init__(self.import_ratings)
+        super().__init__(self.import_ratings, user)
         self._file = f
         self._rows = []
         self.create_job_status()
@@ -60,7 +61,7 @@ class StatusImportHelper(DataExchangeHelperBase):
             start = datetime.datetime.strptime(row[5], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
             end = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date() \
                 if row[6].strip() else None
-            _ = create_species_status_rating(species_id, rating_id, row[4].strip(), start, end)
+            _ = create_species_status_rating(species_id, rating_id, row[4].strip(), start, self._user, end)
 
     def _read_csv_rows(self):
         """
@@ -108,8 +109,7 @@ class StatusImportHelper(DataExchangeHelperBase):
 
             self._rows.append(row)
 
-    @staticmethod
-    def _create_rating(scheme_name, rating_name):
+    def _create_rating(self, scheme_name, rating_name):
         """
         Ensure the rating with the specified name exists in the specified scheme
 
@@ -123,8 +123,8 @@ class StatusImportHelper(DataExchangeHelperBase):
         try:
             scheme = get_status_scheme(tidied_scheme_name)
         except ValueError:
-            scheme = create_status_scheme(tidied_scheme_name)
-            return create_status_rating(scheme.id, tidied_rating_name).id
+            scheme = create_status_scheme(tidied_scheme_name, self._user)
+            return create_status_rating(scheme.id, tidied_rating_name, self._user).id
 
         # See if the rating exists against the existing scheme. If so, just return its ID
         rating_ids = [rating.id for rating in scheme.ratings if rating.name == tidied_rating_name]
@@ -132,4 +132,4 @@ class StatusImportHelper(DataExchangeHelperBase):
             return rating_ids[0]
 
         # Doesn't exist so create it and return its ID
-        return create_status_rating(scheme.id, tidied_rating_name).id
+        return create_status_rating(scheme.id, tidied_rating_name, self._user).id

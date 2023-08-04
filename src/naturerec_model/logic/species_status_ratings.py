@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from ..model import Session, StatusRating, SpeciesStatusRating
 
 
-def create_species_status_rating(species_id, status_rating_id, region, start, end=None):
+def create_species_status_rating(species_id, status_rating_id, region, start, user, end=None):
     """
     Create a species conservation status rating
 
@@ -16,6 +16,7 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
     :param status_rating_id: ID for the status rating value
     :param region: Region the rating applies to
     :param start: Start date for the rating
+    :param user: Current user
     :param end: End date for the rating or None
     :return: The SpeciesStatusRating instance for the record created
     """
@@ -51,7 +52,9 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
                                                  statusRatingId=status_rating_id,
                                                  region=region,
                                                  start_date=start,
-                                                 end_date=end)
+                                                 end_date=end,
+                                                 created_by=user.id,
+                                                 updated_by=user.id)
             session.add(species_rating)
     except IntegrityError as e:
         raise ValueError("Invalid species conservation status rating properties") from e
@@ -59,11 +62,12 @@ def create_species_status_rating(species_id, status_rating_id, region, start, en
     return species_rating
 
 
-def close_species_status_rating(species_status_rating_id):
+def close_species_status_rating(species_status_rating_id, user):
     """
     Set the end date for a species conservation rating to today
 
     :param species_status_rating_id: ID for the rating to close
+    :param user: Current user
     """
     with Session.begin() as session:
         rating = session.query(SpeciesStatusRating).get(species_status_rating_id)
@@ -71,6 +75,7 @@ def close_species_status_rating(species_status_rating_id):
             raise ValueError("Species conservation status rating not found")
 
         rating.end_date = datetime.datetime.today().date()
+        rating.updated_by = user.id
 
 
 def get_species_status_rating(species_status_rating_id):

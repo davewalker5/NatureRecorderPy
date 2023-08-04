@@ -1,11 +1,12 @@
 import unittest
-from src.naturerec_model.model import create_database, Session, Location
-from src.naturerec_model.logic import create_location
+from naturerec_model.model import create_database, Session, Location, User
+from naturerec_model.logic import create_location
 
 
 class TestLocation(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
+        self._user = User(id=1)
         create_location(name="Lashford Lane Fen",
                         address="Lashford Lane",
                         city="Wooton",
@@ -13,7 +14,8 @@ class TestLocation(unittest.TestCase):
                         postcode="OX13 6DY",
                         country="United Kingdom",
                         latitude=51.706694,
-                        longitude=-1.324120)
+                        longitude=-1.324120,
+                        user=self._user)
 
     def test_can_create_location(self):
         with Session.begin() as session:
@@ -28,7 +30,7 @@ class TestLocation(unittest.TestCase):
         self.assertEqual(-1.324120, location.longitude)
 
     def test_can_create_location_with_minimal_properties(self):
-        location_id = create_location(name="Brock Hill", county="Hampshire", country="United Kingdom").id
+        location_id = create_location(name="Brock Hill", county="Hampshire", country="United Kingdom", user=self._user).id
 
         with Session.begin() as session:
             location = session.query(Location).get(location_id)
@@ -39,40 +41,40 @@ class TestLocation(unittest.TestCase):
 
     def test_cannot_create_location_with_duplicate_name(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Lashford Lane Fen", county="Oxfordshire", country="United Kingdom")
+            _ = create_location(name="Lashford Lane Fen", county="Oxfordshire", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_none_name(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name=None, county="Oxfordshire", country="United Kingdom")
+            _ = create_location(name=None, county="Oxfordshire", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_blank_name(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="", county="Oxfordshire", country="United Kingdom")
+            _ = create_location(name="", county="Oxfordshire", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_whitespace_name(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="       ", county="Oxfordshire", country="United Kingdom")
+            _ = create_location(name="       ", county="Oxfordshire", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_none_county(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county=None, country="United Kingdom")
+            _ = create_location(name="Brock Hill", county=None, country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_blank_county(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county="", country="United Kingdom")
+            _ = create_location(name="Brock Hill", county="", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_whitespace_county(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county="      ", country="United Kingdom")
+            _ = create_location(name="Brock Hill", county="      ", country="United Kingdom", user=self._user)
 
     def test_cannot_create_location_with_none_country(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county="Hampshire", country=None)
+            _ = create_location(name="Brock Hill", county="Hampshire", country=None, user=self._user)
 
     def test_cannot_create_location_with_blank_country(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county="Hampshire", country="")
+            _ = create_location(name="Brock Hill", county="Hampshire", country="", user=self._user)
 
     def test_cannot_create_location_with_whitespace_country(self):
         with self.assertRaises(ValueError):
-            _ = create_location(name="Brock Hill", county="Hampshire", country="      ")
+            _ = create_location(name="Brock Hill", county="Hampshire", country="      ", user=self._user)

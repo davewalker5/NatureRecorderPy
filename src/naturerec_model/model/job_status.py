@@ -27,6 +27,9 @@ class JobStatus(Base):
     end = Column(String, nullable=True)
     #: Exit error, if any
     error = Column(String, nullable=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     __table_args__ = (CheckConstraint("LENGTH(TRIM(name)) > 0"),
                       CheckConstraint("LENGTH(TRIM(start)) > 0"))

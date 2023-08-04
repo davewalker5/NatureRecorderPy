@@ -1,18 +1,19 @@
 import unittest
 import datetime
-from src.naturerec_model.model import create_database, Gender
-from src.naturerec_model.logic import create_category, create_species, create_location, create_sighting
-from src.naturerec_model.logic import location_species_report, get_report_barchart, species_by_date_report
+from naturerec_model.model import create_database, Gender, User
+from naturerec_model.logic import create_category, create_species, create_location, create_sighting
+from naturerec_model.logic import location_species_report, get_report_barchart, species_by_date_report
 
 
 class TestLocations(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        self._category = create_category("Birds")
-        self._species = create_species(self._category.id, "Black-Headed Gull")
-        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom")
+        self._user = User(id=1)
+        self._category = create_category("Birds", self._user)
+        self._species = create_species(self._category.id, "Black-Headed Gull", self._user)
+        self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         create_sighting(self._location.id, self._species.id, datetime.date(2021, 12, 14), 30, Gender.UNKNOWN, False,
-                        None)
+                        None, self._user)
 
     def test_can_get_location_species_report(self):
         report_df = location_species_report(datetime.date(2021, 12, 1), datetime.datetime.today(), self._location.id,

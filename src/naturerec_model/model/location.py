@@ -26,6 +26,9 @@ class Location(Base):
     latitude = Column(Float, nullable=True)
     #: Longitude
     longitude = Column(Float, nullable=True)
+    #: Audit columns
+    created_by = Column(Integer, nullable=False)
+    updated_by = Column(Integer, nullable=False)
 
     __table_args__ = (UniqueConstraint('name', name='LOCATION_NAME_UX'),
                       CheckConstraint("LENGTH(TRIM(name)) > 0"),

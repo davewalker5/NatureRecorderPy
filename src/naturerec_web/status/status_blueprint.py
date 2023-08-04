@@ -3,7 +3,7 @@ The status blueprint supplies view functions and templates for conservation stat
 """
 
 from flask import Blueprint, render_template, request, redirect, session
-from flask_login import login_required
+from flask_login import login_required, current_user
 from naturerec_model.logic import list_status_schemes, get_status_scheme, create_status_scheme, update_status_scheme, \
     delete_status_scheme
 from naturerec_model.logic import create_status_rating, update_status_rating, delete_status_rating
@@ -101,9 +101,9 @@ def edit_scheme(status_scheme_id):
                 delete_status_rating(delete_record_id)
                 return _render_status_scheme_editing_page(status_scheme_id, None)
             elif status_scheme_id:
-                _ = update_status_scheme(status_scheme_id, request.form["name"])
+                _ = update_status_scheme(status_scheme_id, request.form["name"], current_user)
             else:
-                _ = create_status_scheme(request.form["name"])
+                _ = create_status_scheme(request.form["name"], current_user)
             return redirect("/status/list")
         except ValueError as e:
             return _render_status_scheme_editing_page(status_scheme_id, e)
@@ -126,9 +126,9 @@ def edit_rating(status_scheme_id, status_rating_id):
     if request.method == "POST":
         try:
             if status_rating_id:
-                _ = update_status_rating(status_rating_id, request.form["name"])
+                _ = update_status_rating(status_rating_id, request.form["name"], current_user)
             else:
-                _ = create_status_rating(status_scheme_id, request.form["name"])
+                _ = create_status_rating(status_scheme_id, request.form["name"], current_user)
             return redirect(f"/status/edit/{status_scheme_id}")
         except ValueError as e:
             return _render_status_rating_editing_page(status_scheme_id, status_rating_id, e)
@@ -146,7 +146,7 @@ def import_ratings():
     """
     if request.method == "POST":
         try:
-            importer = StatusImportHelper(request.files["csv_file_name"])
+            importer = StatusImportHelper(request.files["csv_file_name"], current_user)
             importer.start()
             session["message"] = "Conservation status schemes and ratings are being imported in the background"
             return redirect("/status/list")

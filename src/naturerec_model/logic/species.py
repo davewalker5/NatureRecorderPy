@@ -24,12 +24,13 @@ def _check_for_existing_records(session, category_id, name):
     return [s.id for s in species]
 
 
-def create_species(category_id, name):
+def create_species(category_id, name, user):
     """
     Create a new species for a specified category
 
     :param category_id: Category ID
     :param name: Species name
+    :param user: Current user
     :returns: An instance of the Species class for the created record
     :raises ValueError: If the species is a duplicate or has an invalid name
     """
@@ -42,7 +43,7 @@ def create_species(category_id, name):
             if len(_check_for_existing_records(session, category_id, tidied)):
                 raise ValueError("Duplicate category found")
 
-            species = Species(categoryId=category_id, name=tidied)
+            species = Species(categoryId=category_id, name=tidied, created_by=user.id, updated_by=user.id)
             session.add(species)
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
@@ -51,13 +52,14 @@ def create_species(category_id, name):
     return species
 
 
-def update_species(species_id, category_id, name):
+def update_species(species_id, category_id, name, user):
     """
     Update an existing species
 
     :param species_id: ID of the species record to updated
     :param category_id: Category ID
     :param name: Species name
+    :param user: Current user
     :returns: An instance of the Species class for the updated record
     :raises ValueError: If the species is a duplicate or has an invalid name
     """
@@ -82,6 +84,7 @@ def update_species(species_id, category_id, name):
 
             species.categoryId = category_id
             species.name = tidied
+            species.updated_by = user.id
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
             from e

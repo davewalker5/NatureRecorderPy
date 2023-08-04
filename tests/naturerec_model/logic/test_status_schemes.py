@@ -1,18 +1,19 @@
 import unittest
 import datetime
-from src.naturerec_model.model import create_database, Session, StatusScheme
-from src.naturerec_model.logic import create_category
-from src.naturerec_model.logic import create_species
-from src.naturerec_model.logic import create_species_status_rating
-from src.naturerec_model.logic import create_status_rating
-from src.naturerec_model.logic import create_status_scheme, get_status_scheme, list_status_schemes, \
+from naturerec_model.model import create_database, Session, StatusScheme, User
+from naturerec_model.logic import create_category
+from naturerec_model.logic import create_species
+from naturerec_model.logic import create_species_status_rating
+from naturerec_model.logic import create_status_rating
+from naturerec_model.logic import create_status_scheme, get_status_scheme, list_status_schemes, \
     update_status_scheme, delete_status_scheme
 
 
 class TestStatusSchemes(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
-        self._scheme = create_status_scheme("BOCC4")
+        self._user = User(id=1)
+        self._scheme = create_status_scheme("BOCC4", self._user)
 
     def test_can_create_scheme(self):
         with Session.begin() as session:
@@ -22,33 +23,33 @@ class TestStatusSchemes(unittest.TestCase):
     def test_can_update_scheme(self):
         with Session.begin() as session:
             scheme_id = session.query(StatusScheme).one().id
-        _ = update_status_scheme(scheme_id, "Some Scheme")
+        _ = update_status_scheme(scheme_id, "Some Scheme", self._user)
         scheme = get_status_scheme(scheme_id)
         self.assertEqual("Some Scheme", scheme.name)
 
     def test_cannot_update_scheme_to_create_duplicate(self):
-        scheme = create_status_scheme("Some Scheme")
+        scheme = create_status_scheme("Some Scheme", self._user)
         with self.assertRaises(ValueError):
-            _ = update_status_scheme(scheme.id, "BOCC4")
+            _ = update_status_scheme(scheme.id, "BOCC4", self._user)
 
     def test_cannot_update_missing_scheme(self):
         with self.assertRaises(ValueError):
-            _ = update_status_scheme(-1, "Some Scheme")
+            _ = update_status_scheme(-1, "Some Scheme", self._user)
 
     def test_cannot_update_scheme_with_none_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             scheme_id = session.query(StatusScheme).one().id
-            _ = update_status_scheme(scheme_id, None)
+            _ = update_status_scheme(scheme_id, None, self._user)
 
     def test_cannot_update_scheme_with_blank_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             scheme_id = session.query(StatusScheme).one().id
-            _ = update_status_scheme(scheme_id, "")
+            _ = update_status_scheme(scheme_id, "", self._user)
 
     def test_cannot_update_scheme_with_whitespace_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             scheme_id = session.query(StatusScheme).one().id
-            _ = update_status_scheme(scheme_id, "      ")
+            _ = update_status_scheme(scheme_id, "      ", self._user)
 
     def test_can_get_scheme_by_name(self):
         scheme = get_status_scheme("BOCC4")
@@ -89,7 +90,7 @@ class TestStatusSchemes(unittest.TestCase):
             delete_status_scheme(-1)
 
     def test_can_delete_scheme_with_unused_ratings(self):
-        _ = create_status_rating(self._scheme.id, "Amber")
+        _ = create_status_rating(self._scheme.id, "Amber", self._user)
         schemes = list_status_schemes()
         self.assertEqual(1, len(schemes))
         delete_status_scheme(self._scheme.id)
@@ -97,9 +98,9 @@ class TestStatusSchemes(unittest.TestCase):
         self.assertEqual(0, len(schemes))
 
     def test_cannot_delete_scheme_with_species_ratings(self):
-        category = create_category("Birds")
-        species = create_species(category.id, "Reed Bunting")
-        rating = create_status_rating(self._scheme.id, "Amber")
-        _ = create_species_status_rating(species.id, rating.id, "United Kingdom", datetime.date(2015, 1, 1))
+        category = create_category("Birds", self._user)
+        species = create_species(category.id, "Reed Bunting", self._user)
+        rating = create_status_rating(self._scheme.id, "Amber", self._user)
+        _ = create_species_status_rating(species.id, rating.id, "United Kingdom", datetime.date(2015, 1, 1), self._user)
         with self.assertRaises(ValueError):
             delete_status_scheme(self._scheme.id)
