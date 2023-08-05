@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -34,6 +34,8 @@ class SpeciesStatusRating(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     #: Related species
     species = relationship("Species", lazy="joined")

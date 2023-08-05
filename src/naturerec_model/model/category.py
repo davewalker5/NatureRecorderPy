@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint
+from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -16,6 +16,8 @@ class Category(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     #: Species associated with this category
     species = relationship("Species",

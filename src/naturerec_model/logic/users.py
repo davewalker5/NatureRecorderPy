@@ -5,6 +5,7 @@ User business logic
 import hashlib
 import os
 import base64
+from datetime import datetime as dt
 from functools import singledispatch
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, User
@@ -54,7 +55,13 @@ def create_user(username, password, user):
             b64password = base64.b64encode(hashed_password).decode("utf-8")
 
             # Create the user
-            user = User(username=tidied, salt=b64salt, password=b64password, created_by=user.id, updated_by=user.id)
+            user = User(username=tidied,
+                        salt=b64salt,
+                        password=b64password,
+                        created_by=user.id,
+                        updated_by=user.id,
+                        date_created=dt.utcnow(),
+                        date_updated=dt.utcnow())
             session.add(user)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate user") from e

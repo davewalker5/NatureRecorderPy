@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, CheckConstraint
+from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -18,6 +18,8 @@ class Species(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     #: Parent airline instance
     category = relationship("Category", back_populates="species", lazy="joined")

@@ -2,6 +2,7 @@
 Conservation status scheme rating business logic
 """
 
+from datetime import datetime as dt
 from sqlalchemy.exc import IntegrityError
 from ..model import Session, StatusRating, SpeciesStatusRating
 
@@ -42,7 +43,12 @@ def create_status_rating(status_scheme_id, name, user):
             if len(_check_for_existing_records(session, status_scheme_id, tidied)):
                 raise ValueError("Duplicate conservation status rating found")
 
-            scheme = StatusRating(statusSchemeId=status_scheme_id, name=tidied, created_by=user.id, updated_by=user.id)
+            scheme = StatusRating(statusSchemeId=status_scheme_id,
+                                  name=tidied,
+                                  created_by=user.id,
+                                  updated_by=user.id,
+                                  date_created=dt.utcnow(),
+                                  date_updated=dt.utcnow())
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
@@ -83,6 +89,7 @@ def update_status_rating(status_rating_id, name, user):
 
             rating.name = tidied
             rating.updated_by = user.id
+            rating.date_updated = dt.utcnow()
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme rating") from e
 

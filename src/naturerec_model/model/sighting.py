@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, CheckConstraint
+from sqlalchemy import Column, Integer, String, UniqueConstraint, ForeignKey, CheckConstraint, DateTime
 from sqlalchemy.orm import relationship
 from .base import Base
 from .gender import Gender
@@ -37,6 +37,8 @@ class Sighting(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     #: Related location instance
     location = relationship("Location", lazy="joined")
