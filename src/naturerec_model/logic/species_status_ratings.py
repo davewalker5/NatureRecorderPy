@@ -54,7 +54,9 @@ def create_species_status_rating(species_id, status_rating_id, region, start, us
                                                  start_date=start,
                                                  end_date=end,
                                                  created_by=user.id,
-                                                 updated_by=user.id)
+                                                 updated_by=user.id,
+                                                 date_created=datetime.datetime.utcnow(),
+                                                 date_updated=datetime.datetime.utcnow())
             session.add(species_rating)
     except IntegrityError as e:
         raise ValueError("Invalid species conservation status rating properties") from e
@@ -76,6 +78,7 @@ def close_species_status_rating(species_status_rating_id, user):
 
         rating.end_date = datetime.datetime.today().date()
         rating.updated_by = user.id
+        rating.date_updated = datetime.datetime.utcnow()
 
 
 def get_species_status_rating(species_status_rating_id):

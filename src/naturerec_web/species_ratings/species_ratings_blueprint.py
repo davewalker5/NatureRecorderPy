@@ -46,7 +46,7 @@ def list_status_ratings(species_id):
             if delete_record_id:
                 delete_species_status_rating(delete_record_id)
             else:
-                close_species_status_rating(get_posted_int("species_status_rating_id"))
+                close_species_status_rating(get_posted_int("species_status_rating_id"), current_user)
         except ValueError as e:
             error = e
 

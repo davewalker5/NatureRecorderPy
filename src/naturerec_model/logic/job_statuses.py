@@ -3,6 +3,7 @@ Background job status business logic
 """
 
 import sqlalchemy as db
+from datetime import datetime as dt
 from sqlalchemy.exc import IntegrityError
 from ..model import Session, JobStatus
 
@@ -23,7 +24,9 @@ def create_job_status(name, parameters, start, user):
                                    parameters=parameters,
                                    start_date=start,
                                    created_by=user.id,
-                                   updated_by=user.id)
+                                   updated_by=user.id,
+                                   date_created=dt.utcnow(),
+                                   date_updated=dt.utcnow())
             session.add(job_status)
     except IntegrityError as e:
         raise ValueError("Invalid job status properties") from e
@@ -50,6 +53,7 @@ def complete_job_status(job_status_id, end, error, user):
             job_status.end_date = end
             job_status.error = error
             job_status.updated_by = user.id
+            job_status.date_updated = dt.utcnow()
     except IntegrityError as e:
         raise ValueError("Invalid job status properties") from e
 

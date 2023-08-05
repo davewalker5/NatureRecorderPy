@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, UniqueConstraint, CheckConstraint
+from sqlalchemy import Column, Integer, Float, String, UniqueConstraint, CheckConstraint, DateTime
 from .base import Base
 
 
@@ -29,6 +29,8 @@ class Location(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     __table_args__ = (UniqueConstraint('name', name='LOCATION_NAME_UX'),
                       CheckConstraint("LENGTH(TRIM(name)) > 0"),

@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, CheckConstraint
+from sqlalchemy import Column, Integer, String, CheckConstraint, DateTime
 from .base import Base
 
 
@@ -30,6 +30,8 @@ class JobStatus(Base):
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
+    date_created = Column(DateTime, nullable=False)
+    date_updated = Column(DateTime, nullable=False)
 
     __table_args__ = (CheckConstraint("LENGTH(TRIM(name)) > 0"),
                       CheckConstraint("LENGTH(TRIM(start)) > 0"))
