@@ -3,12 +3,13 @@ The species ratings blueprint supplies view functions and templates for species 
 """
 
 import datetime
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import get_species
 from naturerec_model.logic import list_status_schemes, get_status_scheme
 from naturerec_model.logic import list_species_status_ratings, close_species_status_rating, \
     create_species_status_rating, delete_species_status_rating
+from naturerec_web.auth import requires_roles, has_roles
 from naturerec_web.request_utils import get_posted_int
 
 species_ratings_bp = Blueprint("species_ratings", __name__, template_folder='templates')
@@ -30,6 +31,7 @@ def _render_rating_addition_page(species_id, error):
 
 @species_ratings_bp.route("/list_ratings/<int:species_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_status_ratings(species_id):
     """
     Show the page that lists species status ratings and handles "closing" of a rating by setting its end date to
@@ -42,11 +44,14 @@ def list_status_ratings(species_id):
     if request.method == "POST":
         error = None
         try:
-            delete_record_id = get_posted_int("delete_record_id")
-            if delete_record_id:
-                delete_species_status_rating(delete_record_id)
+            if has_roles("[Administrator]"):
+                delete_record_id = get_posted_int("delete_record_id")
+                if delete_record_id:
+                    delete_species_status_rating(delete_record_id)
+                else:
+                    close_species_status_rating(get_posted_int("species_status_rating_id"), current_user)
             else:
-                close_species_status_rating(get_posted_int("species_status_rating_id"), current_user)
+                abort(401)
         except ValueError as e:
             error = e
 
@@ -59,6 +64,7 @@ def list_status_ratings(species_id):
 
 @species_ratings_bp.route("/list_scheme_ratings/<int:scheme_id>")
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_scheme_ratings(scheme_id):
     """
     Return the markup for the conservation status rating selector for the specified scheme
@@ -73,6 +79,7 @@ def list_scheme_ratings(scheme_id):
 
 @species_ratings_bp.route("/add/<int:species_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def add(species_id):
     if request.method == "POST":
         try:

@@ -2,10 +2,11 @@
 The species blueprint supplies view functions and templates for species management
 """
 
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species, get_species, create_species, update_species, delete_species
+from naturerec_web.auth import requires_roles, has_roles
 from naturerec_web.request_utils import get_posted_int
 
 species_bp = Blueprint("species", __name__, template_folder='templates')
@@ -46,6 +47,7 @@ def _render_species_list_page(category_id=None, error=None):
 
 @species_bp.route("/list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_filtered_species():
     """
     Show the page that lists species with category selection option
@@ -57,7 +59,10 @@ def list_filtered_species():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                delete_species(delete_record_id)
+                if has_roles(["Administrator"]):
+                    delete_species(delete_record_id)
+                else:
+                    abort(401)
         except ValueError as e:
             error = e
 
@@ -69,6 +74,7 @@ def list_filtered_species():
 @species_bp.route("/add", defaults={"species_id": None}, methods=["GET", "POST"])
 @species_bp.route("/edit/<int:species_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def edit(species_id):
     """
     Serve the page to add new species or edit an existing one and handle the appropriate action

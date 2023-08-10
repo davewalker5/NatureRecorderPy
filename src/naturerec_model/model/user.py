@@ -1,6 +1,8 @@
 from flask_login import UserMixin
 from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint, DateTime
+from sqlalchemy.orm import relationship
 from .base import Base
+from .user_role import UserRole
 
 
 class User(UserMixin, Base):
@@ -22,6 +24,9 @@ class User(UserMixin, Base):
     updated_by = Column(Integer, nullable=False)
     date_created = Column(DateTime, nullable=False)
     date_updated = Column(DateTime, nullable=False)
+
+    # Roles for the current user
+    roles = relationship("Role", secondary=UserRole, lazy=False)
 
     __table_args__ = (UniqueConstraint('username', name='USER_NAME_UX'),
                       CheckConstraint("LENGTH(TRIM(username)) > 0"),

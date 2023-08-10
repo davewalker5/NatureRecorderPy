@@ -18,7 +18,20 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+from naturerec_model.model.base import Base
+from naturerec_model.model.category import Category
+from naturerec_model.model.species import Species
+from naturerec_model.model.location import Location
+from naturerec_model.model.sighting import Sighting
+from naturerec_model.model.status_scheme import StatusScheme
+from naturerec_model.model.status_rating import StatusRating
+from naturerec_model.model.species_status_rating import SpeciesStatusRating
+from naturerec_model.model.job_status import JobStatus
+from naturerec_model.model.user import User
+from naturerec_model.model.role import Role
+from naturerec_model.model.user_role import UserRole
+target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

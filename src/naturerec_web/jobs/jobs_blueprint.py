@@ -6,6 +6,7 @@ import datetime
 from flask import Blueprint, render_template
 from flask_login import login_required
 from naturerec_model.logic import list_job_status
+from naturerec_web.auth import requires_roles
 
 
 jobs_bp = Blueprint("jobs", __name__, template_folder='templates')
@@ -13,6 +14,7 @@ jobs_bp = Blueprint("jobs", __name__, template_folder='templates')
 
 @jobs_bp.route("/list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter"])
 def list_recent():
     """
     Show the page that lists recent background jobs
