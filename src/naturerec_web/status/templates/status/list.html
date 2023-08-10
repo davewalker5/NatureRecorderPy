@@ -15,11 +15,13 @@
             <span>There are no conservation status schemes in the database</span>
         {% endif %}
     </form>
-    <div class="button-bar">
-        <button type="button" class="btn btn-primary">
-            <a href="{{ url_for('status.edit_scheme') }}">Add Conservation Status Scheme</a>
-        </button>
-    </div>
+    {% if edit_enabled %}
+        <div class="button-bar">
+            <button type="button" class="btn btn-primary">
+                <a href="{{ url_for('status.edit_scheme') }}">Add Conservation Status Scheme</a>
+            </button>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}

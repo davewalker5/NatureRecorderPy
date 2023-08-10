@@ -10,9 +10,11 @@
         <div class="filter-criteria">
             {% include "category_selector.html" with context %}
             <div class="button-bar">
-                <button type="button" class="btn btn-light">
-                    <a href="{{ url_for('species.edit') }}">Add Species</a>
-                </button>
+                {% if edit_enabled %}
+                    <button type="button" class="btn btn-light">
+                        <a href="{{ url_for('species.edit') }}">Add Species</a>
+                    </button>
+                {% endif %}
                 <button type="submit" value="filter" class="btn btn-primary">List Species</button>
             </div>
         </div>
