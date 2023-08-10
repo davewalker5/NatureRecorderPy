@@ -14,11 +14,13 @@
             <span>There are no locations in the database</span>
         {% endif %}
     </form>
-    <div class="button-bar">
-        <button type="button" class="btn btn-primary">
-            <a href="{{ url_for('locations.edit') }}">Add Location</a>
-        </button>
-    </div>
+    {% if edit_enabled %}
+        <div class="button-bar">
+            <button type="button" class="btn btn-primary">
+                <a href="{{ url_for('locations.edit') }}">Add Location</a>
+            </button>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}

@@ -69,9 +69,10 @@ def list_all():
     :return: The HTML for the listing page
     """
     error = None
+    is_admin = has_roles(["Administrator"])
     if request.method == "POST":
         try:
-            if has_roles("[Administrator]"):
+            if is_admin:
                 delete_record_id = get_posted_int("delete_record_id")
                 if delete_record_id:
                     delete_status_scheme(delete_record_id)
@@ -85,7 +86,7 @@ def list_all():
                            status_schemes=list_status_schemes(),
                            message=message,
                            error=error,
-                           edit_enabled=True)
+                           edit_enabled=is_admin)
 
 
 @status_bp.route("/edit", defaults={"status_scheme_id": None}, methods=["GET", "POST"])

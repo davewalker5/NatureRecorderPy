@@ -36,12 +36,13 @@ def _render_species_list_page(category_id=None, error=None):
     :param error: Error message to show on the page
     :return: Rendered species list template
     """
+    is_admin = has_roles(["Administrator"])
     species = list_species(category_id) if category_id else []
     return render_template("species/list.html",
                            categories=list_categories(),
                            category_id=category_id,
                            species=species,
-                           edit_enabled=True,
+                           edit_enabled=is_admin,
                            error=error)
 
 

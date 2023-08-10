@@ -5,7 +5,8 @@ The categories blueprint supplies view functions and templates for species categ
 from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_categories, get_category, create_category, update_category, delete_category
-from naturerec_web.auth import requires_roles, has_roles
+from naturerec_web.auth import requires_roles
+from naturerec_web.auth.requires_roles import has_roles
 from naturerec_web.request_utils import get_posted_int
 
 categories_bp = Blueprint("categories", __name__, template_folder='templates')
@@ -35,9 +36,10 @@ def list_all():
     :return: The HTML for the category listing page
     """
     error = None
+    is_admin = has_roles(["Administrator"])
     if request.method == "POST":
         try:
-            if has_roles(["Administrator"]):
+            if is_admin:
                 delete_record_id = get_posted_int("delete_record_id")
                 if delete_record_id:
                     delete_category(delete_record_id)
@@ -48,7 +50,7 @@ def list_all():
 
     return render_template("categories/list.html",
                            categories=list_categories(),
-                           edit_enabled=True,
+                           edit_enabled=is_admin,
                            error=error)
 
 

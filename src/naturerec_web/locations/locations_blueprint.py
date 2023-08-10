@@ -36,9 +36,10 @@ def list_all():
     :return: The HTML for the location listing page
     """
     error = None
+    is_admin = has_roles(["Administrator"])
     if request.method == "POST":
         try:
-            if has_roles(["Administrator"]):
+            if is_admin:
                 delete_record_id = get_posted_int("delete_record_id")
                 if delete_record_id:
                     delete_location(delete_record_id)
@@ -49,7 +50,7 @@ def list_all():
 
     return render_template("locations/list.html",
                            locations=list_locations(),
-                           edit_enabled=True,
+                           edit_enabled=is_admin,
                            error=error)
 
 

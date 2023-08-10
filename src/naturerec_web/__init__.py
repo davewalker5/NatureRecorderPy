@@ -13,7 +13,7 @@ from .species_ratings import species_ratings_bp
 from .life_list import life_list_bp
 from .jobs import jobs_bp
 from .reports import reports_bp
-from .auth import auth_bp, unauthorised
+from .auth import auth_bp, unauthorised, has_roles
 from naturerec_model.logic import get_user
 
 
@@ -73,6 +73,16 @@ def create_app(environment="production"):
         :return: Instance of the User class for the specified user
         """
         return get_user(int(user_id))
+
+    @app.context_processor
+    def inject_roles():
+        """
+        Make role membership available to all templates to allow the layout view to configure the menu
+        bar based on those permissions
+        """
+        is_admin = has_roles(["Administrator"])
+        is_reporter = has_roles(["Reporter"])
+        return dict(is_admin=is_admin, is_reporter=is_reporter)
 
     @app.after_request
     def add_security_headers(response):
