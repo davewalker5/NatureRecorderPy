@@ -30,7 +30,6 @@ class DataExchangeHelperBase(threading.Thread):
         DataExchangeUser = namedtuple("DataExchangeUser", "id")
         self._user = DataExchangeUser(id=user.id)
 
-        print(f"CURRENT USER = {self._user}")
         self._exception = None
         self._job_status_id = None
 

@@ -2,10 +2,11 @@
 The locations blueprint supplies view functions and templates for location management
 """
 
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_locations, get_location, create_location, update_location, geocode_postcode, \
     delete_location
+from naturerec_web.auth import requires_roles, has_roles
 from naturerec_web.request_utils import get_posted_float, get_posted_int
 
 locations_bp = Blueprint("locations", __name__, template_folder='templates')
@@ -27,6 +28,7 @@ def _render_location_editing_page(location_id, error):
 
 @locations_bp.route("/list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_all():
     """
     Show the page that lists all locations and is the entry point for adding new ones
@@ -36,9 +38,12 @@ def list_all():
     error = None
     if request.method == "POST":
         try:
-            delete_record_id = get_posted_int("delete_record_id")
-            if delete_record_id:
-                delete_location(delete_record_id)
+            if has_roles(["Administrator"]):
+                delete_record_id = get_posted_int("delete_record_id")
+                if delete_record_id:
+                    delete_location(delete_record_id)
+            else:
+                abort(401)
         except ValueError as e:
             error = e
 
@@ -51,6 +56,7 @@ def list_all():
 @locations_bp.route("/edit", defaults={"location_id": None}, methods=["GET", "POST"])
 @locations_bp.route("/add/<int:location_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def edit(location_id):
     """
     Serve the page to add  new location or edit an existing one and handle the appropriate action

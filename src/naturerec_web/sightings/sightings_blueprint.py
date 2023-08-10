@@ -4,7 +4,7 @@ The sightings blueprint supplies view functions and templates for sighting manag
 
 import datetime
 import html
-from flask import Blueprint, render_template, request, session, redirect
+from flask import Blueprint, render_template, request, session, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting, delete_sighting
 from naturerec_model.logic import list_locations
@@ -12,6 +12,7 @@ from naturerec_model.logic import list_categories
 from naturerec_model.logic import list_species
 from naturerec_model.model import Gender, Sighting
 from naturerec_model.data_exchange import SightingsImportHelper
+from naturerec_web.auth.requires_roles import requires_roles, has_roles
 from naturerec_web.request_utils import get_posted_date, get_posted_int, get_posted_bool
 
 sightings_bp = Blueprint("sightings", __name__, template_folder='templates')
@@ -132,6 +133,7 @@ def _get_filter_date(key):
 
 @sightings_bp.route("/list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_filtered_sightings():
     """
     Show the page that lists today's sightings and is the entry point for adding new ones
@@ -143,7 +145,11 @@ def list_filtered_sightings():
         try:
             delete_record_id = get_posted_int("delete_record_id")
             if delete_record_id:
-                delete_sighting(delete_record_id)
+                if has_roles(["Administrator", "Reporter"]):
+                    if delete_record_id:
+                        delete_sighting(delete_record_id)
+                else:
+                    abort(401)
         except ValueError as e:
             error = e
 
@@ -176,6 +182,7 @@ def list_species_for_category(category_id, selected_species_id):
 @sightings_bp.route("/edit", defaults={"sighting_id": None}, methods=["GET", "POST"])
 @sightings_bp.route("/edit/<int:sighting_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter"])
 def edit(sighting_id):
     """
     Serve the page to add new sighting or edit an existing one and handle the appropriate action
@@ -244,6 +251,7 @@ def edit(sighting_id):
 
 @sightings_bp.route("/import", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def import_sightings():
     """
     Serve the page to import sightings and handle the import when the form is submitted

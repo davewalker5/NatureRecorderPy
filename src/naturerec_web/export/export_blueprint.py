@@ -9,6 +9,7 @@ from naturerec_model.logic import list_categories
 from naturerec_model.data_exchange import SightingsExportHelper, LifeListExportHelper
 from naturerec_model.model import Sighting
 from naturerec_web.request_utils import get_posted_date, get_posted_int
+from naturerec_web.auth import requires_roles
 
 export_bp = Blueprint("export", __name__, template_folder='templates')
 
@@ -59,6 +60,7 @@ def _render_life_list_export_filters_page(category_id=None, message=None):
 
 @export_bp.route("/filters", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def export():
     """
     Show the page that presents filters for exporting sightings
@@ -87,6 +89,7 @@ def export():
 
 @export_bp.route("/life_list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter"])
 def export_life_list():
     """
     Show the page that presents filters for exporting life lists

@@ -13,7 +13,7 @@ from .species_ratings import species_ratings_bp
 from .life_list import life_list_bp
 from .jobs import jobs_bp
 from .reports import reports_bp
-from .auth import auth_bp
+from .auth import auth_bp, unauthorised
 from naturerec_model.logic import get_user
 
 
@@ -52,6 +52,9 @@ def create_app(environment="production"):
     app.register_blueprint(jobs_bp, url_prefix='/jobs')
     app.register_blueprint(reports_bp, url_prefix='/reports')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    # Register the 401 Unathorised error handler
+    app.register_error_handler(401, unauthorised)
 
     # Create the flask-login user manager
     login_manager = LoginManager()

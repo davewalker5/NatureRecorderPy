@@ -11,6 +11,7 @@ from naturerec_model.logic import list_categories, get_category
 from naturerec_model.logic import get_species
 from naturerec_model.logic import location_species_report, get_report_barchart, species_by_date_report
 from naturerec_model.model import Sighting
+from naturerec_web.auth import requires_roles
 from naturerec_web.request_utils import get_posted_date, get_posted_int
 
 reports_bp = Blueprint("reports", __name__, template_folder='templates')
@@ -167,6 +168,7 @@ def _render_species_report_page(from_date=None, to_date=None, location_id=None, 
 
 @reports_bp.route("/location", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def location_report():
     """
     Show the page that generates a location, species and sighting report for a given date range
@@ -185,6 +187,7 @@ def location_report():
 
 @reports_bp.route("/species", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def species_report():
     """
     Show the page that generates a species sighting report for a given date range and location

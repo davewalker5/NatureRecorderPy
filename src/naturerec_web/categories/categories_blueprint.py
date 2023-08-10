@@ -2,9 +2,10 @@
 The categories blueprint supplies view functions and templates for species category management
 """
 
-from flask import Blueprint, render_template, request, redirect
+from flask import Blueprint, render_template, request, redirect, abort
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_categories, get_category, create_category, update_category, delete_category
+from naturerec_web.auth import requires_roles, has_roles
 from naturerec_web.request_utils import get_posted_int
 
 categories_bp = Blueprint("categories", __name__, template_folder='templates')
@@ -26,6 +27,7 @@ def _render_category_editing_page(category_id, error):
 
 @categories_bp.route("/list", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator", "Reporter", "Reader"])
 def list_all():
     """
     Show the page that lists all categories and is the entry point for adding new ones
@@ -35,9 +37,12 @@ def list_all():
     error = None
     if request.method == "POST":
         try:
-            delete_record_id = get_posted_int("delete_record_id")
-            if delete_record_id:
-                delete_category(delete_record_id)
+            if has_roles(["Administrator"]):
+                delete_record_id = get_posted_int("delete_record_id")
+                if delete_record_id:
+                    delete_category(delete_record_id)
+            else:
+                abort(401)
         except ValueError as e:
             error = e
 
@@ -50,6 +55,7 @@ def list_all():
 @categories_bp.route("/edit", defaults={"category_id": None}, methods=["GET", "POST"])
 @categories_bp.route("/add/<int:category_id>", methods=["GET", "POST"])
 @login_required
+@requires_roles(["Administrator"])
 def edit(category_id):
     """
     Serve the page to add  new category or edit an existing one and handle the appropriate action
