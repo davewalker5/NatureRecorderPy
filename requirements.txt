@@ -75,7 +75,7 @@ SQLAlchemy==1.4.27
 trio==0.19.0
 trio-websocket==0.9.2
 typing_extensions==4.0.1
-urllib3==1.26.18
+urllib3==1.26.19
 urllib3-secure-extra==0.1.0
 Werkzeug==3.0.3
 wsproto==1.0.0
