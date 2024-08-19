@@ -5,7 +5,7 @@
 [![Releases](https://img.shields.io/github/v/release/davewalker5/NatureRecorderPy.svg?include_prereleases)](https://github.com/davewalker5/NatureRecorderPy/releases)
 [![License: MIT](https://img.shields.io/badge/License-mit-blue.svg)](https://github.com/davewalker5/NatureRecorderPy/blob/main/LICENSE)
 [![Language](https://img.shields.io/badge/language-python-blue.svg)](https://www.python.org)
-[![GitHub code size in bytes](hhttps://img.shields.io/github/languages/code-size/davewalker5/NatureRecorderPy)](https://github.com/davewalker5/NatureRecorderPy/)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/davewalker5/NatureRecorderPy)](https://github.com/davewalker5/NatureRecorderPy/)
 
 # Nature Recorder
 
