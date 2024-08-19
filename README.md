@@ -34,13 +34,10 @@ Nature Recorder is an application for recording wildlife sightings, maintaining 
 
 # Structure
 
-+-------------------------------+----------------------------------------------------------------------+
-| **Package** | **Contents** |
-+-------------------------------+----------------------------------------------------------------------+
-| naturerec_model | Classes and business logic for the application |
-+-------------------------------+----------------------------------------------------------------------+
-| naturerec_web | A simple Flask-based web site built over the naturerec_model package |
-+-------------------------------+----------------------------------------------------------------------+
+| **Package**     | **Contents**                                                         |
+| --------------- | -------------------------------------------------------------------- |
+| naturerec_model | Classes and business logic for the application                       |
+| naturerec_web   | A simple Flask-based web site built over the naturerec_model package |
 
 # Getting Started
 
