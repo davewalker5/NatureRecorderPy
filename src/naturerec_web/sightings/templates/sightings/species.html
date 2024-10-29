@@ -4,7 +4,11 @@
     <option value="">Please select ...</option>
     {% for value in species %}
         <option value="{{ value.id }}" {% if value.id == species_id %}selected{% endif %}>
-            {{ value.name }}
+            {% if value.scientific_name != None %}
+                {{ value.name }} ( {{value.scientific_name }} )
+            {% else %}
+                {{ value.name }}
+            {% endif %}
         </option>
     {% endfor %}
 </select>
