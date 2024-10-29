@@ -87,7 +87,7 @@ def edit(species_id):
     if request.method == "POST":
         try:
             if species_id:
-                _ = update_species(species_id, get_posted_int("category"), request.form["name"], current_user)
+                _ = update_species(species_id, get_posted_int("category"), request.form["name"], request.form["scientific_name"], current_user)
             else:
                 _ = create_species(get_posted_int("category"), request.form["name"], current_user)
             return redirect("/species/list")

@@ -83,6 +83,7 @@ def location_species_report(from_date, to_date, location_id, category_id):
 
     # Construct the query
     sql_query = f"SELECT sp.Name AS 'Species', " \
+                f"IFNULL( sp.Scientific_Name, '' ) AS 'Scientific Name', " \
                 f"COUNT( sp.Id ) AS 'Sightings', " \
                 f"SUM( IFNULL( s.Number, 1 ) ) AS 'Total Individuals', " \
                 f"MIN( IFNULL( s.Number, 1 ) ) AS 'Minimum Seen', " \

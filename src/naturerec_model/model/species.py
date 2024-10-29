@@ -15,6 +15,8 @@ class Species(Base):
     categoryId = Column(Integer, ForeignKey("Categories.id"), nullable=False)
     #: Species name
     name = Column(String, nullable=False, unique=True)
+    #: Scientific (Latin) name for the species
+    scientific_name = Column(String, nullable=True)
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)

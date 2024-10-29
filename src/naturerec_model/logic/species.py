@@ -25,12 +25,13 @@ def _check_for_existing_records(session, category_id, name):
     return [s.id for s in species]
 
 
-def create_species(category_id, name, user):
+def create_species(category_id, name, scientific_name, user):
     """
     Create a new species for a specified category
 
     :param category_id: Category ID
     :param name: Species name
+    :param name: Species scientific name
     :param user: Current user
     :returns: An instance of the Species class for the created record
     :raises ValueError: If the species is a duplicate or has an invalid name
@@ -40,12 +41,14 @@ def create_species(category_id, name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied = " ".join(name.split()).title() if name else None
-            if len(_check_for_existing_records(session, category_id, tidied)):
+            tidied_name = " ".join(name.split()).title() if name else None
+            tidied_scientific_name = " ".join(scientific_name.split()).title() if scientific_name else None
+            if len(_check_for_existing_records(session, category_id, tidied_name)):
                 raise ValueError("Duplicate category found")
 
             species = Species(categoryId=category_id,
-                              name=tidied,
+                              name=tidied_name,
+                              scientific_name=tidied_scientific_name,
                               created_by=user.id,
                               updated_by=user.id,
                               date_created=dt.utcnow(),
@@ -58,13 +61,14 @@ def create_species(category_id, name, user):
     return species
 
 
-def update_species(species_id, category_id, name, user):
+def update_species(species_id, category_id, name, scientific_name, user):
     """
     Update an existing species
 
     :param species_id: ID of the species record to updated
     :param category_id: Category ID
     :param name: Species name
+    :param name: Species scientific name
     :param user: Current user
     :returns: An instance of the Species class for the updated record
     :raises ValueError: If the species is a duplicate or has an invalid name
@@ -73,8 +77,9 @@ def update_species(species_id, category_id, name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied = " ".join(name.split()).title() if name else None
-            species_ids = _check_for_existing_records(session, category_id, tidied)
+            tidied_name = " ".join(name.split()).title() if name else None
+            tidied_scientific_name = " ".join(scientific_name.split()).title() if scientific_name else None
+            species_ids = _check_for_existing_records(session, category_id, tidied_name)
 
             # Remove the current category from the list, if it's there
             if species_id in species_ids:
@@ -89,7 +94,8 @@ def update_species(species_id, category_id, name, user):
                 raise ValueError("Species not found")
 
             species.categoryId = category_id
-            species.name = tidied
+            species.name = tidied_name
+            species.scientific_name = tidied_scientific_name
             species.updated_by = user.id
             species.date_updated = dt.utcnow()
     except IntegrityError as e:

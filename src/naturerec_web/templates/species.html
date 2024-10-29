@@ -1,39 +1,51 @@
 {% if species | length > 0 %}
-    <table class="striped" aria-label="Species">
-        <thead>
-            <th>Category</th>
-            <th>Name</th>
-            {% if edit_enabled %}
-                <th></th>
-                <th></th>
-                <th></th>
-            {% endif %}
-        </thead>
-        <tbody>
-            {% for value in species %}
-                <tr>
-                    <td>{{ value.category.name }}</td>
-                    <td>{{ value.name }}</td>
-                    {% if edit_enabled %}
-                        <td>
-                            <a href="{{ url_for( 'species.edit', species_id = value.id ) }}">
-                                <i class="fa fa-edit" title="Edit Species"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{{ url_for( 'species_ratings.list_status_ratings', species_id = value.id ) }}">
-                                <i class="fa fa-exclamation-triangle" title="Edit Conservation Status"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <i class="fa fa-trash" title="Delete Species" data-bs-toggle="modal"
-                                   data-bs-target="#confirm-popup" data-bs-record-id="{{ value.id }}" ></i>
-                            </a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="striped" aria-label="Species">
+  <thead>
+    <th>Category</th>
+    <th>Name</th>
+    <th>Scientific Name</th>
+    {% if edit_enabled %}
+    <th></th>
+    <th></th>
+    <th></th>
+    {% endif %}
+  </thead>
+  <tbody>
+    {% for value in species %}
+    <tr>
+      <td>{{ value.category.name }}</td>
+      <td>{{ value.name }}</td>
+      <td>{{ value.scientific_name if value.scientific_name else "" }}</td>
+      {% if edit_enabled %}
+      <td>
+        <a href="{{ url_for( 'species.edit', species_id = value.id ) }}">
+          <i class="fa fa-edit" title="Edit Species"></i>
+        </a>
+      </td>
+      <td>
+        <a
+          href="{{ url_for( 'species_ratings.list_status_ratings', species_id = value.id ) }}"
+        >
+          <i
+            class="fa fa-exclamation-triangle"
+            title="Edit Conservation Status"
+          ></i>
+        </a>
+      </td>
+      <td>
+        <a href="#">
+          <i
+            class="fa fa-trash"
+            title="Delete Species"
+            data-bs-toggle="modal"
+            data-bs-target="#confirm-popup"
+            data-bs-record-id="{{ value.id }}"
+          ></i>
+        </a>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endif %}

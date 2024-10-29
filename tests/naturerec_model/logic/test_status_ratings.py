@@ -67,7 +67,7 @@ class TestStatusRatings(unittest.TestCase):
 
     def test_cannot_delete_rating_with_species_ratings(self):
         category = create_category("Birds", self._user)
-        species = create_species(category.id, "Red Kite", self._user)
+        species = create_species(category.id, "Red Kite", None, self._user)
         _ = create_species_status_rating(species.id, self._rating.id, "United Kingdom", datetime.date(2015, 1, 1), self._user)
         with self.assertRaises(ValueError):
             delete_status_rating(self._rating.id)

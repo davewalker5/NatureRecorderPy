@@ -122,8 +122,10 @@ def _render_species_report_page(from_date=None, to_date=None, location_id=None, 
         # Get the location and species details and use them to construct a sub-title
         location = get_location(location_id)
         species = get_species(species_id)
+        print(f"LATIN = {species.scientific_name}")
+        scientific_name = f" ({species.scientific_name})" if species.scientific_name != None else ""
         subtitle = f"Location: {location.name}\n" \
-                   f"Species: {species.name}   " \
+                   f"Species: {species.name}{scientific_name}\n" \
                    f"From: {from_date_string}   " \
                    f"To: {to_date_string}"
 

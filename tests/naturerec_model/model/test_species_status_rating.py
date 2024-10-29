@@ -13,7 +13,7 @@ class TestSpeciesStatusRating(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         self._category = create_category("Birds", self._user)
-        self._species = create_species(self._category.id, "Reed Bunting", self._user)
+        self._species = create_species(self._category.id, "Reed Bunting", None, self._user)
         self._scheme = create_status_scheme("BOCC4", self._user)
         self._rating = create_status_rating(self._scheme.id, "Amber", self._user)
         _ = create_species_status_rating(self._species.id, self._rating.id, "United Kingdom",

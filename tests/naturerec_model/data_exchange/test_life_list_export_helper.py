@@ -15,7 +15,7 @@ class TestSightingsExportHelper(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         self._category = create_category("Birds", self._user)
-        self._gull = create_species(self._category.id, "Black-Headed Gull", self._user)
+        self._gull = create_species(self._category.id, "Black-Headed Gull", None, self._user)
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
                             None, self._user)

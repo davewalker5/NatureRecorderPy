@@ -84,6 +84,7 @@ class Sighting(Base):
     def csv_columns(self):
         return [
             self.species.name,
+            self.species.scientific_name,
             self.species.category.name,
             self.number,
             self.gender_name,

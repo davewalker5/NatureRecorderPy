@@ -13,14 +13,14 @@ class TestSightings(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         category = create_category("Birds", self._user)
-        species = create_species(category.id, "Black-Headed Gull", self._user)
+        species = create_species(category.id, "Black-Headed Gull", None, self._user)
         location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         self._sighting = create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,
                                          False, "Notes", self._user)
 
     def create_additional_sightings(self):
         category_id = get_category("Birds").id
-        species = create_species(category_id, "Blackbird", self._user)
+        species = create_species(category_id, "Blackbird", None, self._user)
         location = create_location(name="Brock Hill", city="Lyndhurst", county="Hampshire", country="United Kingdom", user=self._user)
         create_sighting(location.id, species.id, datetime.date(2021, 12, 13), None, Gender.UNKNOWN, False, None, self._user)
 
@@ -76,7 +76,7 @@ class TestSightings(unittest.TestCase):
             sighting = session.query(Sighting).one()
 
         category_id = get_category("Birds").id
-        species = create_species(category_id, "Blackbird", self._user)
+        species = create_species(category_id, "Blackbird", None, self._user)
         update_sighting(sighting.id, sighting.location.id, species.id, datetime.date(2021, 12, 14), None,
                         Gender.UNKNOWN, False, "Notes", self._user)
         updated = get_sighting(sighting.id)

@@ -14,7 +14,7 @@ class TestStatusRating(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         self._category = create_category("Birds", self._user)
-        self._species = create_species(self._category.id, "Reed Bunting", self._user)
+        self._species = create_species(self._category.id, "Reed Bunting", None, self._user)
         self._scheme = create_status_scheme("BOCC4", self._user)
         self._rating = create_status_rating(self._scheme.id, "Amber", self._user)
         self._species_status_rating = create_species_status_rating(self._species.id, self._rating.id, "United Kingdom",
@@ -104,7 +104,7 @@ class TestStatusRating(unittest.TestCase):
         self.assertIsNone(ratings[0].end_date)
 
     def test_can_list_filter_ratings_by_species(self):
-        species = create_species(self._category.id, "Bewick's Swan", self._user)
+        species = create_species(self._category.id, "Bewick's Swan", None, self._user)
         _ = create_species_status_rating(species.id, self._rating.id, "United Kingdom", datetime.date(2015, 1, 1), self._user)
         ratings = list_species_status_ratings(species_id=species.id)
         self.assertEqual(1, len(ratings))

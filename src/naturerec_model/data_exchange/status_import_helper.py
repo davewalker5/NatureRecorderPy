@@ -56,7 +56,7 @@ class StatusImportHelper(DataExchangeHelperBase):
         """
         self._read_csv_rows()
         for row in self._rows:
-            species_id = self.create_species(row[1], row[0])
+            species_id = self.create_species(row[1], row[0], None)
             rating_id = self._create_rating(row[2], row[3])
             start = datetime.datetime.strptime(row[5], SpeciesStatusRating.IMPORT_DATE_FORMAT).date()
             end = datetime.datetime.strptime(row[6], SpeciesStatusRating.IMPORT_DATE_FORMAT).date() \

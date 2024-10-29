@@ -99,7 +99,7 @@ class TestStatusSchemes(unittest.TestCase):
 
     def test_cannot_delete_scheme_with_species_ratings(self):
         category = create_category("Birds", self._user)
-        species = create_species(category.id, "Reed Bunting", self._user)
+        species = create_species(category.id, "Reed Bunting", None, self._user)
         rating = create_status_rating(self._scheme.id, "Amber", self._user)
         _ = create_species_status_rating(species.id, rating.id, "United Kingdom", datetime.date(2015, 1, 1), self._user)
         with self.assertRaises(ValueError):

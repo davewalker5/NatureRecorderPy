@@ -3,11 +3,17 @@
     {% set submit_title = "Save Species" %}
     {% set category_id = species.categoryId %}
     {% set name = species.name %}
+    {% if species.scientific_name != None %}
+        {% set scientific_name = species.scientific_name %}
+    {% else %}
+        {% set scientific_name = "" %}
+    {% endif %}
 {% else %}
     {% set title = "Add Species" %}
     {% set submit_title = "Add Species" %}
     {% set category_id = "" %}
     {% set name = "" %}
+    {% set scientific_name = "" %}
 {% endif %}
 
 {% extends "layout.html" %}
@@ -22,6 +28,10 @@
             <label>Name</label>
             <input class="form-control" name="name" placeholder="Species name e.g. Red Kite" value="{{ name }}"
                    required>
+        </div>
+        <div class="form-group">
+            <label>Scientific Name</label>
+            <input class="form-control" name="scientific_name" placeholder="Scientific name e.g. Milvus milvus" value="{{ scientific_name }}">
         </div>
         <div class="form-group">
             <label>Category</label>

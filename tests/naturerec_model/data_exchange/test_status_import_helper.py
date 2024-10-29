@@ -107,7 +107,7 @@ class TestStatusImportHelper(unittest.TestCase):
 
     def test_can_import_status_for_existing_species(self):
         category = create_category("Birds", self._user)
-        _ = create_species(category.id, "Arctic Skua", self._user)
+        _ = create_species(category.id, "Arctic Skua", None, self._user)
         self._perform_valid_import()
 
     def test_can_import_status_for_existing_scheme(self):

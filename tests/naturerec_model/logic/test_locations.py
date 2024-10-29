@@ -215,7 +215,7 @@ class TestLocations(unittest.TestCase):
 
     def test_cannot_delete_location_with_sightings(self):
         category = create_category("Birds", self._user)
-        species = create_species(category.id, "Wren", self._user)
+        species = create_species(category.id, "Wren", None, self._user)
         _ = create_sighting(self._location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
                             "Notes", self._user)
         with self.assertRaises(ValueError):

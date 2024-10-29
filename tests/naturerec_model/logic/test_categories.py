@@ -94,6 +94,6 @@ class TestCategories(unittest.TestCase):
             delete_category(-1)
 
     def test_cannot_delete_category_with_species(self):
-        _ = create_species(self._category.id, "Blackbird", self._user)
+        _ = create_species(self._category.id, "Blackbird", None, self._user)
         with self.assertRaises(ValueError):
             delete_category(self._category.id)

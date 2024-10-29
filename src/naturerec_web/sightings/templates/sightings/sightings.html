@@ -1,65 +1,85 @@
 {% if sightings | length > 0 %}
-    <table class="striped" aria-label="Species Sightings">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Category</th>
-                <th>Species</th>
-                <th>Number</th>
-                <th>Gender</th>
-                <th>Young</th>
-                <th/>
-                {% if edit_enabled %}
-                    <th/>
-                    <th/>
-                    <th/>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for sighting in sightings %}
-                {% if sighting.notes != None %}
-                    {% set sighting_notes = sighting.notes %}
-                {% else %}
-                    {% set sighting_notes = "" %}
-                {% endif %}
-                <tr>
-                    <td>{{ sighting.display_date }}</td>
-                    <td>{{ sighting.location.name }}</td>
-                    <td>{{ sighting.species.category.name }}</td>
-                    <td>{{ sighting.species.name }}</td>
-                    <td>{{ sighting.number if sighting.number else "" }}</td>
-                    <td>{{ sighting.gender_name }}</td>
-                    <td>{{ sighting.with_young_name }}</td>
-                    <td>
-                        {% if sighting_notes | length > 0 %}
-                            <i class="far fa-sticky-note icon-blue notes-icon" title="View Notes" data-bs-toggle="modal"
-                               data-bs-target="#notes-popup" data-bs-sighting-notes="{{ sighting_notes }}"></i>
-                        {% else %}
-                            <i class="far fa-sticky-note icon-grey" title="There are no notes for this sighting"></i>
-                        {% endif %}
-                    </td>
-                    {% if edit_enabled %}
-                        <td>
-                            <a href="{{ url_for( 'species_ratings.list_status_ratings', species_id = sighting.speciesId ) }}">
-                                <i class="fa fa-exclamation-triangle" title="Edit Conservation Status"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="{{ url_for('sightings.edit', sighting_id=sighting.id) }}">
-                                <i class="fa fa-edit" title="Edit Sighting"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="#">
-                                <i class="fa fa-trash" title="Delete Sighting" data-bs-toggle="modal"
-                                   data-bs-target="#confirm-popup" data-bs-record-id="{{ sighting.id }}"></i>
-                            </a>
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="striped" aria-label="Species Sightings">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Location</th>
+      <th>Category</th>
+      <th>Species</th>
+      <th>Scientific Name</th>
+      <th>Number</th>
+      <th>Gender</th>
+      <th>Young</th>
+      <th />
+      {% if edit_enabled %}
+      <th />
+      <th />
+      <th />
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for sighting in sightings %} {% if sighting.notes != None %} {% set
+    sighting_notes = sighting.notes %} {% else %} {% set sighting_notes = "" %}
+    {% endif %}
+    <tr>
+      <td>{{ sighting.display_date }}</td>
+      <td>{{ sighting.location.name }}</td>
+      <td>{{ sighting.species.category.name }}</td>
+      <td>{{ sighting.species.name }}</td>
+      <td>
+        {{ sighting.species.scientific_name if sighting.species.scientific_name
+        else "" }}
+      </td>
+      <td>{{ sighting.number if sighting.number else "" }}</td>
+      <td>{{ sighting.gender_name }}</td>
+      <td>{{ sighting.with_young_name }}</td>
+      <td>
+        {% if sighting_notes | length > 0 %}
+        <i
+          class="far fa-sticky-note icon-blue notes-icon"
+          title="View Notes"
+          data-bs-toggle="modal"
+          data-bs-target="#notes-popup"
+          data-bs-sighting-notes="{{ sighting_notes }}"
+        ></i>
+        {% else %}
+        <i
+          class="far fa-sticky-note icon-grey"
+          title="There are no notes for this sighting"
+        ></i>
+        {% endif %}
+      </td>
+      {% if edit_enabled %}
+      <td>
+        <a
+          href="{{ url_for( 'species_ratings.list_status_ratings', species_id = sighting.speciesId ) }}"
+        >
+          <i
+            class="fa fa-exclamation-triangle"
+            title="Edit Conservation Status"
+          ></i>
+        </a>
+      </td>
+      <td>
+        <a href="{{ url_for('sightings.edit', sighting_id=sighting.id) }}">
+          <i class="fa fa-edit" title="Edit Sighting"></i>
+        </a>
+      </td>
+      <td>
+        <a href="#">
+          <i
+            class="fa fa-trash"
+            title="Delete Sighting"
+            data-bs-toggle="modal"
+            data-bs-target="#confirm-popup"
+            data-bs-record-id="{{ sighting.id }}"
+          ></i>
+        </a>
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endif %}

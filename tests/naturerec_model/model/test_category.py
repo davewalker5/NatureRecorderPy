@@ -9,7 +9,7 @@ class TestCategory(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         category = create_category("Birds", self._user)
-        _ = create_species(category.id, "Red Kite", self._user)
+        _ = create_species(category.id, "Red Kite", None, self._user)
 
     def test_can_create_category(self):
         with Session.begin() as session:
@@ -19,7 +19,7 @@ class TestCategory(unittest.TestCase):
     def test_cannot_create_duplicate_species(self):
         category = get_category("Birds")
         with self.assertRaises(ValueError):
-            _ = create_species(category.id, "Red Kite", self._user)
+            _ = create_species(category.id, "Red Kite", None, self._user)
 
     def test_cannot_create_none_category(self):
         with self.assertRaises(ValueError):

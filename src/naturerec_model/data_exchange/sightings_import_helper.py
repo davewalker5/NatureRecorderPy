@@ -34,13 +34,13 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         """
         self._read_csv_rows()
         for row in self._rows:
-            species_id = self.create_species(row[1], row[0])
+            species_id = self.create_species(row[2], row[0], row[1])
             location_id = self._create_location(row)
-            date = datetime.datetime.strptime(row[5], Sighting.DATE_IMPORT_FORMAT).date()
-            number = int(row[2]) if row[2].strip() else None
-            gender = [key for key, value in Gender.gender_map().items() if value == row[3].strip().title()][0]
-            with_young = 1 if row[4].strip().title() == "Yes" else 0
-            notes = row[14] if row[14] else None
+            date = datetime.datetime.strptime(row[6], Sighting.DATE_IMPORT_FORMAT).date()
+            number = int(row[3]) if row[3].strip() else None
+            gender = [key for key, value in Gender.gender_map().items() if value == row[4].strip().title()][0]
+            with_young = 1 if row[5].strip().title() == "Yes" else 0
+            notes = row[14] if row[15] else None
             _ = create_sighting(location_id, species_id, date, number, gender, with_young, notes, self._user)
 
     def _read_csv_rows(self):
@@ -76,25 +76,25 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
         :param row: CSV row (collection of fields)
         :param row_number: Row number for error reporting
         """
-        if len(row) != 15:
+        if len(row) != 16:
             raise ValueError(f"Malformed data at row {row_number}")
 
         cls._check_not_empty(row, 0, row_number)            # Species
-        cls._check_not_empty(row, 1, row_number)            # Category
-        cls._check_valid_int(row, 2, row_number, True)      # Number
+        cls._check_not_empty(row, 2, row_number)            # Category
+        cls._check_valid_int(row, 3, row_number, True)      # Number
 
         # Gender
-        cls._check_valid_value(row, 3, row_number, Gender.gender_map().values())
+        cls._check_valid_value(row, 4, row_number, Gender.gender_map().values())
 
         # With Young
-        cls._check_valid_value(row, 4, row_number, ["Yes", "No"])
+        cls._check_valid_value(row, 5, row_number, ["Yes", "No"])
 
-        cls._check_valid_date(row, 5, row_number)           # Date
-        cls._check_not_empty(row, 6, row_number)            # Location
-        cls._check_not_empty(row, 9, row_number)            # County
-        cls._check_not_empty(row, 11, row_number)           # Country
-        cls._check_valid_float(row, 12, row_number, True)   # Latitude
-        cls._check_valid_float(row, 13, row_number, True)   # Longitude
+        cls._check_valid_date(row, 6, row_number)           # Date
+        cls._check_not_empty(row, 7, row_number)            # Location
+        cls._check_not_empty(row, 10, row_number)            # County
+        cls._check_not_empty(row, 12, row_number)           # Country
+        cls._check_valid_float(row, 13, row_number, True)   # Latitude
+        cls._check_valid_float(row, 14, row_number, True)   # Longitude
 
     @classmethod
     def _check_not_empty(cls, row, index, row_number):
@@ -179,11 +179,11 @@ class SightingsImportHelper(SightingsDataExchangeHelperBase):
             raise ValueError(f"Invalid value for {cls.get_field_name(index)} on row {row_number}")
 
     def _create_location(self, row):
-        tidied_name = " ".join(row[6].split()).title()
+        tidied_name = " ".join(row[7].split()).title()
         try:
             location = get_location(tidied_name)
         except ValueError:
-            latitude = float(row[12]) if row[12].strip() else None
-            longitude = float(row[13]) if row[12].strip() else None
-            location = create_location(tidied_name, row[9], row[11], self._user, row[7], row[8], row[10], latitude, longitude)
+            latitude = float(row[13]) if row[13].strip() else None
+            longitude = float(row[14]) if row[14].strip() else None
+            location = create_location(tidied_name, row[10], row[12], self._user, row[8], row[9], row[11], latitude, longitude)
         return location.id
