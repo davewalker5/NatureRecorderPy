@@ -7,6 +7,7 @@ import sqlalchemy as db
 from datetime import datetime as dt
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Species, Sighting, SpeciesStatusRating
+from .naming import tidy_string, Casing
 
 
 def _check_for_existing_records(session, category_id, name):
@@ -41,8 +42,8 @@ def create_species(category_id, name, scientific_name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied_name = " ".join(name.split()).title() if name else None
-            tidied_scientific_name = " ".join(scientific_name.split()).title() if scientific_name else None
+            tidied_name = tidy_string(name, Casing.TITLE_CASE)
+            tidied_scientific_name = tidy_string(scientific_name, Casing.CAPITALISED)
             if len(_check_for_existing_records(session, category_id, tidied_name)):
                 raise ValueError("Duplicate category found")
 
@@ -77,8 +78,8 @@ def update_species(species_id, category_id, name, scientific_name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied_name = " ".join(name.split()).title() if name else None
-            tidied_scientific_name = " ".join(scientific_name.split()).title() if scientific_name else None
+            tidied_name = tidy_string(name, Casing.TITLE_CASE)
+            tidied_scientific_name = tidy_string(scientific_name, Casing.CAPITALISED)
             species_ids = _check_for_existing_records(session, category_id, tidied_name)
 
             # Remove the current category from the list, if it's there

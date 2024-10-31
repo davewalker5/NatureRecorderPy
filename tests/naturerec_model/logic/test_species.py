@@ -20,12 +20,12 @@ class TestSpecies(unittest.TestCase):
             species = session.query(Species).one()
         self.assertTrue(category.id, species.categoryId)
         self.assertEqual("Red Kite", species.name)
-        self.assertEqual("Milvus Milvus", species.scientific_name)
+        self.assertEqual("Milvus milvus", species.scientific_name)
 
     def test_cannot_create_duplicate_species(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             category_id = session.query(Species).one().categoryId
-            _ = create_species(category_id, "Red Kite", "Milvus Milvus", self._user)
+            _ = create_species(category_id, "Red Kite", "Milvus milvus", self._user)
 
     def test_can_update_species(self):
         category_id = create_category("Insects", self._user).id
@@ -35,13 +35,13 @@ class TestSpecies(unittest.TestCase):
         species = get_species(species_id)
         self.assertEqual("Insects", species.category.name)
         self.assertEqual("Azure Damselfly", species.name)
-        self.assertEqual("Coenagrion Puella", species.scientific_name)
+        self.assertEqual("Coenagrion puella", species.scientific_name)
 
     def test_cannot_update_species_to_create_duplicate(self):
         category = get_category("Birds")
         species = create_species(category.id, "Robin", "Erithacus rubecula", self._user)
         with self.assertRaises(ValueError):
-            _ = update_species(species.id, category.id, "Red Kite", "Milvus Milvus", self._user)
+            _ = update_species(species.id, category.id, "Red Kite", "Milvus milvus", self._user)
 
     def test_cannot_update_missing_species(self):
         category = get_category("Birds")
@@ -98,7 +98,7 @@ class TestSpecies(unittest.TestCase):
         species = list_species(category_id)
         self.assertEqual(1, len(species))
         self.assertEqual("Red Kite", species[0].name)
-        self.assertEqual("Milvus Milvus", species[0].scientific_name)
+        self.assertEqual("Milvus milvus", species[0].scientific_name)
 
     def test_can_delete_species(self):
         category_id = get_category("Birds").id

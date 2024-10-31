@@ -7,7 +7,7 @@ import sqlalchemy as db
 from datetime import datetime as dt
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Category, Species
-
+from .naming import tidy_string, Casing
 
 def _check_for_existing_records(session, name):
     """
@@ -36,7 +36,7 @@ def create_category(name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied = " ".join(name.split()).title() if name else None
+            tidied = tidy_string(name, Casing.TITLE_CASE)
             if len(_check_for_existing_records(session, tidied)):
                 raise ValueError("Duplicate category found")
 
@@ -68,7 +68,7 @@ def update_category(category_id, name, user):
         with Session.begin() as session:
             # There is a check constraint to prevent duplicates in the Python model but the pre-existing database
             # does not have that constraint so explicitly check for duplicates before adding a new record
-            tidied = " ".join(name.split()).title() if name else None
+            tidied = tidy_string(name, Casing.TITLE_CASE)
             category_ids = _check_for_existing_records(session, tidied)
 
             # Remove the current category from the list, if it's there

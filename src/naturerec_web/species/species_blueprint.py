@@ -89,7 +89,7 @@ def edit(species_id):
             if species_id:
                 _ = update_species(species_id, get_posted_int("category"), request.form["name"], request.form["scientific_name"], current_user)
             else:
-                _ = create_species(get_posted_int("category"), request.form["name"], current_user)
+                _ = create_species(get_posted_int("category"), request.form["name"], request.form["scientific_name"], current_user)
             return redirect("/species/list")
         except ValueError as e:
             return _render_species_editing_page(species_id, e)
