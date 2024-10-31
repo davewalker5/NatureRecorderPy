@@ -12,7 +12,7 @@ class TestSighting(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         self._category = create_category("Birds", self._user)
-        self._gull = create_species(self._category.id, "Black-Headed Gull", "Chroicocephalus Ridibundus", self._user)
+        self._gull = create_species(self._category.id, "Black-Headed Gull", "Chroicocephalus ridibundus", self._user)
         self._cormorant = create_species(self._category.id, "Cormorant", None, self._user)
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         _ = create_sighting(self._location.id, self._gull.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN, False,
@@ -101,7 +101,7 @@ class TestSighting(unittest.TestCase):
             columns = session.query(Sighting).one().csv_columns
         self.assertEqual(16, len(columns))
         self.assertEqual("Black-Headed Gull", columns[0])
-        self.assertEqual("Chroicocephalus Ridibundus", columns[1])
+        self.assertEqual("Chroicocephalus ridibundus", columns[1])
         self.assertEqual("Birds", columns[2])
         self.assertIsNone(columns[3])
         self.assertEqual("Unknown", columns[4])

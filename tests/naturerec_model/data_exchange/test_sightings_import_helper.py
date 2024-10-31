@@ -53,7 +53,7 @@ class TestSightingsImportHelper(unittest.TestCase):
         category = get_category("Birds")
         self.assertEqual(1, len(category.species))
         self.assertEqual("Robin", category.species[0].name)
-        self.assertEqual("Erithacus Rubecula", category.species[0].scientific_name)
+        self.assertEqual("Erithacus rubecula", category.species[0].scientific_name)
 
         # Check the location was imported correctly
         location = get_location("Abingdon")

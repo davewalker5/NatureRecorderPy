@@ -9,13 +9,13 @@ class TestSpecies(unittest.TestCase):
         create_database()
         self._user = User(id=1)
         category = create_category("Birds", self._user)
-        _ = create_species(category.id, "Red Kite", "Milvus Milvus", self._user)
+        _ = create_species(category.id, "Red Kite", "Milvus milvus", self._user)
 
     def test_can_create_species(self):
         with Session.begin() as session:
             species = session.query(Species).one()
             self.assertEqual("Red Kite", species.name)
-            self.assertEqual("Milvus Milvus", species.scientific_name)
+            self.assertEqual("Milvus milvus", species.scientific_name)
             self.assertEqual("Birds", species.category.name)
 
     def test_cannot_create_species_against_missing_category(self):

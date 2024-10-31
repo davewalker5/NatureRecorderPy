@@ -38,7 +38,7 @@ class TestSightingsExportHelper(unittest.TestCase):
         self.assertEqual(SightingsExportHelper.COLUMN_NAMES, rows[0])
         self.assertEqual(16, len(rows[1]))
         self.assertEqual("Black-Headed Gull", rows[1][0])
-        self.assertEqual("Chroicocephalus Ridibundus", rows[1][1])
+        self.assertEqual("Chroicocephalus ridibundus", rows[1][1])
         self.assertEqual("Birds", rows[1][2])
         self.assertEqual("", rows[1][3])
         self.assertEqual("Unknown", rows[1][4])

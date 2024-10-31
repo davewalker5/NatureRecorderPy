@@ -109,7 +109,7 @@ class TestStatusRating(unittest.TestCase):
         ratings = list_species_status_ratings(species_id=species.id)
         self.assertEqual(1, len(ratings))
         # Python title casing's a bit interesting!
-        self.assertEqual("Bewick'S Swan", ratings[0].species.name)
+        self.assertEqual("Bewick's Swan", ratings[0].species.name)
         self.assertEqual("BOCC4", ratings[0].rating.scheme.name)
         self.assertEqual("Amber", ratings[0].rating.name)
         self.assertEqual("United Kingdom", ratings[0].region)
