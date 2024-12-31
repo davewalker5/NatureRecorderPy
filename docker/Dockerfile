@@ -1,6 +1,6 @@
 FROM python:3.10-slim-bullseye AS runtime
 
-COPY naturerecorderpy-1.10.0.0 /opt/naturerecorderpy
+COPY naturerecorderpy-1.11.0.0 /opt/naturerecorderpy
 
 WORKDIR /opt/naturerecorderpy
 
