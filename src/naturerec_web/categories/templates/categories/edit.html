@@ -2,10 +2,12 @@
     {% set title = "Edit Category" %}
     {% set submit_title = "Save Category" %}
     {% set name = category.name %}
+    {% set supports_gender = "checked" if category.supports_gender else "" %}
 {% else %}
     {% set title = "Add Category" %}
     {% set submit_title = "Add Category" %}
     {% set name = "" %}
+    {% set supports_gender = "" %}
 {% endif %}
 
 {% extends "layout.html" %}
@@ -20,6 +22,10 @@
             <label>Name</label>
             <input class="form-control" name="name" placeholder="Category name e.g. Insects" value="{{ name }}"
                    required>
+        </div>
+        <div class="form-check mb-4">
+            <input class="form-check-input" type="checkbox" value="" name="supports_gender" id="supports_gender" {{ supports_gender }}/>
+            <label class="form-check-label" for="supports_gender">Display gender recording options for this category</label>
         </div>
         <div class="button-bar">
             <button type="button" class="btn btn-light">

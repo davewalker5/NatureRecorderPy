@@ -52,11 +52,14 @@ def upgrade() -> None:
     user_ids = [user.id for user in users]
     user_ids.sort()
 
+    # Identify the "default" user ID, accounting for the fact that there may not be any users yet
+    user_id = user_ids[0] if len(user_ids) > 0 else 0
+
     # Create the roles, using the first user as the creator
     for name in ["Administrator", "Reporter", "Reader"]:
         session.add(Role(name=name,
-                         created_by=user_ids[0],
-                         updated_by=user_ids[0],
+                         created_by=user_id,
+                         updated_by=user_id,
                          date_created=datetime.now(),
                          date_updated=datetime.now()))
 
@@ -64,7 +67,7 @@ def upgrade() -> None:
     admin_role = session.query(Role).filter(Role.name=="Administrator").first()
     for user_id in user_ids:
         bind.execute(f"INSERT INTO UserRoles ( user_id, role_id, created_by, date_created ) "
-                     f"VALUES ( {user_id}, {admin_role.id}, {user_ids[0]}, '{str(datetime.now())}')")
+                     f"VALUES ( {user_id}, {admin_role.id}, {user_id}, '{str(datetime.now())}')")
     session.commit()
 
 

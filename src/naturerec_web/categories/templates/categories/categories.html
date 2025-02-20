@@ -2,6 +2,7 @@
     <table class="striped">
         <thead>
             <th>Name</th>
+            <th>Supports Gender Recording</th>
             {% if edit_enabled %}
                 <th></th>
                 <th></th>
@@ -11,6 +12,13 @@
             {% for category in categories %}
                 <tr>
                     <td>{{ category.name }}</td>
+                    <td>
+                        {% if category.supports_gender %}
+                            <span>Yes</span>
+                        {% else %}
+                            <span>No</span>
+                        {% endif %}
+                    </td>
                     {% if edit_enabled %}
                         <td>
                             <a href="{{ url_for('categories.edit', category_id=category.id) }}">
