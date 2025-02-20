@@ -8,7 +8,7 @@ class TestCategory(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        category = create_category("Birds", self._user)
+        category = create_category("Birds", True, self._user)
         _ = create_species(category.id, "Red Kite", None, self._user)
 
     def test_can_create_category(self):
@@ -23,15 +23,15 @@ class TestCategory(unittest.TestCase):
 
     def test_cannot_create_none_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category(None, self._user)
+            _ = create_category(None, True, self._user)
 
     def test_cannot_create_blank_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category("", self._user)
+            _ = create_category("", True, self._user)
 
     def test_cannot_create_whitespace_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category("       ", self._user)
+            _ = create_category("       ", True, self._user)
 
     def test_related_species_returned_with_category(self):
         category = get_category("Birds")

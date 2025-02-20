@@ -11,7 +11,7 @@ class TestSighting(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        self._category = create_category("Birds", self._user)
+        self._category = create_category("Birds", True, self._user)
         self._gull = create_species(self._category.id, "Black-Headed Gull", "Chroicocephalus ridibundus", self._user)
         self._cormorant = create_species(self._category.id, "Cormorant", None, self._user)
         self._location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)

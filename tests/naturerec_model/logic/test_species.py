@@ -11,7 +11,7 @@ class TestSpecies(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        category = create_category("Birds", self._user)
+        category = create_category("Birds", True, self._user)
         self._species = create_species(category.id, "Red Kite", "Milvus milvus", self._user)
 
     def test_can_create_species(self):
@@ -28,7 +28,7 @@ class TestSpecies(unittest.TestCase):
             _ = create_species(category_id, "Red Kite", "Milvus milvus", self._user)
 
     def test_can_update_species(self):
-        category_id = create_category("Insects", self._user).id
+        category_id = create_category("Insects", False, self._user).id
         with Session.begin() as session:
             species_id = session.query(Species).one().id
             _ = update_species(species_id, category_id, "Azure Damselfly", "Coenagrion puella", self._user)
