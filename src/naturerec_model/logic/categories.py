@@ -21,11 +21,12 @@ def _check_for_existing_records(session, name):
     return [category.id for category in categories]
 
 
-def create_category(name, user):
+def create_category(name, supports_gender, user):
     """
     Create a new species category
 
     :param name: Category name
+    :param supports_gender: True if the category supports entry of gender against sightings
     :param user: Current user
     :returns: An instance of the Category class for the created record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
@@ -41,6 +42,7 @@ def create_category(name, user):
                 raise ValueError("Duplicate category found")
 
             category = Category(name=tidied,
+                                supports_gender=supports_gender,
                                 created_by=user.id,
                                 updated_by=user.id,
                                 date_created=dt.utcnow(),
@@ -52,12 +54,13 @@ def create_category(name, user):
     return category
 
 
-def update_category(category_id, name, user):
+def update_category(category_id, name, supports_gender, user):
     """
     Update an existing species category
 
     :param category_id: ID for the category record to update
     :param name: Category name
+    :param supports_gender: True if the category supports entry of gender against sightings
     :param user: Current user
     :returns: An instance of the Category class for the updated record
     :raises ValueError: If the specified name is None, an empty string or consists solely of whitespace
@@ -85,6 +88,7 @@ def update_category(category_id, name, user):
                 raise ValueError("Category not found")
 
             category.name = tidied
+            category.supports_gender = supports_gender
             category.updated_by = user.id
             category.date_updated = dt.utcnow()
     except IntegrityError as e:

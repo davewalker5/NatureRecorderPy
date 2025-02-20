@@ -12,7 +12,7 @@ class TestSightings(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        category = create_category("Birds", self._user)
+        category = create_category("Birds", True, self._user)
         species = create_species(category.id, "Black-Headed Gull", None, self._user)
         location = create_location(name="Radley Lakes", county="Oxfordshire", country="United Kingdom", user=self._user)
         self._sighting = create_sighting(location.id, species.id, datetime.date(2021, 12, 14), None, Gender.UNKNOWN,

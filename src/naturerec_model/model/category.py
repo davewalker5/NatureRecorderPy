@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint, DateTime
+from sqlalchemy import Column, Integer, String, UniqueConstraint, CheckConstraint, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -13,6 +13,8 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     #: Category name
     name = Column(String, nullable=False, unique=True)
+    #: Whether the category supports entry of gender via the UI
+    supports_gender = Column(Integer, nullable=False, default=1)
     #: Audit columns
     created_by = Column(Integer, nullable=False)
     updated_by = Column(Integer, nullable=False)
@@ -29,4 +31,4 @@ class Category(Base):
                       CheckConstraint("LENGTH(TRIM(name)) > 0"))
 
     def __repr__(self):
-        return f"{type(self).__name__}(Id={self.id!r}, name={self.name!r})"
+        return f"{type(self).__name__}(Id={self.id!r}, name={self.name!r}, supports_gender={self.supports_gender!r})"

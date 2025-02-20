@@ -8,7 +8,7 @@ class TestSpecies(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        category = create_category("Birds", self._user)
+        category = create_category("Birds", True, self._user)
         _ = create_species(category.id, "Red Kite", "Milvus milvus", self._user)
 
     def test_can_create_species(self):

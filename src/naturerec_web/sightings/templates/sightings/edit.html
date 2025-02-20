@@ -82,13 +82,25 @@
     <script type="text/javascript" src="{{ url_for( 'static', filename='script/category-selection.js') }}"></script>
     <script type="text/javascript">
         function show_hide_default_fields() {
-            const show_categories = ["Birds", "Mammals"];
-            var category_name = $("#category").find(":selected").text().trim();
-            if (show_categories.indexOf(category_name) > -1) {
-                $("#defaulted-fields").show();
-            } else {
-                $("#defaulted-fields").hide();
-            }
+            var category_id = $("#category").val();
+            $.ajax({
+                url: "/sightings/supports_gender/" + convert_none_to_zero(category_id),
+                type: "GET",
+                cache: false,
+                dataType: "json",
+                success: function(data, _textStatus, _jqXHR)  {
+                    console.log("JSON = " + show_defaulted_fields);
+                    var show_defaulted_fields = data.supports_gender;
+                    if (show_defaulted_fields) {
+                        $("#defaulted-fields").show();
+                    } else {
+                        $("#defaulted-fields").hide();
+                    }
+                },
+                error: function(_jqXHR, textStatus, _errorThrown) {
+                    // Sink the error, for now
+                }
+            });
         }
 
         $(document).ready(function() {

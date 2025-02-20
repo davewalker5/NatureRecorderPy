@@ -73,7 +73,7 @@ class DataExchangeHelperBase(threading.Thread):
         try:
             category = get_category(tidied_category_name)
         except ValueError:
-            category = create_category(tidied_category_name, self._user)
+            category = create_category(tidied_category_name, True, self._user)
             return create_species(category.id, tidied_species_name, tidied_scientific_name, self._user).id
 
         # See if the species exists against the existing category. If so, just return its ID

@@ -110,11 +110,11 @@ class TestSightingsImportHelper(unittest.TestCase):
         self._perform_valid_import()
 
     def test_can_import_sighting_for_existing_category(self):
-        _ = create_category("Birds", self._user)
+        _ = create_category("Birds", True, self._user)
         self._perform_valid_import()
 
     def test_can_import_sighting_for_existing_species(self):
-        category = create_category("Birds", self._user)
+        category = create_category("Birds", True, self._user)
         _ = create_species(category.id, "Robin", "Erithacus rubecula", self._user)
         self._perform_valid_import()
 
