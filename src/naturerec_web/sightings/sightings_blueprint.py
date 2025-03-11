@@ -4,11 +4,11 @@ The sightings blueprint supplies view functions and templates for sighting manag
 
 import datetime
 import html
-from flask import Blueprint, render_template, request, session, redirect, abort
+from flask import Blueprint, render_template, request, session, redirect, abort, jsonify
 from flask_login import login_required, current_user
 from naturerec_model.logic import list_sightings, get_sighting, create_sighting, update_sighting, delete_sighting
 from naturerec_model.logic import list_locations
-from naturerec_model.logic import list_categories
+from naturerec_model.logic import list_categories, get_category
 from naturerec_model.logic import list_species
 from naturerec_model.model import Gender, Sighting
 from naturerec_model.data_exchange import SightingsImportHelper
@@ -177,6 +177,24 @@ def list_species_for_category(category_id, selected_species_id):
     return render_template("sightings/species.html",
                            species=species,
                            species_id=selected_species_id)
+
+
+@sightings_bp.route("/supports_gender/<int:category_id>")
+@login_required
+def get_supports_gender_flag_for_category(category_id):
+    """
+    Return a JSON object indicating whether the specified category supports gender reporting
+
+    :param category_id: ID for the category for which to return the flag
+    :return: JSON object containing the value of the 'supports gender' flag
+    """
+    try:
+        category = get_category(category_id)
+        supports_gender = category.supports_gender
+    except ValueError:
+        supports_gender = False
+
+    return jsonify(supports_gender=supports_gender)
 
 
 @sightings_bp.route("/edit", defaults={"sighting_id": None}, methods=["GET", "POST"])

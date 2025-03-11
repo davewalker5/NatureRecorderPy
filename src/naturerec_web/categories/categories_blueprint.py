@@ -67,11 +67,15 @@ def edit(category_id):
     :return: The HTML for the category entry page or a response object redirecting to the category list page
     """
     if request.method == "POST":
+        # The "supports gender" flag is a check box and is only POSTed if it's checked. If it's unchecked, it
+        # won't appear in the form data
+        supports_gender = True if "supports_gender" in request.form else False
+
         try:
             if category_id:
-                _ = update_category(category_id, request.form["name"], current_user)
+                _ = update_category(category_id, request.form["name"], supports_gender, current_user)
             else:
-                _ = create_category(request.form["name"], current_user)
+                _ = create_category(request.form["name"], supports_gender, current_user)
             return redirect("/categories/list")
         except ValueError as e:
             return _render_category_editing_page(category_id, e)

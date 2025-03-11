@@ -9,7 +9,7 @@ class TestCategories(unittest.TestCase):
     def setUp(self) -> None:
         create_database()
         self._user = User(id=1)
-        self._category = create_category("Birds", self._user)
+        self._category = create_category("Birds", True, self._user)
 
     def test_can_create_category(self):
         with Session.begin() as session:
@@ -18,12 +18,12 @@ class TestCategories(unittest.TestCase):
 
     def test_cannot_create_duplicate_category(self):
         with self.assertRaises(ValueError):
-            _ = create_category("Birds", self._user)
+            _ = create_category("Birds", True, self._user)
 
     def test_can_update_category(self):
         with Session.begin() as session:
             category_id = session.query(Category).one().id
-            _ = update_category(category_id, "Insects", self._user)
+            _ = update_category(category_id, "Insects", False, self._user)
             updated = session.query(Category).get(category_id)
             self.assertEqual("Insects", updated.name)
 
@@ -31,29 +31,29 @@ class TestCategories(unittest.TestCase):
         with Session.begin() as session:
             category_id = session.query(Category).one().id
 
-        _ = create_category("Insects", self._user)
+        _ = create_category("Insects", False, self._user)
 
         with self.assertRaises(ValueError):
-            _ = update_category(category_id, "Insects", self._user)
+            _ = update_category(category_id, "Insects", False, self._user)
 
     def test_cannot_update_missing_category(self):
         with self.assertRaises(ValueError):
-            _ = update_category(-1, "Insects", self._user)
+            _ = update_category(-1, "Insects", False, self._user)
 
     def test_cannot_update_category_with_none_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             category_id = session.query(Category).one().id
-            _ = update_category(category_id, None, self._user)
+            _ = update_category(category_id, None, True, self._user)
 
     def test_cannot_update_category_with_blank_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             category_id = session.query(Category).one().id
-            _ = update_category(category_id, "", self._user)
+            _ = update_category(category_id, "", True, self._user)
 
     def test_cannot_update_category_with_whitespace_name(self):
         with self.assertRaises(ValueError), Session.begin() as session:
             category_id = session.query(Category).one().id
-            _ = update_category(category_id, "      ", self._user)
+            _ = update_category(category_id, "      ", True, self._user)
 
     def test_can_get_category_by_name(self):
         category = get_category("Birds")

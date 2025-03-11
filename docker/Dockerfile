@@ -1,7 +1,6 @@
 FROM python:3.10-slim-bullseye AS runtime
 
 COPY naturerecorderpy-1.13.0.0 /opt/naturerecorderpy
-
 WORKDIR /opt/naturerecorderpy
 
 RUN apt-get update -y
