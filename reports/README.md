@@ -6,7 +6,7 @@ The following reports are currently available:
 
 | Notebook | Report Type |
 | --- | --- |
-| heatmap.ipynb | Heatmap of number of sightings of each species in a category at a location during a specified year | 
+| annual_category_location_heatmap.ipynb | Heatmap of number of sightings of each species in a category at a location during a specified year | 
 
 ## Setting Up the Reporting Environment
 
