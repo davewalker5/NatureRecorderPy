@@ -140,3 +140,10 @@ cython_debug/
 .DS_Store
 .vscode/
 .idea/
+reports/exported/
+
+naturerecorder.db
+naturerecorder_dev.db
+
+clean.sh
+clean.bat
