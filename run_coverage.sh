@@ -1,0 +1,13 @@
+#!/bin/sh -f
+
+export PROJECT_ROOT=$( cd "$( dirname "$0" )" && pwd )
+. $PROJECT_ROOT/venv/bin/activate
+export PYTHONPATH=$PROJECT_ROOT/src
+export NATURE_RECORDER_DB="$PROJECT_ROOT/data/naturerecorder_test.db"
+
+echo "Project root      = $PROJECT_ROOT"
+echo "Python Path       = $PYTHONPATH"
+echo "Test Database     = $NATURE_RECORDER_DB"
+
+coverage run --branch --source src -m unittest discover
+coverage html -d cov_html

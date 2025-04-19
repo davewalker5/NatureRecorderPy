@@ -7,7 +7,6 @@ Nature Recorder
 
    naturerec_model/index
    naturerec_web/index
-   locust_tests/index
 
 
 Indices and tables
