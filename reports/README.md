@@ -8,6 +8,7 @@ The following reports are currently available:
 | --- | --- |
 | annual_category_location_heatmap.ipynb | Heatmap of number of sightings of each species in a category at a location during a specified year | 
 | location_richness_map.ipynb | Interactive map of species richness (number of unique species sighted) by location |
+| year_on_year_species_location_trend.ipynb | Year-on-year sightings trend for a species, optionally limited to one location |
 
 ## Setting Up the Reporting Environment
 
