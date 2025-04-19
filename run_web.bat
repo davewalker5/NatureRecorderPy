@@ -1,8 +1,8 @@
 @ECHO OFF
-SET PROJECT_ROOT=%~p0
+SET PROJECT_ROOT=C:%~p0
 CALL %PROJECT_ROOT%\venv\Scripts\activate.bat
 SET PYTHONPATH=%PROJECT_ROOT%src
-SET NATURE_RECORDER_DB=%PROJECT_ROOT%data\naturerecorder.db
+SET NATURE_RECORDER_DB=%PROJECT_ROOT%data\naturerecorder_dev.db
 SET FLASK_ENV=development
 
 ECHO Project root      = %PROJECT_ROOT%

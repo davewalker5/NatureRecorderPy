@@ -32,8 +32,7 @@ Nature Recorder is an application for recording wildlife sightings, maintaining 
   - Conservation status ratings, values for the conservation status within a scheme
   - Species conservation status ratings, status ratings for a species with effective start and end dates
 - Reports
-  - Simple reports built into the application
-  - Flexible reporting using Jupyter Notebooks, outside the application
+  - Flexible reporting using Jupyter Notebooks
 
 # Getting Started
 

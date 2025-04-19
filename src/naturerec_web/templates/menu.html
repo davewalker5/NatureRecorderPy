@@ -13,15 +13,6 @@
           </li>
         {% endif %}
         <li class="nav-item dropdown">
-          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Reports</a>
-          <div class="dropdown-menu">
-              <a href="{{ url_for('sightings.list_filtered_sightings') }}" class="dropdown-item">Sightings</a>
-              <a href="{{ url_for('life_list.life_list_for_category') }}" class="dropdown-item">Life List</a>
-              <a href="{{ url_for('reports.location_report') }}" class="dropdown-item">Location Report</a>
-              <a href="{{ url_for('reports.species_report') }}" class="dropdown-item">Species Report</a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Data Maintenance</a>
           <div class="dropdown-menu">
             <a href="{{ url_for('locations.list_all') }}" class="dropdown-item">Locations</a>
