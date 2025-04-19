@@ -38,10 +38,7 @@
           <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Export</a>
             <div class="dropdown-menu">
-                {% if is_admin %}
                   <a href="{{ url_for('export.export') }}" class="dropdown-item">Sightings</a>
-                {% endif %}
-                <a href="{{ url_for('export.export_life_list') }}" class="dropdown-item">Life List</a>
             </div>
           </li>
         {% endif %}
