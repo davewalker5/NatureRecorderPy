@@ -10,9 +10,7 @@ from .categories import categories_bp
 from .species import species_bp
 from .status import status_bp
 from .species_ratings import species_ratings_bp
-from .life_list import life_list_bp
 from .jobs import jobs_bp
-from .reports import reports_bp
 from .auth import auth_bp, unauthorised, has_roles
 from naturerec_model.logic import get_user
 
@@ -48,9 +46,7 @@ def create_app(environment="production"):
     app.register_blueprint(species_bp, url_prefix='/species')
     app.register_blueprint(status_bp, url_prefix='/status')
     app.register_blueprint(species_ratings_bp, url_prefix='/species_ratings')
-    app.register_blueprint(life_list_bp, url_prefix='/life_list')
     app.register_blueprint(jobs_bp, url_prefix='/jobs')
-    app.register_blueprint(reports_bp, url_prefix='/reports')
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     # Register the 401 Unathorised error handler

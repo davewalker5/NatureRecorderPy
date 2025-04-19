@@ -10,4 +10,3 @@ The data_exchange Package
    status_import_helper
    sightings_import_helper
    sightings_export_helper
-   life_list_export_helper

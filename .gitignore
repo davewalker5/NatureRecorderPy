@@ -142,8 +142,9 @@ cython_debug/
 .idea/
 reports/exported/
 
-naturerecorder.db
+naturerecorder_test.db
 naturerecorder_dev.db
+naturerecorder.db
 
 clean.sh
 clean.bat

@@ -6,6 +6,7 @@ SET NATURE_RECORDER_DB=%PROJECT_ROOT%\data\naturerecorder_test.db
 
 ECHO Project root      = %PROJECT_ROOT%
 ECHO Python Path       = %PYTHONPATH%
+ECHO Database Path     = %NATURE_RECORDER_DB%
 
 coverage run --branch --source src -m unittest discover
 coverage html -d cov_html

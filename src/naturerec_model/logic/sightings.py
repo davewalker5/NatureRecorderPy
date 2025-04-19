@@ -165,32 +165,6 @@ def list_sightings(from_date=None, to_date=None, location_id=None, species_id=No
     return sightings
 
 
-def life_list(category_id):
-    """
-    Return the "life list" of sightings for a given species category
-
-    :param category_id: ID for the category for which to return the life list
-    :return: List of Species instances constituting the life list
-    """
-    with Session.begin() as session:
-        # Get a distinct list of species IDs for the specified category
-        species_ids = [
-            row.speciesId
-            for row in session.query(Sighting.speciesId)
-            .filter(Sighting.species.has(Species.categoryId == category_id))
-            .distinct()
-            .all()
-        ]
-
-        # Now query the species
-        species = session.query(Species) \
-            .filter(Species.id.in_(species_ids)) \
-            .order_by(Species.name) \
-            .all()
-
-    return species
-
-
 def delete_sighting(sighting_id):
     """
     Delete a sighting
