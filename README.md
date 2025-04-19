@@ -1,6 +1,5 @@
 [![Build Status](https://github.com/davewalker5/NatureRecorderPy/workflows/Python%20CI%20Build/badge.svg)](https://github.com/davewalker5/NatureRecorderPy/actions)
 [![Coverage](https://codecov.io/gh/davewalker5/NatureRecorderPy/branch/main/graph/badge.svg?token=U86UFDVD5S)](https://codecov.io/gh/davewalker5/NatureRecorderPy)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=davewalker5_NatureRecorderPy&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=davewalker5_NatureRecorderPy)
 [![GitHub issues](https://img.shields.io/github/issues/davewalker5/NatureRecorderPy)](https://github.com/davewalker5/NatureRecorderPy/issues)
 [![Releases](https://img.shields.io/github/v/release/davewalker5/NatureRecorderPy.svg?include_prereleases)](https://github.com/davewalker5/NatureRecorderPy/releases)
 [![License: MIT](https://img.shields.io/badge/License-mit-blue.svg)](https://github.com/davewalker5/NatureRecorderPy/blob/main/LICENSE)
