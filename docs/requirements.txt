@@ -1,0 +1,9 @@
+alabaster==0.7.12
+Sphinx
+sphinx-rtd-theme
+sphinxcontrib-applehelp
+sphinxcontrib-devhelp
+sphinxcontrib-htmlhelp
+sphinxcontrib-jsmath
+sphinxcontrib-qthelp
+sphinxcontrib-serializinghtml
