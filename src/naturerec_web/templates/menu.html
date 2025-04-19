@@ -7,11 +7,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        {% if is_admin or is_reporter %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('sightings.edit') }}">Add Sighting</a>
-          </li>
-        {% endif %}
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Sightings</a>
+          <div class="dropdown-menu">
+            {% if is_admin or is_reporter %}
+              <a href="{{ url_for('sightings.edit') }}" class="dropdown-item">Add Sighting</a>
+            {% endif %}
+              <a href="{{ url_for('sightings.list_filtered_sightings') }}" class="dropdown-item">List Sightings</a>
+          </div>
+        </li>
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Data Maintenance</a>
           <div class="dropdown-menu">

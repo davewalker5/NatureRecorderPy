@@ -10,7 +10,6 @@ The naturerec_web Package
    categories_blueprint
    species_blueprint
    sightings_blueprint
-   life_list_blueprint
    status_blueprint
    species_ratings_blueprint
    export_blueprint
