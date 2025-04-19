@@ -6,6 +6,7 @@ The following reports are currently available:
 
 | Notebook | Report Type |
 | --- | --- |
+| abundance_vs_frequency_scatter.ipynb | Abundance vs. frequency scatter plot for each species in a category at a location, indicating rarity at that location |
 | annual_category_location_heatmap.ipynb | Heatmap of number of sightings of each species in a category at a location during a specified year |
 | category_life_list.ipynb | Life list for the species in a category, including total sightings and location count |
 | location_richness_map.ipynb | Interactive map of species richness (number of unique species sighted) by location |
