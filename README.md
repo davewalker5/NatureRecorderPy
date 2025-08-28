@@ -37,6 +37,12 @@ Nature Recorder is an application for recording wildlife sightings, maintaining 
 
 Please see the [Wiki](https://github.com/davewalker5/NatureRecorderPy/wiki) for configuration details and instructions on how to run the application.
 
+# Sightings Hub
+
+My own sightings, recorded using the application, are published on the following site:
+
+[Sightings Hub](https://davewalker5.github.io)
+
 # Authors
 
 - **Dave Walker** - _Initial work_
