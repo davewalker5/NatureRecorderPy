@@ -3,7 +3,7 @@ Sightings business logic
 """
 
 import sqlalchemy as db
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from sqlalchemy.exc import IntegrityError
 from ..model import Session, Sighting, Species
 
@@ -58,8 +58,8 @@ def create_sighting(location_id, species_id, date, number, gender, with_young, n
                                 notes=notes,
                                 created_by=user.id,
                                 updated_by=user.id,
-                                date_created=dt.utcnow(),
-                                date_updated=dt.utcnow())
+                                date_created=dt.now(UTC),
+                                date_updated=dt.now(UTC))
             session.add(sighting)
     except IntegrityError as e:
         raise ValueError("Invalid sighting properties") from e
@@ -109,7 +109,7 @@ def update_sighting(sighting_id, location_id, species_id, date, number, gender, 
             sighting.withYoung = with_young
             sighting.notes = notes
             sighting.updated_by = user.id
-            sighting.date_updated = dt.utcnow()
+            sighting.date_updated = dt.now(UTC)
             session.add(sighting)
     except IntegrityError as e:
         raise ValueError("Invalid sighting properties") from e

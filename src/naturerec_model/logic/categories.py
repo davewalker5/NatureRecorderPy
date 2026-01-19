@@ -4,7 +4,7 @@ Category business logic
 
 from functools import singledispatch
 import sqlalchemy as db
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Category, Species
 from .naming import tidy_string, Casing
@@ -45,8 +45,8 @@ def create_category(name, supports_gender, user):
                                 supports_gender=supports_gender,
                                 created_by=user.id,
                                 updated_by=user.id,
-                                date_created=dt.utcnow(),
-                                date_updated=dt.utcnow())
+                                date_created=dt.now(UTC),
+                                date_updated=dt.now(UTC))
             session.add(category)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
@@ -90,7 +90,7 @@ def update_category(category_id, name, supports_gender, user):
             category.name = tidied
             category.supports_gender = supports_gender
             category.updated_by = user.id
-            category.date_updated = dt.utcnow()
+            category.date_updated = dt.now(UTC)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate category name") from e
 

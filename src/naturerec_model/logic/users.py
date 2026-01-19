@@ -5,7 +5,7 @@ User business logic
 import hashlib
 import os
 import base64
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from functools import singledispatch
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, User
@@ -60,8 +60,8 @@ def create_user(username, password, user):
                         password=b64password,
                         created_by=user.id,
                         updated_by=user.id,
-                        date_created=dt.utcnow(),
-                        date_updated=dt.utcnow())
+                        date_created=dt.now(UTC),
+                        date_updated=dt.now(UTC))
             session.add(user)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate user") from e

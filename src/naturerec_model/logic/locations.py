@@ -6,7 +6,7 @@ import sqlalchemy as db
 import pandas as pd
 import pgeocode
 import pycountry
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from functools import singledispatch
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Location, Sighting
@@ -57,8 +57,8 @@ def create_location(name, county, country, user, address=None, city=None, postco
                                 longitude=longitude,
                                 created_by=user.id,
                                 updated_by=user.id,
-                                date_created=dt.utcnow(),
-                                date_updated=dt.utcnow())
+                                date_created=dt.now(UTC),
+                                date_updated=dt.now(UTC))
             session.add(location)
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
@@ -111,7 +111,7 @@ def update_location(location_id, name, county, country, user, address=None, city
             location.latitude = latitude
             location.longitude = longitude
             location.updated_by = user.id
-            location.date_updated = dt.utcnow()
+            location.date_updated = dt.now(UTC)
     except IntegrityError as e:
         raise ValueError("Invalid location properties or duplicate name") from e
 

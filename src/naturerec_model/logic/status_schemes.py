@@ -4,7 +4,7 @@ Conservation status scheme business logic
 
 from functools import singledispatch
 import sqlalchemy as db
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, StatusScheme, SpeciesStatusRating
 
@@ -43,8 +43,8 @@ def create_status_scheme(name, user):
             scheme = StatusScheme(name=tidied,
                                   created_by=user.id,
                                   updated_by=user.id,
-                                  date_created=dt.utcnow(),
-                                  date_updated=dt.utcnow())
+                                  date_created=dt.now(UTC),
+                                  date_updated=dt.now(UTC))
             session.add(scheme)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
@@ -85,7 +85,7 @@ def update_status_scheme(status_scheme_id, name, user):
 
             scheme.name = tidied
             scheme.updated_by = user.id
-            scheme.date_updated=dt.utcnow()
+            scheme.date_updated=dt.now(UTC)
     except IntegrityError as e:
         raise ValueError("Invalid or duplicate conservation status scheme name") from e
 
