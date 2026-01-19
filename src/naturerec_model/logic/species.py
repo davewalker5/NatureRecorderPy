@@ -4,7 +4,7 @@ Species business logic
 
 from functools import singledispatch
 import sqlalchemy as db
-from datetime import datetime as dt
+from datetime import datetime as dt, UTC
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from ..model import Session, Species, Sighting, SpeciesStatusRating
 from .naming import tidy_string, Casing
@@ -52,8 +52,8 @@ def create_species(category_id, name, scientific_name, user):
                               scientific_name=tidied_scientific_name,
                               created_by=user.id,
                               updated_by=user.id,
-                              date_created=dt.utcnow(),
-                              date_updated=dt.utcnow())
+                              date_created=dt.now(UTC),
+                              date_updated=dt.now(UTC))
             session.add(species)
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
@@ -98,7 +98,7 @@ def update_species(species_id, category_id, name, scientific_name, user):
             species.name = tidied_name
             species.scientific_name = tidied_scientific_name
             species.updated_by = user.id
-            species.date_updated = dt.utcnow()
+            species.date_updated = dt.now(UTC)
     except IntegrityError as e:
         raise ValueError("Missing category or invalid or duplicate species name") \
             from e
