@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nature_recorder"
+version = "1.25.0"
+description = "Wildlife sightings database"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Dave Walker" },
+]
+dependencies = [
+    "alembic>=1.18,<2",
+    "Flask>=3.1,<4",
+    "Flask-Login>=0.6,<1",
+    "Flask-WTF>=1.2,<2",
+    "pandas>=3,<4",
+    "pgeocode>=0.5,<1",
+    "pycountry>=26,<27",
+    "python-dotenv>=1.2,<2",
+    "SQLAlchemy>=1.4,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "coverage>=7,<8",
+    "flake8>=7,<8",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+naturerec_web = [
+    "static/**/*",
+    "templates/*.html",
+]
+"naturerec_web.auth" = ["templates/auth/*.html"]
+"naturerec_web.categories" = ["templates/categories/*.html"]
+"naturerec_web.export" = ["templates/export/*.html"]
+"naturerec_web.jobs" = ["templates/jobs/*.html"]
+"naturerec_web.locations" = ["templates/locations/*.html"]
+"naturerec_web.sightings" = ["templates/sightings/*.html"]
+"naturerec_web.species" = ["templates/species/*.html"]
+"naturerec_web.species_ratings" = ["templates/species_ratings/*.html"]
+"naturerec_web.status" = ["templates/status/*.html"]
