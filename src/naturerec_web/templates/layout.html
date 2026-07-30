@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
+    <title>{% block title %}Nature Recorder{% endblock %} · Nature Recorder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fontawesome/css/all.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/site.css') }}">
 </head>
 <body>
     {% if not suppress_menu %}
         {% include "menu.html" with context %}
     {% endif %}
-    <div id="main-content" class="container-fluid">
+    <main id="main-content">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
     <script src="{{ url_for('static', filename='script/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
