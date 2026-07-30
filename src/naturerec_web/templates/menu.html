@@ -1,6 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark app-topbar">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('home.home') }}">Nature Recorder</a>
+    <a class="navbar-brand brand" href="{{ url_for('home.home') }}" aria-label="Nature Recorder home">
+      <span class="brand-mark" aria-hidden="true"><i class="fas fa-leaf"></i></span>
+      <span class="brand-copy">
+        <strong>Nature Recorder</strong>
+        <small>Wildlife observation database</small>
+      </span>
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -47,8 +53,8 @@
             <a class="nav-link" href="{{ url_for('jobs.list_recent') }}">Jobs</a>
           </li>
         {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+        <li class="nav-item nav-logout">
+          <a class="nav-link" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout</a>
         </li>
       </ul>
     </div>
