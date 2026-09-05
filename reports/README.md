@@ -33,6 +33,16 @@ To build the virtual environment, run the following command:
 ./make_venv.sh
 ```
 
+To apply dependency updates to an existing reporting environment, run from this folder:
+
+```bash
+venv/bin/python -m pip install --upgrade -e .
+venv/bin/python -m pip check
+```
+
+`pyproject.toml` includes an explicit minimum version for Tornado, a transitive
+Jupyter dependency, to ensure installations receive the security update.
+
 ## Running a Report in Visual Studio Code
 
 - Open the Jupyter notebook for the report of interest
