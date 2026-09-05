@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directories:
+      - "/"
+      - "/reports"
+      - "/docs"
+    schedule:
+      interval: "weekly"
+    # Keep this configuration focused on security updates.
+    open-pull-requests-limit: 0
+    allow:
+      - dependency-type: "all"
+    groups:
+      pip:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
