@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=83", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nature-recorder-docs"
+version = "1.28.0"
+description = "Sphinx documentation for Nature Recorder"
+readme = ""
+requires-python = ">=3.11"
+dependencies = [
+    "Sphinx>=8,<10",
+    "sphinx-rtd-theme>=3,<4",
+]
+
+[tool.setuptools]
+py-modules = []
