@@ -1,4 +1,5 @@
-#!/bin/bash -f
+#!/usr/bin/env bash
+set -euo pipefail
 
 DOCS_FOLDER="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 PROJECT_ROOT="$DOCS_FOLDER/.."
@@ -9,10 +10,10 @@ echo "Project Root     : $PROJECT_ROOT"
 echo "Python Path      : $PYTHONPATH"
 
 # The assumption is there is already a virtual environment with the requirements to
-# run the analyser installed. This simply activates it and adds in the Sphinx requirements
+# run the application installed. This adds the documentation dependencies.
 . "$PROJECT_ROOT/venv/bin/activate"
-pip install -r requirements.txt
+trap deactivate EXIT
+python -m pip install "$DOCS_FOLDER"
 
 # Build the documentation
-make html
-deactivate
+make -C "$DOCS_FOLDER" html
