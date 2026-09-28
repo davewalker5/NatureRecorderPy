@@ -6,6 +6,7 @@ The following reports are currently available:
 
 | Notebook                                  | Report Type                                                                                                           |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| monthly_sightings_comparison.ipynb | Monthly sighting records for two specified years at a location (species, category or overall) |
 | abundance_vs_frequency_scatter.ipynb      | Abundance vs. frequency scatter plot for each species in a category at a location, indicating rarity at that location |
 | annual_category_location_heatmap.ipynb    | Heatmap of number of sightings of each species in a category at a location during a specified year                    |
 | category_composition_chart.ipynb          | Pie chart showing the species composition of a category at a location                                                 |
