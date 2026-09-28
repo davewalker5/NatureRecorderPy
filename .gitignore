@@ -148,3 +148,4 @@ naturerecorder.db
 
 clean.sh
 clean.bat
+uv.lock
